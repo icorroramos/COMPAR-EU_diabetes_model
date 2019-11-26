@@ -65,10 +65,19 @@ cum_haz_weibull <- function(regression_coefficents_input, risk_factors_input, du
 }
 
 
-# Regression coefficients from UKPDS paper ESM Table 4 and ESM Table 5
 
-parameters <- c("lambda", "ro", "AFRO", "AGE DIAG", "FEMALE", "INDIAN", "ATFIB", "BMI", "eGFR", "eGFR<60", "HbA1c", "HDL",
-                "LDL", "LDL>35", "MMALB", "PVD", "SBP", "SMOKER", "WBC", "AMP HIST", "CHF HIST", "IHD HIST", "STROKE HIST", "ULCER HIST")
+### CONTINUE HERE
+### NEED TO IMPLEMENT cum_haz_logistic and cum_haz_gompertz
+
+
+
+# Regression coefficients from UKPDS paper ESM Table 4: Macrovascular complications 
+
+risk_factors_macrovascular <- c("AFRO", "AGE DIAG", "FEMALE", "INDIAN", "ATFIB", "BMI", "eGFR", "eGFR<60", "HbA1c", "HDL",
+                                "LDL", "LDL>35", "MMALB", "PVD", "SBP", "SMOKER", "WBC", "AMP HIST", "CHF HIST", "IHD HIST", 
+                                "STROKE HIST", "ULCER HIST")
+
+parameters_macrovascular <- c("lambda", "ro", risk_factors_macrovascular)
 
 CHF <- c(-12.332, 1.514, 0, 0.068,  0, 0, 1.562, 0.072, 0, -0.220, 0, 0,     
          0.012, 0, 0.771, 0.479, 0, 0, 0, 0.658, 0, 0, 0, 0.654)
@@ -91,13 +100,72 @@ FSTROKE <- c(-13.053, 1.466, 0, 0.066, -0.42, 0, 1.476, 0, 0, -0.190, 0.092, 0,
 SSTROKE <- c(-9.431, 1.956, 0, 0.046, 0, 0, 0, 0, 0, 0, 0, 0,
              0, 0, 0.537, 0, 0, 0.656, 0, 0, 0, 0, 0, 0)
 
-# BLIND <- c(-11.607, 0, 0, 0.047, 0, 0, 0, 0, 0, 0, 0.171, 0, 0.08, 
-#            0, 0, 0, 0.068, 0.052, 0, 0, 0.841, 0.610, 0)
 
-risk_equations_weibull <- data.frame(CHF, IHD, FMIMALE, FMIFEMALE, SMI, FSTROKE, SSTROKE, BLIND, row.names = parameters)
+macrovascular_risk_equations <- data.frame(CHF, IHD, FMIMALE, FMIFEMALE, SMI, FSTROKE, SSTROKE, row.names = parameters_macrovascular)
 
-risk_equations_weibull
+macrovascular_risk_equations
 
-#cum_haz_weibull(risk_equations_weibull$CHF,c(0,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),8)
+# cum_haz_weibull(macrovascular_risk_equations$CHF,c(0,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),8)
+# cum_haz_weibull(macrovascular_risk_equations$IHD,c(0,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),8)
+# cum_haz_weibull(macrovascular_risk_equations$FMIMALE,c(0,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),8)
+# cum_haz_weibull(macrovascular_risk_equations$FMIFEMALE,c(0,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),8)
 
 
+# Regression coefficients from UKPDS paper ESM Table 5: Microvascular complications
+
+risk_factors_microvascular <- c("AFRO", "AGE DIAG", "FEMALE", "ATFIB", "BMI", "eGFR<60", "eGFR>60", "HAEM", "HbA1c", "HDL",
+                                "HEART R", "LDL", "MMALB", "PVD", "SBP", "WBC", "AMP HIST", "BLIND HIST", "CHF HIST", 
+                                "IHD HIST", "STROKE HIST")
+
+parameters_microvascular <- c("lambda", "ro", risk_factors_microvascular)
+
+
+BLIND <- c(-11.607, 1, 0, 0.047, 0, 0, 0, 0, 0, 0, 0.171, 0, 0.08, 0, 0, 0, 0.068, 0.052, 0, 0, 0.841, 0.610, 0) #ro =1  --> exponential
+
+ULCER <- c(-11.295, 0, 0, 0.043, 0, 0, 0.053, 0, 0, 0, 0.160, 0, 0, 0, 0, 0.968, 0, 0, 0, 0, 0, 0, 0) # ro is 2nd element. ULCER is logistic so dpont know yet if ro = 1  or 0
+
+FAMPNOULCER <- c(-14.844, 2.067, 0, 0.023, -0.445, 1.088, 0, 0, 0, 0, 0.248, -0.059, 0.098, 0, 0.602, 1.010, 0.086, 0.040, 0, 0, 0, 0, 1.299)
+
+FAMPULCER <- c(-0.811, 1, 0, -0.065, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.769, 0, 0, 0, 0, 0, 0, 0)
+
+SAMP <- c(-3.455, 1, rep(0,8), 0.127, rep(0,12))
+
+RENALF <- c(3.549, 1, 0.686, -0.029, -0.869, 0, -0.054, -1.031, -0.487, -0.268, 0, 0, 0, 0.027, 1.373, 0, 0.085, 0.029, 1.108, 0.732, 0, 0, 0)
+
+
+
+microvascular_risk_equations <- data.frame(BLIND, ULCER, FAMPNOULCER, FAMPULCER, SAMP, RENALF, row.names = parameters_microvascular)
+
+microvascular_risk_equations
+
+cum_haz_weibull(microvascular_risk_equations$BLIND,c(0,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),8)
+
+
+
+# Regression coefficients from UKPDS paper ESM Table 6: Mortality in current year
+
+risk_factors_mortality <- c("FEMALE", "INDIAN", "YEAR", "ATFIB", "BMI1", "BMI3", "CURR AGE", "HDL", "HEART R", 
+                            "MMALB", "PVD", "SMOKER", "WBC", "AMP EVENT", "AMP HIST", "AMP2 EVENT", "CHF HIST", 
+                            "IHD EVENT", "IHD HIST", "MI EVENT", "MI HIST", "RENAL EVENT", "RENAL HIST", "STROKE EVENT", "STROKE HIST")
+
+parameters_mortality <- c("lambda", "phi", risk_factors_mortality)
+
+
+# Death in years with no history of events: Gompertz
+DEATHNOHIST <- c(-10.908, 0.098, -0.229, rep(0,10), 0.379, rep(0,13))
+
+# Death in first year of events: Logistic
+DEATH1YEVENT <- c(-6.916, 0, 0, -0.540, 0.042, rep(0,3), 0.058, 0, 0.124, 0, 0.367, 0.444, 0, 0.321, rep(0,3), 0.423,0, 1.309, 0, 0.584,0, 0.547, 0) #2nd element in logistic not sure if 0 or 1
+
+# Death in years with history but no events: Gompertz
+DEATHHISTNOEVENT <- c(-9.207, 0.073, rep(0,4), 1.083, -0.293, rep(0,3), 0.348, 0, 0.374, 0.048, 0, 0.539, 0, 0.632, rep(0, 5), 1.150, 0, 0.473)
+
+# Death in subsequent years of events: Logistic
+DEATHYSEVENT <- c(-4.868, 0, rep(0,3), 1.081, 0, 0, 0.050, 0.068, 0, 0, 0.352, 0, 0.089, -1.267, 0.753, -1.727, 0, 0.583, -0.507, 0.982, 0.440, 0, 0.961, -0.619, 0) #2nd element in logistic not sure if 0 or 1
+
+
+mortality_risk_equations <- data.frame(DEATHNOHIST, DEATH1YEVENT, DEATHHISTNOEVENT, DEATHYSEVENT, row.names = parameters_mortality)
+
+mortality_risk_equations
+
+cum_haz_weibull(mortality_risk_equations$DEATHNOHIST,c(0,62,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0),8)
