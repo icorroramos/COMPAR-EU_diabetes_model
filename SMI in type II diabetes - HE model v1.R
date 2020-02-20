@@ -11,11 +11,13 @@
 # Before the simulation code starts, make sure that all the packages below are installed in your computer.
 # Then load the packages.
 
-#library(lattice)
-#library(MASS)
-#library(survival)
-#library(plyr)
-#library(tidyverse)
+rm(list = ls(all.names = TRUE))
+
+# library(lattice)
+# library(MASS)
+# library(survival)
+# library(plyr)
+# library(tidyverse)
 
 # When you are reading external files and exporting results you may set a working directory.
 # This can be for example the folder where you saved some previous results.
@@ -39,20 +41,17 @@ wd <- setwd("\\\\campus.eur.nl/shared/groups/IMTA-600-H2020COMPAR-EU/600 Project
 # The simulation model reads these coefficients and uses the functions below to predict the annual risk of experiencing the following 
 # nine diabetes-related complications: 
 
-# 1. Congestive heart failure (CHF) [-> ?]
-# 2. Myocardial Infarction (MI) [-> first and second]
-# 3. Stroke [-> first and second]
-# 4. Ischaemic Heart Disease (IHD) [-> ?]
-# 5. Amputation [-> first and second]
-# 6. Blindness [-> just once]
-# 7. Renal failure [-> ?]
-# 8. Diabetic Ulcer [-> ?]
-# 9. Death [-> just once]
+# 1. Congestive heart failure (CHF) [Assumption: It can happen just once as event. After that, it is considered as history.]
+# 2. Myocardial Infarction (MI) [Assumption: There is a distinction between first and second. Third and above is not possible.]
+# 3. Stroke [Assumption: There is a distinction between first and second. Third and above is not possible.]
+# 4. Ischaemic Heart Disease (IHD) [Assumption: It can happen just once as event. After that, it is considered as history.]
+# 5. Amputation [Assumption: There is a distinction between first and second. Third and above is not possible.]
+# 6. Blindness [Assumption: It can happen just once as event, even though it is defined as blindness in one eye (UKPDS OM1 paper). After that, it is considered as history.]
+# 7. Renal failure [Assumption: It can happen just once as event. After that, it is considered as history.]
+# 8. Diabetic Ulcer [Assumption: It can happen just once as event. After that, it is considered as history.]
+# 9. Death [It can happen just once as event.]
 
-# For MI, stroke and amputation a second ocurrence is possible. 
-# Blindness and death can obviously occur only once.
-
-# QUESTION: from the remaining events (CHF, IHD, renal failure and diabetic ulcer), which ones can occur just once and which ones multiple (more than two) times?
+# Multiple events are possible in the same year but only the number of times specified above. 
 
 
 # The risk factors and the regression coefficients for each complication were taken from the UKPDS paper and are defined below.
@@ -183,9 +182,6 @@ microvascular_risk_equations <- data.frame(BLIND, ULCER, FAMPNOULCER, FAMPULCER,
 
 # 27. YEAR: duration of diabetes in years measured continuously. HR per year increase in duration of diabetes. 
 #           Note it increases + 1 after each simulated year.
-
-# QUESTION: note below we defined the variable DDURATION which is the same as this one!
-
 # 28. BMI1: 1 == BMI < 18.5 m/kg^2, 0 == otherwise. HR referent 18.5 m/kg^2 <= BMI < 25 m/kg^2. It depends thus on the variable BMI.
 # 29. BMI3: 1 == BMI >= 25 m/kg^2, 0 == otherwise. HR referent 18.5 m/kg^2 <= BMI < 25 m/kg^2. It depends thus on the variable BMI.
 # 30. CURR.AGE: current age in years measured continuously. HR per year increase in current age. Note CURR.AGE = AGE.DIAG + YEAR at the 
@@ -267,9 +263,6 @@ risk_factors_simulation <- unique(sort(c(risk_factors_macrovascular, risk_factor
 
 
 # QUESTION: Not sure if we want to add a patient id (PTID) to allow sampling the same patient multiple times.
-#           Besides the risk factors, we need to add time, which is duration of diabetes (DDURATION) and dead status.
-#           DDURATION seems to be YEAR as defined above. Dead status is definitely needed and already included below. 
-
 
 # The simulation model relies on the calculations of annual probabilities for the above mentioned complications.
 # For example, the unconditional probability of CHF in the interval t to t+1 is calculated as a function of the cumulative hazard as  
@@ -451,16 +444,16 @@ SMDMII_model_simulation <- function(patient_size_input,
   # QUESTION: not sure how we will do this yet. In the COPD model we read them from external excel files.
   
   
-  all_baseline_patients <- matrix(c(rep(0,length(risk_factors_simulation)),8,0),ncol = 2 + length(risk_factors_simulation)) 
+  all_baseline_patients <- matrix(c(rep(0,length(risk_factors_simulation)),1,0),ncol = 2 + length(risk_factors_simulation)) 
   
-  # 8 = dummy value for DDURATION below, we may not need this at all.
+  # 1 = value for SDURATION AT THE BEGINNING
   
   # Step 2: indicate the patient characteristics that we will save during the simulation. 
   #         Besides the risk factors, we have a simulation ID, may have a patient ID,
   #         duration of diabetes (not necesarily 0 at baseline?) and indicator variable for dead
   
-  #history_characteristics <- c("SIMID","PTID",risk_factors_simulation, "DDURATION","dead")
-  history_characteristics <- c("SIMID", risk_factors_simulation, "DDURATION","dead")
+  #history_characteristics <- c("SIMID","PTID",risk_factors_simulation, "SDURATION","dead")
+  history_characteristics <- c("SIMID", risk_factors_simulation, "SDURATION","dead")
   
   # At this moment "simulation_baseline_patients" is simply an empty data frame
   simulation_baseline_patients <- data.frame(matrix(vector(), 0, length(history_characteristics), dimnames=list(c(), history_characteristics)),stringsAsFactors=F)
@@ -508,7 +501,6 @@ SMDMII_model_simulation <- function(patient_size_input,
     #           in the current simulation.
     current_patient$AGE.DIAG <- 52 
     current_patient$YEAR     <- 8
-    #current_patient$CURR.AGE <- current_patient$AGE.DIAG + current_patient$DDURATION
     current_patient$CURR.AGE <- current_patient$AGE.DIAG + current_patient$YEAR
     
     current_patient$LDL <- 3*10
@@ -528,7 +520,8 @@ SMDMII_model_simulation <- function(patient_size_input,
     current_patient$MI.HIST <- 0
     current_patient$CHF.HIST <- 0
     
-    
+    # Initialise tracking variables for second events
+    current_SMI_event <- 0
     
     # Save the characteristics to be used in the simulation history 
     # QUESTION: for the moment everything is saved (those that are stable too, but we could keep only those changing) 
@@ -552,214 +545,189 @@ SMDMII_model_simulation <- function(patient_size_input,
       # Sample annual event probabilities #
       #####################################
       
-      # QUESTION: NOT SURE WHETHER THERE IS ANY ORDER ON THIS: ALL EQUATIONS AT THE SAME TIME OR IN SEQUENTIAL ORDER? -->>
-      # -->> DEATH IS CALCULATED AFTERWARDS
+      # Assumptions: 
+      #              1. Multiple events can occur in one year.
+      #              2. Occurrence of events only affects death probability in the year they occur.
+      #              3. Occurrence of events affects other events probability in the year after they occur (through history variables).
       
-      # IT IS CLEAR THAT MORE THAN ONE EVENT CAN OCCUR IN ONE YEAR. WHAT IT IS NOT SO CLEAR IS WHETHER THESE 
-      # EVENTS CAN BE ANY OF THEM OR THOSE DEPENDING OR NOT ON THE HISTORY
-      # FOR EXAMPLE, IF ULCER HAPPENS IN ONE YEAR, THE PROBABILITY OF AMPUTATION DEPENDS ON THE ULCER HISTORY
-      # THE QUESTION IS: WILL THE HISTORY BE UPDATED FOR THE CURRENT YEAR OR THE NEXT YEAR? IN THE CURRENT YEAR,
-      # THE PROBABILITY OF AMPUTATION DEPENDS ON THE YEAR BEFORE OR THE CURRENT YEAR? THE LATTER WOULD IMPLY 
-      # SOME ORDER IN THE OCCURRENCE OF EVENTS. HERE THERE IS NO TIME TO EVENT, SO THE ORDER CANNOT BE ESTABLISHED
       # HOWEVER, IN THE DESCRIPTION OF THE MODEL (UKPDS PAPER) IT SAYS "RANDOMLY ORDER AND RUN EVENT EQUATIONS" -->>
-      # ORDER WOULD IMPLY SEQUENTIAL RUN OF EQUATIONS AND UPDATES COULD BE BASED ON CURRENT YEAR 
+      # ORDER WOULD IMPLY SEQUENTIAL RUN OF EQUATIONS AND UPDATES COULD BE BASED ON CURRENT YEAR. NO FURTHER EXPLANATION TO THIS IS FOUND 
       
       
       ### MACROVASCULAR COMPLICATIONS ###
       
-      # Heart Failure is Weibull: 
-      
-      if(current_patient$CHF.HIST ==0){
-        
-        current_CHF_prob  <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$CHF,current_patient %>% select(risk_factors_macrovascular),current_patient$DDURATION)$p
+      # Heart Failure is Weibull. This can happen only once; that's why the if condition below is used. 
+      if(current_patient$CHF.HIST == 0){
+        current_CHF_prob  <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$CHF,current_patient %>% select(risk_factors_macrovascular),current_patient$YEAR)$p
         current_CHF_event <- rbinom(1,1,current_CHF_prob) # Update current_patient$CHF.HIST after the year simulation is finished
-        # Note probably this can happen only once: same as blindness or amputation (twice)  --> that's why the if condition above
+      }
+      
+      # IHD is Weibull. This can happen only once; that's why the if condition below is used.
+      if(current_patient$IHD.HIST == 0){
+        current_IHD_prob  <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$IHD,current_patient %>% select(risk_factors_macrovascular),current_patient$YEAR)$p
+        current_patient$IHD.EVENT <- rbinom(1,1,current_IHD_prob) # Update current_patient$IHD.HIST after the year simulation is finished
       }
       
       
-      # IHD is Weibull
-      current_IHD_prob  <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$IHD,current_patient %>% select(risk_factors_macrovascular),current_patient$DDURATION)$p
-      current_IHD_event <- rbinom(1,1,current_IHD_prob) # we can use this directly 
-      current_patient$IHD.EVENT <- current_IHD_event
-      # Update current_patient$IHD.HIST after the year simulation is finished
-      
-      
-      # MI could be first or second. If it is first then it is different for male and female. If it is second, then it is the same for both genders.
-      
+      # MI could be first or second. If it is first, then it is different for male and female. 
+      # If it is second, then it is the same for both genders.
+      # The variables MI.EVENT and MI.HIST do not distinguish between first and second. However, the model assumption
+      # is that no more than 2 MI events are possible. this has to be tracked.
       if(current_patient$MI.HIST == 0){
         
         # If no history of MI, then it is first. Different for males and females
-        
         if(current_patient$FEMALE == 1){
           # First MI for female Weibull
-          current_FMIFEMALE_prob  <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$FMIFEMALE,current_patient %>% select(risk_factors_macrovascular),current_patient$DDURATION)$p
-          current_FMIFEMALE_event <- rbinom(1,1,current_FMIFEMALE_prob) 
-          current_patient$MI.EVENT <- current_FMIFEMALE_event
-          
-          current_MI_event <- current_FMIFEMALE_event # also need a gereal varible for MI. think about it...
-          # Update current_patient$MI.HIST after the year simulation is finished
+          current_FMIFEMALE_prob  <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$FMIFEMALE,current_patient %>% select(risk_factors_macrovascular),current_patient$YEAR)$p
+          current_patient$MI.EVENT <- rbinom(1,1,current_FMIFEMALE_prob) # Update current_patient$MI.HIST after the year simulation is finished
           
         }else{
           # First MI for male Exponential
-          current_FMIMALE_prob  <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$FMIMALE,current_patient %>% select(risk_factors_macrovascular),current_patient$DDURATION)$p
-          current_FMIMALE_event <- rbinom(1,1,current_FMIMALE_prob) 
-          current_patient$MI.EVENT <- current_FMIMALE_event
-          
-          
-          current_MI_event <- current_FMIMALE_event # also need a gereal varible for MI. think about it...
-          # Update current_patient$MI.HIST after the year simulation is finished
-        }
+          current_FMIMALE_prob  <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$FMIMALE,current_patient %>% select(risk_factors_macrovascular),current_patient$YEAR)$p
+          current_patient$MI.EVENT <- rbinom(1,1,current_FMIMALE_prob) # Update current_patient$MI.HIST after the year simulation is finished
+        } # end if/else for gender
         
       }else{
         # Second MI is Exponential, regardless the gender. MI.HIST will remain == 1.
-        # If a patient has a second MI, is it possible to have a 3rd?
-        current_SMI_prob <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$SMI,current_patient %>% select(risk_factors_macrovascular),current_patient$DDURATION)$p
-        current_SMI_event <- rbinom(1,1,current_SMI_prob) 
-        current_patient$MI.EVENT <- current_SMI_event
-        
-        current_MI_event <- current_SMI_event # also need a gereal varible for MI. think about it...
+        # If a patient has a second MI, it is not  possible to have a 3rd. "current_SMI_event" keeps track of this. Not sure whether it has to be initialised. Seems to be 0, which is ok.
+        if(current_SMI_event == 0){
+          current_SMI_prob <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$SMI,current_patient %>% select(risk_factors_macrovascular),current_patient$YEAR)$p
+          current_patient$MI.EVENT <- rbinom(1,1,current_SMI_prob)
+          current_SMI_event <- current_patient$MI.EVENT
+        }
       }
       
-       
-      # STROKE could be first or second. Same as with MI, is it possible to have a 3rd, 4th one, ...?
       
+      # STROKE could be first or second. 
+      # The variables STROKE.EVENT and STROKE.HIST do not distinguish between first and second. However, the model assumption
+      # is that no more than 2 STROKE events are possible. this has to be tracked.
       if(current_patient$STROKE.HIST == 0){
-        
         # If no history of STROKE, then it is first and Weibull. 
-        current_FSTROKE_prob <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$FSTROKE,current_patient %>% select(risk_factors_macrovascular),current_patient$DDURATION)$p
-        current_FSTROKE_event <- rbinom(1,1,current_FSTROKE_prob) 
-        current_patient$STROKE.EVENT <- current_FSTROKE_event
+        current_FSTROKE_prob <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$FSTROKE,current_patient %>% select(risk_factors_macrovascular),current_patient$YEAR)$p
+        current_patient$STROKE.EVENT <- rbinom(1,1,current_FSTROKE_prob) #Update current_patient$STROKE.HIST after the year
         
-        current_STROKE_event <- current_FSTROKE_event # we need a genral variable for stroke, think how we want to model this
-        # Can update current_patient$STROKE.HIST after the year
-        
-      }else{
-        # Second STROKE is Weibull. Here current_patient$STROKE.HIST == 1 and remains like that
-        current_SSTROKE_prob <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$SSTROKE,current_patient %>% select(risk_factors_macrovascular),current_patient$DDURATION)$p
-        current_SSTROKE_event <- rbinom(1,1,current_SSTROKE_prob) 
-        current_patient$STROKE.EVENT <- current_SSTROKE_event
-        
-        current_STROKE_event <- current_SSTROKE_event # we need a genral variable for stroke, think how we want to model this
-        
-      }
+      }else{ 
+        #Second STROKE is Weibull. Here current_patient$STROKE.HIST == 1 and remains like that.
+        #If a patient has a second STROKE, it is not  possible to have a 3rd. "current_SSTROKE_event" keeps track of this. Not sure whether it has to be initialised. Seems to be 0, which is ok.
+        if(current_SSTROKE_event == 0){
+          current_SSTROKE_prob <- treatment_effect_input*annual_p_weibull(macrovascular_risk_equations$SSTROKE,current_patient %>% select(risk_factors_macrovascular),current_patient$YEAR)$p
+          current_patient$STROKE.EVENT <- rbinom(1,1,current_SSTROKE_prob) 
+          current_SSTROKE_event <- current_patient$STROKE.EVENT
+          }
+        }
       
       
       ### MICROVASCULAR COMPLICATIONS ###
       
-      # BLINDNESS is Exponential 
-
+      # BLINDNESS is Exponential. This is assumed to happen only once; that's why the if condition below is used. 
       if(current_patient$BLIND.HIST == 0){
-        
-        current_BLIND_prob <- treatment_effect_input*annual_p_weibull(microvascular_risk_equations$BLIND,current_patient %>% select(risk_factors_microvascular),current_patient$DDURATION)$p       
-        current_BLIND_event <- rbinom(1,1,current_BLIND_prob)
-        # update current_patient$BLIND.HIST at the end of the year. It will remain like that for the rest of the simulation so this will be skipped
+        current_BLIND_prob <- treatment_effect_input*annual_p_weibull(microvascular_risk_equations$BLIND,current_patient %>% select(risk_factors_microvascular),current_patient$YEAR)$p       
+        current_BLIND_event <- rbinom(1,1,current_BLIND_prob) #Update current_patient$BLIND.HIST at the end of the year. 
       }
-      
-      
-      # ULCER is Logistic 
+
+      # ULCER is Logistic. This is assumed to happen only once; that's why the if condition below is used. 
       if(current_patient$ULCER.HIST == 0){
-        
         current_ULCER_prob  <- treatment_effect_input*annual_p_logistic(microvascular_risk_equations$BLIND,current_patient %>% select(risk_factors_microvascular))$p
-        current_ULCER_event <- rbinom(1,1,current_ULCER_prob) # Update current_patient$ULCER.HIST at the end of the year. There is no ULCER.EVENT... Does this mean this can only happen once like blindness or CHF?
-        
-      }
+        current_ULCER_event <- rbinom(1,1,current_ULCER_prob) # Update current_patient$ULCER.HIST at the end of the year.
+        }
       
 
-      # AMPUTATION could be first or second. First amputation depends on ULCER 
+      # AMPUTATION could be first or second. First amputation depends on ULCER history. 
       
       if(current_patient$AMP.HIST == 0){
-        
         # If no history of AMPUTATION, then it is first and depends on ULCER.
-        
         if(current_patient$ULCER.HIST == 0){
-          
           # If no prior ULCER then it is Weibull
-          current_FAMPNOULCER_prob <- treatment_effect_input*annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,current_patient %>% select(risk_factors_microvascular),current_patient$DDURATION)$p       
-          current_FAMPNOULCER_event <- rbinom(1,1,current_FAMPNOULCER_prob) # current_patient$AMP.EVENT can be updated directly
-          
-          
-          current_AMP_event <- current_FAMPNOULCER_event # also need a gereal varible for amputation. think about it...
-          #AMP.HIST to be updated at the end of the year
-          
+          current_FAMPNOULCER_prob  <- treatment_effect_input*annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,current_patient %>% select(risk_factors_microvascular),current_patient$YEAR)$p       
+          current_patient$AMP.EVENT <- rbinom(1,1,current_FAMPNOULCER_prob) #AMP.HIST to be updated at the end of the year and does not distinguishes between 1st and 2nd
         }else{
-          
           # If prior ULCER then it is Exponential
-          current_FAMPULCER_prob <- treatment_effect_input*annual_p_weibull(microvascular_risk_equations$FAMPULCER,current_patient %>% select(risk_factors_microvascular),current_patient$DDURATION)$p       
-          current_FAMPULCER_event <- rbinom(1,1,current_FAMPULCER_prob) # current_patient$AMP.EVENT can be updated directly
-          
-          current_AMP_event <- current_FAMPULCER_event # also need a gereal varible for amputation. think about it...
-          #AMP.HIST to be updated at the end of the year
+          current_FAMPULCER_prob <- treatment_effect_input*annual_p_weibull(microvascular_risk_equations$FAMPULCER,current_patient %>% select(risk_factors_microvascular),current_patient$YEAR)$p       
+          current_patient$AMP.EVENT <- rbinom(1,1,current_FAMPULCER_prob) #AMP.HIST to be updated at the end of the year
+          }
+        }else{ # if there is amputation history it can only be second and a 3rd one is not possible. 
+          # Second amputation is exponential: AMP.HIST no need to be updated. But also a patient cannot have more than 2 amputations.
+          if(current_AMP2_event == 0){
+            current_SAMP_prob <- treatment_effect_input*annual_p_weibull(microvascular_risk_equations$SAMP,current_patient %>% select(risk_factors_microvascular),current_patient$YEAR)$p       
+            current_patient$AMP2.EVENT <- rbinom(1,1,current_SAMP_prob) 
+            current_AMP2_event <- current_patient$AMP2.EVENT
+            }
+          }
+      
+      
+      # Renal failure is Exponential. This is assumed to happen only once; that's why the if condition below is used. 
+      if(current_patient$RENAL.HIST == 0){
+        current_RENALF_prob <- treatment_effect_input*annual_p_weibull(microvascular_risk_equations$RENALF,current_patient %>% select(risk_factors_microvascular),current_patient$YEAR)$p       
+        current_patient$RENAL.EVENT <- rbinom(1,1,current_RENALF_prob) #current_patient$RENAL.HIST updated after the year. Check here: I got really large values for the probability so have a second look
         }
-        
-        
-      }else{ # if there is amputation history it can only be second or nothing: I think we have to create a new variable to distinguish between 1st and second amputation history only for this
-        
-        # Second amputation is exponential: AMP.HIST no need to be updated. But also a patient cannot have more than 2 amputations?
-        current_SAMP_prob <- treatment_effect_input*annual_p_weibull(microvascular_risk_equations$SAMP,current_patient %>% select(risk_factors_microvascular),current_patient$DDURATION)$p       
-        current_SAMP_event <- rbinom(1,1,current_SAMP_prob) 
-        current_patient$AMP2.EVENT <- current_SAMP_event
-        
-        current_AMP_event <- current_SAMP_event # also need a gereal varible for amputation. think about it...
-        
-      }
-      
-      
-      # Renal failure is Exponential 
-      current_RENALF_prob <- treatment_effect_input*annual_p_weibull(microvascular_risk_equations$RENALF,current_patient %>% select(risk_factors_microvascular),current_patient$DDURATION)$p       
-      current_RENALF_event <- rbinom(1,1,current_RENALF_prob) 
-      current_patient$RENAL.EVENT <- current_RENALF_event
-      #current_patient$RENAL.HIST updated after the year. Check here: I got really large values for the probability so have a second look
-      
-      
-      # Update all events and history variables before moving to death. --> not sure about this. Seems clear for events but not for history.
-      # It might be useful to have a tracking variable for any event and for any history in that year. If that's the case, then
-      # the variables current_xxx_event can be used for this (if the sum is > 0, it means an event happened in that year)
-      
-      current_year_event <- sum(current_CHF_event, current_IHD_event, current_MI_event, current_STROKE_event, 
-                                current_BLIND_event, current_ULCER_event, current_AMP_event, current_RENALF_event)
-      
-      # due to the if statements above, current_year_event and current_year_event_no_blind_no_ulcer are not correctly defined 
-      
-      current_year_event_no_blind_no_ulcer <- sum(current_CHF_event, current_IHD_event, current_MI_event, 
-                                                  current_STROKE_event, current_AMP_event, current_RENALF_event)
-      
-      # I think these two above are not mutually exclusive: there could be blind or ulcer and then what has to be assumed?
-      
-      
-      # history is not updated yet but I'm not sure. I'd think that this would count for the next year
-      current_hist  <- sum(current_patient$CHF.HIST, current_patient$IHD.HIST, current_patient$MI.HIST, 
-                           current_patient$STROKE.HIST, current_patient$BLIND.HIST, current_patient$ULCER.HIST,
-                           current_patient$AMP.HIST, current_patient$RENAL.HIST)
       
       
       ### DEATH ###
       
-      # There are four equations for death, depending on the history of events. These are as follows.
+      # There are four equations for death, depending on the events occurred in the current year and the history of previous events. 
+      # Assumption (already mentioned above): occurrence of events only affects death probability in the year they occur.
+      # The four equations are for:
+      #                             1. Years with no history of previous events and no events in the current year
+      #                             2. First year of events (so no previous history) excluding blindness or ulcer
+      #                             3. Years with history of previous events but no events in the current year
+      #                             4. Subsequent years (so there is previous history) of events excluding blindness or ulcer
       
+      # Therefore, we need to define variables to determine what equation should be used.  
+      
+      # If any event happened in the current year, it should be captured with the following variable: 
+      current_year_event <- sum(current_CHF_event, 
+                                current_patient$IHD.EVENT, 
+                                current_patient$MI.EVENT, # could be 1st or 2nd, no distinction
+                                current_patient$STROKE.EVENT, # could be 1st or 2nd, no distinction
+                                current_BLIND_event, 
+                                current_ULCER_event, 
+                                current_patient$AMP.EVENT, 
+                                current_patient$AMP2.EVENT,
+                                current_patient$RENAL.EVENT)
+      
+      # If any event except blindness and ulcer happened in the current year, it should be captured with the following variable:
+      current_year_event_no_blind_no_ulcer <- sum(current_CHF_event, 
+                                                  current_patient$IHD.EVENT, 
+                                                  current_patient$MI.EVENT, 
+                                                  current_patient$STROKE.EVENT, 
+                                                  current_patient$AMP.EVENT, 
+                                                  current_patient$AMP2.EVENT,
+                                                  current_patient$RENAL.EVENT)
+      
+      # If current_year_event - current_year_event_no_blind_no_ulcer > 0 it means that either blindness or ulcer occurred in the current year.
+      
+      # .HIST variables are not updated for the current year. But the ones from the previous year are captured in this variable:
+      current_hist  <- sum(current_patient$CHF.HIST, 
+                           current_patient$IHD.HIST, 
+                           current_patient$MI.HIST, 
+                           current_patient$STROKE.HIST, 
+                           current_patient$BLIND.HIST, 
+                           current_patient$ULCER.HIST,
+                           current_patient$AMP.HIST, 
+                           current_patient$RENAL.HIST)
+      
+      
+      # The four equations for death are then the following: 
+      
+      # 1. If no history of previous events and no events in the current year, then gompertz distirbution
       if(current_year_event == 0 & current_hist == 0){
-        
-        current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, current_patient %>% select(risk_factors_mortality),current_patient$AGE.DIAG + current_patient$DDURATION)$p       
-        
-      }
+        current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, current_patient %>% select(risk_factors_mortality),current_patient$AGE.DIAG + current_patient$YEAR)$p       
+        }
       
-      
+      #2. First year of events (so no previous history) excluding blindness or ulcer, then logistic distribution
       if(current_year_event_no_blind_no_ulcer == 1 & current_hist == 0){
-        
         current_DEATH_prob <- annual_p_logistic(mortality_risk_equations$DEATH1YEVENT, current_patient %>% select(risk_factors_mortality))$p       
-        
-      }
+        }
       
+      #3. Years with history of previous events but no events in the current year, then gompertz distribution
       if(current_year_event == 0 & current_hist == 1){
-        
-        current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, current_patient %>% select(risk_factors_mortality),current_patient$AGE.DIAG + current_patient$DDURATION)$p       
-        
-      }
+        current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, current_patient %>% select(risk_factors_mortality),current_patient$AGE.DIAG + current_patient$YEAR)$p       
+        }
       
+      #4. Subsequent years (so there is previous history) of events excluding blindness or ulcer, then logistic distribution
       if(current_year_event_no_blind_no_ulcer == 1 & current_hist == 1){
-        
         current_DEATH_prob  <- annual_p_logistic(mortality_risk_equations$DEATHYSEVENT, current_patient %>% select(risk_factors_mortality))$p       
-        
-      }
+        }
       
       current_DEATH_event <- rbinom(1,1,current_DEATH_prob) 
       current_patient$dead <- current_DEATH_event
@@ -772,27 +740,23 @@ SMDMII_model_simulation <- function(patient_size_input,
       # We first copy all the previous characteristics
       current_patient_update <- current_patient # Do we need this? Or can we update directly current_patient?
       
-      ############################################
-      # Update first the history characteristics #
-      ############################################
-      
+      # Update first the history characteristics 
       current_patient_update$CHF.HIST    <- ifelse(current_CHF_event + current_patient$CHF.HIST == 0, 0, 1)
-      current_patient_update$IHD.HIST    <- ifelse(current_IHD_event + current_patient$IHD.HIST == 0, 0, 1)
-      current_patient_update$MI.HIST     <- ifelse(current_MI_event + current_patient$MI.HIST == 0,0,1) 
-      current_patient_update$STROKE.HIST <- ifelse(current_STROKE_event + current_patient$STROKE.HIST == 0, 0, 1)
+      current_patient_update$IHD.HIST    <- ifelse(current_patient$IHD.EVENT + current_patient$IHD.HIST == 0, 0, 1)
+      current_patient_update$MI.HIST     <- ifelse(current_patient$MI.EVENT + current_patient$MI.HIST == 0,0,1) 
+      current_patient_update$STROKE.HIST <- ifelse(current_patient$STROKE.EVENT + current_patient$STROKE.HIST == 0, 0, 1)
       current_patient_update$BLIND.HIST  <- ifelse(current_BLIND_event + current_patient$BLIND.HIST == 0, 0, 1)
       current_patient_update$ULCER.HIST  <- ifelse(current_ULCER_event + current_patient$ULCER.HIST == 0, 0, 1)
-      current_patient_update$AMP.HIST    <- ifelse(current_AMP_event + current_patient$AMP.HIST == 0, 0, 1)
-      current_patient_update$RENAL.HIST  <- ifelse(current_RENALF_event + current_patient$RENAL.HIST == 0, 0, 1)
+      current_patient_update$AMP.HIST    <- ifelse(current_patient$AMP.EVENT + current_patient$AMP2.EVENT + current_patient$AMP.HIST == 0, 0, 1)
+      current_patient_update$RENAL.HIST  <- ifelse(current_patient$RENAL.EVENT + current_patient$RENAL.HIST == 0, 0, 1)
       
       
-      ########################
-      # Update risk factors  #
-      ########################
+      # Update risk factors  
       
-      ### What remains unclear is whether all  risk factors change with time... and how...
+      ### QUESTION: What remains unclear is whether all  risk factors change with time... and how...
       ### Decide what factors are assumed to be stable and which ones to change with time...
       ### For those that change, we need equations for predicting annual change based on other patient chartacteristics.
+      ### WORK IN PROGRESS
       
       #current_patient_update$ATFIB <- current_patient$ATFIB + ?
       current_patient_update$BMI <- current_patient$BMI
@@ -801,7 +765,7 @@ SMDMII_model_simulation <- function(patient_size_input,
       current_patient_update$eGFR <- current_patient$eGFR
       # based on the above, update eGFR60less and eGFR60more?
       current_patient_update$HAEM  <- current_patient$HAEM
-      current_patient_update$HbA1c <- current_patient$HbA1c
+      current_patient_update$HbA1c <- current_patient$HbA1c  
       current_patient_update$HDL   <- current_patient$HDL
       current_patient_update$HEART.R <- current_patient$HEART.R
       current_patient_update$LDL <- current_patient$LDL
@@ -812,7 +776,7 @@ SMDMII_model_simulation <- function(patient_size_input,
       current_patient_update$SMOKER <- current_patient$SMOKER
       current_patient_update$WBC <- current_patient$WBC
       current_patient_update$YEAR <- current_patient$YEAR + 1
-      current_patient_update$DDURATION <- current_patient$DDURATION + 1
+      current_patient_update$SDURATION <- current_patient$SDURATION + 1
       
       # Force death after 100 years?
       if(current_patient_update$CURR.AGE > 100){current_patient_update$dead <- 1}
@@ -826,14 +790,18 @@ SMDMII_model_simulation <- function(patient_size_input,
       ### And update current patient and go up to while loop
       current_patient <- current_patient_update
       
-      ### All the .event variables have to be reset to 0 because now it only counts .hist
+      ### All the _event and .EVENT variables have to be reset to 0 because for the next year it only counts .HIST
+      
+      current_CHF_event   <- 0
+      current_BLIND_event <- 0 
+      current_ULCER_event <- 0
+      
       current_patient$AMP.EVENT    <- 0
       current_patient$AMP2.EVENT   <- 0
       current_patient$MI.EVENT     <- 0
       current_patient$IHD.EVENT    <- 0
       current_patient$RENAL.EVENT  <- 0
       current_patient$STROKE.EVENT <- 0
-      
       
       current_sim_time <- current_sim_time + 1 # not sure if we need this. is it the variable .YEAR?
       
@@ -851,13 +819,20 @@ SMDMII_model_simulation <- function(patient_size_input,
   
   # To be done: at this moment, only clinical outcomes (e.g. event rates and life expectancy can be calculated).
   
-  # mean life expectancy below. Probably easier way to calculate...
-  #mean(aggregate(sim_results$simulation_patients_history$DDURATION, list(Patient = sim_results$simulation_patients_history$SIMID), max)$x - aggregate(sim_results$simulation_patients_history$DDURATION, list(Patient = sim_results$simulation_patients_history$SIMID), min)$x)
+  ### Life expectancy
+  mean_life_expectancy <- round(mean(simulation_patients_history[which(simulation_patients_history$dead==1),"SDURATION"]),4)
   
+  ### Events calculated differently depending on how were defined: .EVENT or .HIST
   
+  # Total number of renal events per patient during lifetime
+  cum_RENAL <- aggregate(simulation_patients_history$RENAL.EVENT, list(Patient = simulation_patients_history$SIMID), sum)
+  # Rate per year
+  mean_RENAL_rate <- round(mean(cum_RENAL$x)/mean_life_expectancy, 4)
+
   
   ### Return model outcomes: at this moment only clinical history is saved and returned
-  return(list(simulation_patients_history=simulation_patients_history))
+  return(list(simulation_patients_history=simulation_patients_history,
+              mean_life_expectancy=mean_life_expectancy))
   
 } #end SMDMII_model_simulation function
 
@@ -866,10 +841,20 @@ SMDMII_model_simulation <- function(patient_size_input,
 # random seed equal to 177.
 
 
-sim_results <- SMDMII_model_simulation(10, #patient_size_input
+sim_results <- SMDMII_model_simulation(20, #patient_size_input
                                        0, #run_PSA_input, 0 == no PSA
                                        1, #treatment_effect_input --> note there might be probably one input for each effect modifier: e.g. on CHF, MI, stroke, etc...
                                        177) #seed_input
 
 
 View(sim_results$simulation_patients_history)
+sim_results$mean_life_expectancy
+
+### To discuss:
+
+### MODEL UPDATES: 1. ASSUMPTIONS
+###                2. AGGREGATED RESULTS (in progress --> discuss what we want to show: e.g. distinguish between first and second events?)  
+
+### NEXT STEPS:
+###                     1. HOW TO MODEL BASELINE POPULATION
+###                     2. HOW TO UPDATE RISK FACTORS
