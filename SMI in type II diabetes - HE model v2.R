@@ -12,9 +12,9 @@
 ########## TO DO LIST ##############
 ####################################
 
-# Implement societal costs
+# Check model from the beginning.
 # Implement treatment effects.
-# Validation
+# Validation.
 # Implement PSA.
 
 
@@ -382,15 +382,29 @@ SMDMII_model_simulation <- function(patient_size_input,
         current_patient$INF.CARE <- rgamma(1, 0.991532, 1/2.433387)*365.25 # Make parameters of the gamma distribution input parameters of the function
         }
       
-      # The assumption is: only employed patients can get unemployed and incur productivity costs. After patients become unemployed,
-      # they are assumed to continue like that in the simulation
+      # Two assumptions here: 
+      # 1. Short-term productivity loss costs: only for employed patients based on sick days --> Assume fix 14 working days
+      # 2. Permanent (one-off) productivity loss costs: only employed patients can get unemployed and incur productivity costs. 
+      # After patients become unemployed, they are assumed to continue like that in the simulation.
       
       if(current_patient$EMPLOYED == 1){
-        current_prod_loss_prob <- annual_p_bernoulli(informal_care_equations$prod_costs_coef, current_patient %>% select(risk_factors_prod))$p
-        current_patient$PROD.LOSS <- rbinom(1,1,current_prod_loss_prob) # For the time being just show 0/1 but costs have to be calculated
-        if(current_patient$PROD.LOSS == 1){
-          current_patient$PROD.LOSS <- if_else(current_patient$FEMALE == 1, rgamma(1, 4.59, 1/4.99)*52, rgamma(1, 13.1, 1/2.59)*52) # Make parameters of the gamma distribution input parameters of the function
-        }
+        # If currently employed, then apply short-term productivity costs
+        # Calculate number of worked hours per week: min 1, max 40 
+        current_worked_hours_week <- if_else(current_patient$FEMALE == 1, min(max(1,rgamma(1, 4.59, 1/4.99)),40), min(40,max(1,rgamma(1, 13.1, 1/2.59)))) # Make parameters of the gamma distribution input parameters of the function
+        current_worked_hours_day <- current_worked_hours_week/5
+        # Assume 14 working days per year lost due to sickness
+        sick_hours_year <- current_worked_hours_day*14 # use this to calculate short term prod. loss costs
+        cost_hour_sick <- if_else(current_patient$FEMALE == 1, 33.74, 40.46) # Make input parameters of the function
+        current_patient$PROD.LOSS <- sick_hours_year*cost_hour_sick
+        
+        # Calculate probability of losing job
+        current_jobless_prob <- annual_p_bernoulli(informal_care_equations$prod_costs_coef, current_patient %>% select(risk_factors_prod))$p
+        current_jobless <- rbinom(1,1,current_jobless_prob) # For the time being just show 0/1 but costs have to be calculated
+        
+        if(current_jobless == 1){ #if jobless, then apply permanent cost
+          current_patient$PROD.LOSS <- current_patient$PROD.LOSS + cost_hour_sick*85*current_worked_hours_day/8
+          current_patient$EMPLOYED <- 0
+          }
         }
       
       ####################################
@@ -453,18 +467,15 @@ SMDMII_model_simulation <- function(patient_size_input,
       current_patient_update$CURR.AGE.SCALE.INF  <- (current_patient$CURR.AGE - 73.75225)/9.938705 #hardcoded values from data
       current_patient_update$CURR.AGE.SCALE.PROD <- (current_patient$CURR.AGE - 70.34077)/9.578899
       
-      if(current_patient_update$PROD.LOSS != 0){current_patient_update$EMPLOYED <- 0}
-      
       if(current_patient_update$CURR.AGE >= 65){
         current_patient_update$EMPLOYED <- 0
         current_patient_update$PROD.LOSS <- 0
         }
       
-      
       # Force death after 100 years?
       if(current_patient_update$CURR.AGE > 100){current_patient_update$dead <- 1}
         
-      # Force death if updated continuous risk factors take unfeasible value (e.g. too high hba1c)?
+      # Force death if updated continuous risk factors take unfeasible value (e.g. too high HbA1c)?
       # Consider logical bounds for update continuous attributes, e.g. > 0
       
       ### When all characteristics have been updated, we add these to the patient history
@@ -476,13 +487,13 @@ SMDMII_model_simulation <- function(patient_size_input,
       ### All the _event and .EVENT variables have to be reset to 0 because for the next year it only counts .HIST
       ### Note "event_vars" defined in aux_functions.R
       current_patient[event_vars] <- 0
+      if(current_patient$EMPLOYED == 0){current_patient$PROD.LOSS <- 0} # needed here or somewhere else? It seems to work though
       
     } #end while loop and move to another patient
     
     ### Update patient index
     patient_index <- patient_index + 1
-    
-  } #end for loop in number of patients
+    } #end for loop in number of patients
   
   ###################################################
   ########## MAIN PART II: Calculate Costs ##########
@@ -490,7 +501,6 @@ SMDMII_model_simulation <- function(patient_size_input,
   
   # All costs below are sourced from the MH2020 diabetes challenge. Discounting only applied to total costs only at this moment.
   cost_discount_factor <- ((1+cost_disc_rate_input)^(simulation_patients_history$SDURATION - 1))
-  
   
   #Ischemic heart disease/Angina
   fatal_IHD_cost      <- cost_inputs_MH2020$IHD.FATAL*simulation_patients_history$IHD.EVENT*simulation_patients_history$dead
@@ -539,19 +549,15 @@ SMDMII_model_simulation <- function(patient_size_input,
   subsequent_ULCER_cost <- cost_inputs_MH2020$ULCER.SUB*simulation_patients_history$ULCER.HIST
   simulation_patients_history$ULCER.COST <- fatal_ULCER_cost + nonfatal_ULCER_cost + subsequent_ULCER_cost
   
-  # Cost in the absence of complications 	1,990			Alva et al. 2015 [1]
+  # Cost in the absence of complications 	1,990	Alva et al. 2015 [1]
   # Not sure about this but at this moment applied only in the year of death
   simulation_patients_history$NOCOMP.COST <- cost_inputs_MH2020$NOCOMP*simulation_patients_history$dead
   
-  # Intervention	Mean cost (£)
-  # Blood glucose intervention 1: 
-  #   (0.5%-point reduction in HbA1c) 	 60
-  # Blood glucose intervention 2:
-  #   (0.5%-point reduction in HbA1c)	120
-  # Weight intervention 1: 
-  #   (1-unit reduction in BMI (kg/m2))	55
-  # Weight intervention 2:
-  #   (1-unit reduction in BMI (kg/m2))	100
+  # Intervention	Mean cost (Â£)
+  # Blood glucose intervention 1: (0.5%-point reduction in HbA1c) 60
+  # Blood glucose intervention 2: (0.5%-point reduction in HbA1c)	120
+  # Weight intervention 1: (1-unit reduction in BMI (kg/m2))	55
+  # Weight intervention 2: (1-unit reduction in BMI (kg/m2))	100
   
   # QUESTION: Not sure whether these are annual costs -->> should be but I find them quite low
   simulation_patients_history$TX.COST <- (tx_cost_input*(1-simulation_patients_history$dead) + tx_cost_input/2*simulation_patients_history$dead)
@@ -566,8 +572,8 @@ SMDMII_model_simulation <- function(patient_size_input,
   # Informal care and productivity loss: We calculated above INF.CARE & PROD.LOSS = 0/1 but costs have to be calculated here: 
   
   # informal care cost per hour assumed = 15. Make this an input parameter in the model
-  simulation_patients_history$INF.CARE.COST <- 15*simulation_patients_history$INF.CARE*(1-simulation_patients_history$dead) + 15/2*simulation_patients_history$INF.CARE*simulation_patients_history$dead
-  simulation_patients_history$PROD.LOSS.COST <- 15*simulation_patients_history$PROD.LOSS*(1-simulation_patients_history$dead) + 15/2*simulation_patients_history$PROD.LOSS*simulation_patients_history$dead
+  simulation_patients_history$INF.CARE.COST <- 14.95*simulation_patients_history$INF.CARE*(1-simulation_patients_history$dead) + 14.95/2*simulation_patients_history$INF.CARE*simulation_patients_history$dead
+  simulation_patients_history$PROD.LOSS.COST <- simulation_patients_history$PROD.LOSS*(1-simulation_patients_history$dead) + 1/2*simulation_patients_history$PROD.LOSS*simulation_patients_history$dead
   
   # Need to create file for informal care and productivity costs as inputs: for now I used dummy numerical values to check that it works
    
@@ -765,9 +771,9 @@ SMDMII_model_simulation <- function(patient_size_input,
 sim_results_female <- SMDMII_model_simulation(5,      #patient_size_input
                                               1,       #female_input, 1 = female
                                               60,      #tx_cost_input
-                                              10/100,  #treatment_effect_SBP_input from MH2020
-                                              0.5/10,  #treatment_effect_LDL_input from MH2020
-                                              1,       #treatment_effect_BMI_input from MH2020
+                                              0,  #treatment_effect_SBP_input from MH2020
+                                              0,  #treatment_effect_LDL_input from MH2020
+                                              0,       #treatment_effect_BMI_input from MH2020
                                               0.035,   #cost_disc_rate_input
                                               0.035,   #qol_disc_rate_input
                                               0,       #run_PSA_input, 0 == no PSA
@@ -778,8 +784,8 @@ sim_results_female <- SMDMII_model_simulation(5,      #patient_size_input
 # sim_results_male <- SMDMII_model_simulation(5,      #patient_size_input
 #                                             0,       #female_input, 1 = female
 #                                             60,      #tx_cost_input
-#                                             10/100,  #treatment_effect_SBP_input from MH2020
-#                                             0.5/10,  #treatment_effect_LDL_input from MH2020
+#                                             0,  #treatment_effect_SBP_input from MH2020
+#                                             0,  #treatment_effect_LDL_input from MH2020
 #                                             1,       #treatment_effect_BMI_input from MH2020
 #                                             0.035,   #cost_disc_rate_input
 #                                             0.035,   #qol_disc_rate_input
@@ -815,17 +821,3 @@ sim_results_female <- SMDMII_model_simulation(5,      #patient_size_input
 # 
 # #View(sim_results_male$simulation_patients_history)
 # #View(sim_results_female$simulation_patients_history)
-# 
-# ### To discuss:
-# 
-# ### MODEL UPDATES: 1. ASSUMPTIONS
-# ###                2. AGGREGATED RESULTS (in progress --> discuss what we want to show: e.g. distinguish between first and second events?)  
-# ###                3. BASELINE POPULATION (even though not needed for MH2020)
-# 
-# ### NEXT STEPS:
-# ###                     1. Implement societal costs
-# ###                     2. MH2020: continue implementing treatment effects
-# ###                     3. HOW TO UPDATE RISK FACTORS: probably needed for MH2020
-# 
-# end <- Sys.time()
-# end - init
