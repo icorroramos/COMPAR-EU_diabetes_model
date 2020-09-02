@@ -20,11 +20,3 @@ options(scipen = 3)
 pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr") # package names
 #install.packages(pkgs)
 inst <- lapply(pkgs, library, character.only = TRUE) # load them
-
-
-
-
-
-
-
-
