@@ -711,9 +711,11 @@ end - init
 ####################################
 
 # Complication costs --> NL: For the moment just converted to EURO
-# Patient age at baseline: 66 years in MH2020. What's more relevant for us? Younger patients?
-# Future costs
-# LOLA: how to add costs and QALYs for the first year
+# Patient age at baseline: 66 years in MH2020. What's more relevant for us? Younger patients? 55 YEARS IN INPUT FILE LOLA
+# Future costs: Gimon to add
+# How to add costs and QALYs for the first year: Gimon to add
+
+# FOR THE FUTURE:
 # Implement treatment effects.
 # Implement PSA.
 # Validation.
