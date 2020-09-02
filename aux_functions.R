@@ -312,8 +312,8 @@ annual_p_logistic <- function(regression_coefficents_input, risk_factors_input){
 
 # .EVENT variable names
 
-event_vars <- c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVENT", "AMP1.EVENT", "AMP2.EVENT", "MI.EVENT",
-                "IHD.EVENT", "RENAL.EVENT", "STROKE.EVENT")
+event_vars <- c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVENT", "AMP1.EVENT", "AMP2.EVENT", 
+                "MI.EVENT", "IHD.EVENT", "RENAL.EVENT", "STROKE.EVENT")
 
 # Indicate the patient characteristics that we will save during the simulation. 
 # Besides the risk factors, we have a simulation ID, duration of diabetes 
@@ -371,4 +371,3 @@ annual_p_bernoulli <- function(regression_coefficents_input, risk_factors_input)
   p <- exp(log.oods)/(1+exp(log.oods))
   return(list(p = p))
 }
-
