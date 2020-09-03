@@ -413,7 +413,7 @@ SMDMII_model_simulation <- function(patient_size_input, female_input, tx_cost_in
         current_patient_update$PROD.LOSS <- 0}
       
       # Force death at 100 years
-      if(current_patient_update$CURR.AGE > 100){current_patient_update$dead <- 1}
+      if(current_patient_update$CURR.AGE >= 99){current_patient_update$dead <- 1}
         
       # Note: Force death if updated continuous risk factors take unfeasible value (e.g. too high HbA1c)?
       # Consider logical bounds for update continuous attributes, e.g. > 0
@@ -509,8 +509,8 @@ SMDMII_model_simulation <- function(patient_size_input, female_input, tx_cost_in
   simulation_patients_history$PROD.LOSS.COST <- (simulation_patients_history$PROD.LOSS*(1-simulation_patients_history$dead) + 1/2*simulation_patients_history$PROD.LOSS*simulation_patients_history$dead)/cost_discount_factor
   
   # Future costs are dependent on age, gender and alive status: add explanation later
-  future_cost_matrix <- inner_join(simulation_patients_history[c("CURR.AGE","FEMALE","dead")],future_medical_cost_inputs)
-  future_cost_matrix <- inner_join(future_cost_matrix,future_nonmedical_cost_inputs)
+  future_cost_matrix <- inner_join(simulation_patients_history[c("CURR.AGE","FEMALE","dead")],future_medical_cost_inputs, by = 'CURR.AGE')
+  future_cost_matrix <- inner_join(future_cost_matrix,future_nonmedical_cost_inputs, by = 'CURR.AGE')
   simulation_patients_history$FUTURE.COST <- ((1-future_cost_matrix$FEMALE)*(1 - future_cost_matrix$dead)*future_cost_matrix[,6] + 
                                               (1-future_cost_matrix$FEMALE)*future_cost_matrix$dead*future_cost_matrix[,4] + 
                                                future_cost_matrix$FEMALE*(1 - future_cost_matrix$dead)*future_cost_matrix[,7] + 
