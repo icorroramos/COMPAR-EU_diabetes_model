@@ -36,6 +36,10 @@ baseline_characteristics <- read.csv("input/baseline_characteristics_MH2020_LOLA
 # For the moment, just converted to euro
 cost_inputs <- read.csv("input/cost_inputs_MH2020_EURO.csv", sep=",")
 
+# When a societal perspective is adopted, we also have future costs. This are obtained from the PAID online tool.
+future_medical_cost_inputs <- read.csv("input/PAID_COMPAR_DM2_future_unrelated_costs_Unrelated_Costs_2020-09-03.csv", sep=",")
+future_nonmedical_cost_inputs <- read.csv("input/PAID_COMPAR_DM2_future_unrelated_costs_Non-Medical_Consumption_2020-09-03.csv", sep=",")
+
 # Also, these utilities were used as in the Mount Hood challenge. 
 # For Dutch utilities see the file "utilities.R". The input file has been changes and Dutch utilities are used.
 qol_inputs_NL <- read.csv("input/qol_inputs_MH2020_NL.csv", sep=",")
@@ -504,11 +508,19 @@ SMDMII_model_simulation <- function(patient_size_input, female_input, tx_cost_in
   simulation_patients_history$INF.CARE.COST <- (14.95*simulation_patients_history$INF.CARE*(1-simulation_patients_history$dead) + 14.95/2*simulation_patients_history$INF.CARE*simulation_patients_history$dead)/cost_discount_factor
   simulation_patients_history$PROD.LOSS.COST <- (simulation_patients_history$PROD.LOSS*(1-simulation_patients_history$dead) + 1/2*simulation_patients_history$PROD.LOSS*simulation_patients_history$dead)/cost_discount_factor
   
+  # Future costs are dependent on age, gender and alive status: add explanation later
+  future_cost_matrix <- inner_join(simulation_patients_history[c("CURR.AGE","FEMALE","dead")],future_medical_cost_inputs)
+  future_cost_matrix <- inner_join(future_cost_matrix,future_nonmedical_cost_inputs)
+  simulation_patients_history$FUTURE.COST <- ((1-future_cost_matrix$FEMALE)*(1 - future_cost_matrix$dead)*future_cost_matrix[,6] + 
+                                              (1-future_cost_matrix$FEMALE)*future_cost_matrix$dead*future_cost_matrix[,4] + 
+                                               future_cost_matrix$FEMALE*(1 - future_cost_matrix$dead)*future_cost_matrix[,7] + 
+                                               future_cost_matrix$FEMALE*future_cost_matrix$dead*future_cost_matrix[,5]+ future_cost_matrix[,8])/cost_discount_factor 
+  
   # Total annual costs discounted
   simulation_patients_history$TOTAL.COST <- (simulation_patients_history$IHD.COST + simulation_patients_history$MI.COST + simulation_patients_history$CHF.COST + 
-                                               simulation_patients_history$STROKE.COST + simulation_patients_history$AMP.COST + simulation_patients_history$BLIND.COST + 
-                                               simulation_patients_history$ULCER.COST + simulation_patients_history$NOCOMP.COST + simulation_patients_history$TX.COST + 
-                                               simulation_patients_history$INF.CARE.COST + simulation_patients_history$PROD.LOSS.COST) 
+                                             simulation_patients_history$STROKE.COST + simulation_patients_history$AMP.COST + simulation_patients_history$BLIND.COST + 
+                                             simulation_patients_history$ULCER.COST + simulation_patients_history$NOCOMP.COST + simulation_patients_history$TX.COST + 
+                                             simulation_patients_history$INF.CARE.COST + simulation_patients_history$PROD.LOSS.COST + simulation_patients_history$FUTURE.COST) 
   
   ####################################################
   ########## MAIN PART III: Calculate QALYs ##########
@@ -630,14 +642,17 @@ SMDMII_model_simulation <- function(patient_size_input, female_input, tx_cost_in
   nocomp_costs_patient <- aggregate(simulation_patients_history$NOCOMP.COST  , list(Patient = simulation_patients_history$SIMID), sum)
   mean_nocomp_costs <- round(sum(nocomp_costs_patient$x)/patient_size_input, 2)
   
-  
-  #+ simulation_patients_history$TX.COST + 
+  # To do, if relevant: simulation_patients_history$TX.COST 
   
   inf_care_costs_patient <- aggregate(simulation_patients_history$INF.CARE.COST, list(Patient = simulation_patients_history$SIMID), sum)
   mean_inf_care_costs <- round(sum(inf_care_costs_patient$x)/patient_size_input, 2)
   
   prod_loss_costs_patient <- aggregate(simulation_patients_history$PROD.LOSS.COST, list(Patient = simulation_patients_history$SIMID), sum)
   mean_prod_loss_costs <- round(sum(prod_loss_costs_patient$x)/patient_size_input, 2)
+  
+  future_costs_patient <- aggregate(simulation_patients_history$FUTURE.COST, list(Patient = simulation_patients_history$SIMID), sum)
+  mean_future_costs <- round(sum(future_costs_patient$x)/patient_size_input, 2)
+  
   
   total_qalys_patient <- aggregate(simulation_patients_history$QALY, list(Patient = simulation_patients_history$SIMID), sum)
   mean_total_qalys <- round(sum(total_qalys_patient$x)/patient_size_input, 2)
@@ -653,12 +668,12 @@ SMDMII_model_simulation <- function(patient_size_input, female_input, tx_cost_in
               mean_ihd_costs = mean_ihd_costs, mean_mi_costs = mean_mi_costs, mean_chf_costs = mean_chf_costs,
               mean_stroke_costs = mean_stroke_costs, mean_amp_costs = mean_amp_costs, mean_blind_costs = mean_blind_costs,
               mean_ulcer_costs = mean_ulcer_costs, mean_complication_costs = mean_complication_costs,
-              mean_nocomp_costs = mean_nocomp_costs))
+              mean_nocomp_costs = mean_nocomp_costs, mean_future_costs = mean_future_costs))
   
 } #end SMDMII_model_simulation function
 
 # To run the model call the model function with the appropriate inputs in the correct order. 
-sim_results_female <- SMDMII_model_simulation(500,     #patient_size_input: run 500 for LOLA
+sim_results_female <- SMDMII_model_simulation(5,     #patient_size_input: run 500 for LOLA
                                               1,       #female_input, 1 = female
                                               0,       #tx_cost_input
                                               0,       #treatment_effect_SBP_input from MH2020
@@ -670,7 +685,7 @@ sim_results_female <- SMDMII_model_simulation(500,     #patient_size_input: run 
                                               77       #seed_input
                                               )        
 
-sim_results_male <- SMDMII_model_simulation(500,     #patient_size_input: run 500 for LOLA
+sim_results_male <- SMDMII_model_simulation(5,     #patient_size_input: run 500 for LOLA
                                             0,       #female_input, 1 = female
                                             0,       #tx_cost_input
                                             0,       #treatment_effect_SBP_input from MH2020
@@ -685,22 +700,21 @@ sim_results_male <- SMDMII_model_simulation(500,     #patient_size_input: run 50
 # Results tables
 sim_results_female_table <- matrix(c(sim_results_female$mean_complication_costs,sim_results_female$mean_nocomp_costs,
                                      sim_results_female$mean_inf_care_costs, sim_results_female$mean_prod_loss_costs, 
+                                     sim_results_female$mean_future_costs,
                                      sim_results_female$mean_total_costs, sim_results_female$mean_total_qalys), nrow = 1)
 
-colnames(sim_results_female_table) <- c("Complication costs", "No complication costs", "Informal care costs", "Productivity costs", "Total costs", "Total QALYs")
+colnames(sim_results_female_table) <- c("Complication costs", "No complication costs", "Informal care costs", "Productivity costs", "Future costs", "Total costs", "Total QALYs")
 rownames(sim_results_female_table) <- "Intervention"
 sim_results_female_table
 
 sim_results_male_table <- matrix(c(sim_results_male$mean_complication_costs,sim_results_male$mean_nocomp_costs,
                                    sim_results_male$mean_inf_care_costs, sim_results_male$mean_prod_loss_costs, 
+                                   sim_results_male$mean_future_costs,
                                    sim_results_male$mean_total_costs, sim_results_male$mean_total_qalys), nrow = 1)
 
 colnames(sim_results_male_table) <- colnames(sim_results_female_table)
 rownames(sim_results_male_table) <- rownames(sim_results_female_table)
 sim_results_male_table
-
-# View(sim_results_male$simulation_patients_history)
-# View(sim_results_female$simulation_patients_history)
 
 # Variable defined to keep track of simulation time (delete afterwards)
 end <- Sys.time()
@@ -709,10 +723,8 @@ end - init
 ####################################
 ########## TO DO LIST ##############
 ####################################
-
 # Complication costs --> NL: For the moment just converted to EURO
 # Patient age at baseline: 66 years in MH2020. What's more relevant for us? Younger patients? 55 YEARS IN INPUT FILE LOLA
-# Future costs: Gimon to add
 # How to add costs and QALYs for the first year: Gimon to add
 
 # FOR THE FUTURE:
