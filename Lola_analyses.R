@@ -50,7 +50,7 @@ res.tab.name <- c("Life expectancy", "Total QALYs", "Direct healthcare costs", "
 
 sim.int.male.tab <- data.frame(sim.int.male$mean_life_expectancy,
                                sim.int.male$mean_total_qalys,
-                               sim.int.male$mean_complication_costs + sim.int.male$mean_nocomp_costs,
+                               sim.int.male$mean_complication_costs + sim.int.male$mean_nocomp_costs + int.cost,
                                sim.int.male$mean_inf_care_costs,
                                sim.int.male$mean_prod_loss_costs, 
                                sim.int.male$mean_future_medical_costs,
@@ -61,7 +61,7 @@ names(sim.int.male.tab) <- res.tab.name
 
 sim.int.female.tab <- data.frame(sim.int.female$mean_life_expectancy,
                                sim.int.female$mean_total_qalys,
-                               sim.int.female$mean_complication_costs + sim.int.female$mean_nocomp_costs,
+                               sim.int.female$mean_complication_costs + sim.int.female$mean_nocomp_costs + int.cost,
                                sim.int.female$mean_inf_care_costs,
                                sim.int.female$mean_prod_loss_costs, 
                                sim.int.female$mean_future_medical_costs,
@@ -97,6 +97,11 @@ sim.int.weighed.tab <- (frac.male*sim.int.male.tab + (1 - frac.male) * sim.int.f
 
 sim.control.weighed.tab <- (frac.male*sim.control.male.tab + (1 - frac.male) * sim.control.female.tab)
 
-rbind(sim.control.weighed.tab, sim.int.weighed.tab )
+sim.results <- rbind(sim.control.weighed.tab, sim.int.weighed.tab, sim.int.weighed.tab - sim.control.weighed.tab)
+row.names(sim.results) <- c('Control', 'Intervention', 'Differnce')
 
-
+cost.perspectives <- data.frame('Direct healthcare' = sim.results[, 3],
+                                'Direct societal' = rowSums(sim.results[, 3:5]),
+                                'Total healthcare' = rowSums(sim.results[, c(3, 6)]),
+                                'Total societal' = rowSums(sim.results[, 3:7])
+                                )
