@@ -48,7 +48,7 @@
 # 13. MMALB: presence of micro- or macro-albuminuria. 1 == urine albumin >= 50 mg/l, 0 == otherwise. HR referent == no albuminuria
 # 14. PVD: 1 == peripheral vascular disease, 0 == otherwise. Defined from presence of intermittent claudication or ankle brachial
 #          pressure index < 0.9. HR referent == no presence/evidence of PVD
-# 15. SBP: systolic blood pressure (mm Hg) measured continuously and further DIVIDED by 10. HR per 10 mm Hg increase in SBP
+# 15. SBP: systolic blood pressure (mm Hg) measured continuously and further DIVIDED by 10. HR per 10 mm Hg increase in SBP --> 10 or 100?
 # 16. SMOKER: 1 == current smoker, 0 == otherwise. HR referent == not current smoker
 # 17. WBC: white blood cell count measured continuously. HR per 1x10^6/ml increase
 # 18. AMP.HIST: 1 == history of amputation, 0 == otherwise. HR referent == no prior amputation
@@ -74,18 +74,18 @@ parameters_macrovascular <- c("lambda", "ro", risk_factors_macrovascular)
 # The format for each vector below is c(lambda, ro, risk factors) where the values are taken from the UKPDS paper ESM Table 4.
 CHF <- c(-12.332, 1.514, 0, 0.068,  0, 0, 1.562, 0.072, 0, -0.220, 0, 0, 0.012, 0, 0.771, 0.479, 0, 0, 0, 0.658, 0, 0, 0, 0.654)
 IHD <- c(-6.709, 1.276, 0, 0.016, -0.532, 0, 0, 0, -0.053, 0, 0, -0.065, 0.023, 0, 0, 0.486, 0.058, 0, 0, 0.526, 0.824, 0, 0, 0)
-# first MI for males: exponential distirbution ro = 1 (2nd element in vector) --> explanatoin below in "annual_p_weibull" function
+# first MI for males: exponential distribution ro = 1 (2nd element in vector) --> explanation below in "annual_p_weibull" function
 FMIMALE <- c(-8.791, 1, -0.83, 0.045, 0 , 0.279, 0, 0, 0, 0, 0.108, -0.049, 0.023, 0, 0.203, 0.340, 0.046, 0.277, 0.026, 0.743, 0.814, 0.846, 0.448, 0) 
 # first MI for females
 FMIFEMALE <- c(-8.708, 1.376, -1.684, 0.041, 0, 0, 0, 0, 0, -0.28, 0.078, 0, 0, 0.035, 0.277, 0.469, 0.056, 0.344, 0.07, 0, 0.853, 0.876, 0, 0)
-# second MI: exponential distirbution ro = 1 (2nd element in vector)
+# second MI: exponential distribution ro = 1 (2nd element in vector)
 SMI <- c(-4.179, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.021, 0, 0.344, 0, 0, 0, 0, 0, 0, 0, 0, 0) 
 # first stroke
 FSTROKE <- c(-13.053, 1.466, 0, 0.066, -0.42, 0, 1.476, 0, 0, -0.190, 0.092, 0, 0.016, 0, 0.420, 0, 0.170, 0.331, 0.040, 1.090, 0, 0.481, 0, 0)
 # second stroke
 SSTROKE <- c(-9.431, 1.956, 0, 0.046, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.537, 0, 0, 0.656, 0, 0, 0, 0, 0, 0)
 
-# Below we simply create a table (R data frame) with all the coefficients of the regresison equations used to predict macrovascular complications.
+# Below we simply create a table (R data frame) with all the coefficients of the regression equations used to predict macrovascular complications.
 # When we define the risk equations below in the code, these will read the coefficients from this table in order to predict the annual 
 # probability of experiencing a mcrovascular complication.
 macrovascular_risk_equations <- data.frame(CHF, IHD, FMIMALE, FMIFEMALE, SMI, FSTROKE, SSTROKE, row.names = parameters_macrovascular)
@@ -98,7 +98,7 @@ macrovascular_risk_equations <- data.frame(CHF, IHD, FMIMALE, FMIFEMALE, SMI, FS
 
 # 23. eGFR60more: Same as eGFR. Continuous spline (knot at 60) and further DIVIDED by 10. HR per 10 ml/min/1.73m^2 increase if > 60
 # 24. HAEM: haemoglobin g/dL measured continuously. HR per 1 g/dL increase
-# 25. HEART.R: heart rate (beats per minute) determined from inspiration/expiration RR on ECG. Continuously measued and further DIVIDED by 10.
+# 25. HEART.R: heart rate (beats per minute) determined from inspiration/expiration RR on ECG. Continuously measured and further DIVIDED by 10.
 #              HR per 10 bpm increase.
 # 26. BLIND.HIST: 1 == history of blindness, 0 == otherwise. HR referent == no prior blindness
 
@@ -343,18 +343,18 @@ history_characteristics <- c("SIMID",
 # And now, below we have the regression coefficients as reported above.
 # CHECK that female coefficient is actually for females
 
-# UPDATE EQUATIONS WITH MOST RECENT VERSIONS!
-
-informal_care_coef <- c(-3.1233, 0.9674, 0.7741, 0.5319, 0.7676, 0.1681, -0.1841)
-prod_costs_coef    <- c(-12.7220, -0.2597, -0.9412, 0.5585, 0.6480, 0.5207, 0)
-#NL baseline employment status: Logit (employed)= -22.0137 + 0.9741*(age) + -0.0104*age2 + -0.7934*gender(female=1)
-employment_coef <- c(-22.0137, 0.9741, -0.0104, -0.7934, 0)
+# UPDATE EQUATIONS WITH MOST RECENT VERSION: 10/12/2020
+# Note there is no country specific coefficient now. That's why the last coefficient = 0. 
+# Otherwise the code would not work.
+informal_care_coef <- c(-1.5355, 0.5036, 0.6852, 0.4231, 0.2245, 0.5498, 0) # Assumed primary analysis central countries for UK
+employment_coef    <- c(2.4283, 0.1273, -0.00252, -0.0737, 0) # Assumed primary analysis central countries for UK
+prod_costs_coef    <- c(-1.4747, 0.01047, 0.5112, 0.08407, 0.1881, 1.3026, 0) # Assumed primary analysis central countries for UK
 
 # Besides the risk factors, there are two other parameters used in the UKPDS equations called "lambda" and "ro". We added them below.
 # Now we have the names of all the parameters (lambda, ro and risk factors) used to predict informal risks in the model.
-parameters_informal   <- c("lambda", risk_factors_informal, "NL")
-parameters_prod       <- c("lambda", risk_factors_prod, "NL")
-parameters_employment <- c("lambda", risk_factors_employment, "NL")
+parameters_informal   <- c("lambda", risk_factors_informal, "UK")
+parameters_prod       <- c("lambda", risk_factors_prod, "UK")
+parameters_employment <- c("lambda", risk_factors_employment, "UK")
 
 # Below we simply create a table (R data frame) with all the coefficients of the regression equation to predict informal care
 informal_care_equations <- data.frame(informal_care_coef,row.names = parameters_informal)
