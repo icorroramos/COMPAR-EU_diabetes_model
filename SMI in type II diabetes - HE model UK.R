@@ -21,6 +21,20 @@ source("aux_functions.R")
 # Variable defined to keep track of simulation time (delete afterwards)
 init <- Sys.time()
 
+# Control variables of simulation
+npats <- 500 # Number of patients in simulation
+tx.cost <- 0 # Total treatment cost
+
+treateff.start <- 1 # Cycle in which treatment effect starts
+treateff.end <- 4 # Cycle in which treatment effect ends
+treateff.decline <- 2 # Cycle in which treatment effect strats to decline linearly
+
+treateff.hba1c <- -5 # Treatment effect on HbA1c (in absolute %-points HbA1c)
+treateff.hdl <- 0 # Treatment effect on HDL-choleresterol (absolute effect, which unit??)
+treateff.ldl <- 0 # Treatment effect on LDL-choleresterol (absolute effect, which unit??)
+
+
+
 ##############################################
 ########## PART II - SIMULATION ##############
 ##############################################
@@ -787,12 +801,12 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
 
 # Intervention
 
-sim_results_female <- SMDMII_model_simulation(100,  #patient_size_input: 
+sim_results_female <- SMDMII_model_simulation(npats,  #patient_size_input: 
                                               1,  #female_input, 1 = female
-                                              0, #tx_cost_input --> Gimon
-                                              c(-1.82,1,3,2), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
-                                              c(0,0,0,0),  #treatment_effect_HDL_input 
-                                              c(0,0,0,0),  #treatment_effect_LDL_input --> from COMPAR + Assumption
+                                              tx.cost, #tx_cost_input --> Gimon
+                                              c(treateff.hba1c,treateff.start,treateff.end,treateff.decline), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
+                                              c(treateff.hdl,treateff.start,treateff.end,treateff.decline),  #treatment_effect_HDL_input 
+                                              c(treateff.ldl, treateff.start,treateff.end,treateff.decline),  #treatment_effect_LDL_input --> from COMPAR + Assumption
                                               0, #treatment_effect_BMI_input from MH2020
                                               0.035, #cost_disc_rate_input
                                               0.035, #qol_disc_rate_input
@@ -809,7 +823,7 @@ sim_CE_results_female_table <- matrix(c(sim_results_female$mean_complication_cos
 colnames(sim_CE_results_female_table) <- c("Complication costs", "No complication costs", "Tx costs","Informal care costs", "Productivity costs",
                                         "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
 rownames(sim_CE_results_female_table) <- "Intervention"
-View(sim_CE_results_female_table)
+#View(sim_CE_results_female_table)
 
 sim_clinical_results_female_table <- matrix(c(sim_results_female$mean_life_expectancy,
                                               sim_results_female$mean_CHF_rate,
@@ -825,18 +839,18 @@ colnames(sim_clinical_results_female_table) <- c("Life expectancy", "CHF rate", 
                                                  "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
 rownames(sim_clinical_results_female_table) <- "Intervention"
 
-View(sim_clinical_results_female_table)
+#View(sim_clinical_results_female_table)
 
 
 #Comparator
 
 
-sim_results_female_comp <- SMDMII_model_simulation(100,  #patient_size_input: run 500 for LOLA
+sim_results_female_comp <- SMDMII_model_simulation(npats,  #patient_size_input: run 500 for LOLA
                                                    1,  #female_input, 1 = female
-                                                   0, #tx_cost_input --> Gimon
-                                                   c(0,1,3,2), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
-                                                   c(0,0,0,0),  #treatment_effect_HDL_input 
-                                                   c(0,0,0,0),  #treatment_effect_LDL_input --> from COMPAR + Assumption
+                                                   tx.cost, #tx_cost_input --> Gimon
+                                                   rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
+                                                   rep(0,4),  #treatment_effect_HDL_input 
+                                                   rep(0,4),  #treatment_effect_LDL_input --> from COMPAR + Assumption                                                   0, #treatment_effect_BMI_input from MH2020
                                                    0, #treatment_effect_BMI_input from MH2020
                                                    0.035, #cost_disc_rate_input
                                                    0.035, #qol_disc_rate_input
@@ -858,7 +872,7 @@ sim_CE_results_female_table_comp <- matrix(c(sim_results_female_comp$mean_compli
 colnames(sim_CE_results_female_table_comp) <- c("Complication costs", "No complication costs", "Tx costs","Informal care costs", "Productivity costs",
                                                 "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
 rownames(sim_CE_results_female_table_comp) <- "Comparator"
-View(sim_CE_results_female_table_comp)
+#View(sim_CE_results_female_table_comp)
 
 sim_clinical_results_female_table_comp <- matrix(c(sim_results_female_comp$mean_life_expectancy,
                                                    sim_results_female_comp$mean_CHF_rate,
@@ -874,18 +888,18 @@ colnames(sim_clinical_results_female_table_comp) <- c("Life expectancy", "CHF ra
                                                  "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
 rownames(sim_clinical_results_female_table_comp) <- "Comparator"
 
-View(sim_clinical_results_female_table_comp)
+#View(sim_clinical_results_female_table_comp)
 
 
 
 ##### Males #####
 
-sim_results_male <- SMDMII_model_simulation(100, #patient_size_input: run 500 for LOLA
+sim_results_male <- SMDMII_model_simulation(npats, #patient_size_input: run 500 for LOLA
                                             0, #female_input, 1 = female
-                                            0, #tx_cost_input --> Gimon
-                                            c(-1.82,1,3,2), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
-                                            c(0,0,0,0),  #treatment_effect_HDL_input 
-                                            c(0,0,0,0),  #treatment_effect_LDL_input --> from COMPAR + Assumption
+                                            tx.cost, #tx_cost_input --> Gimon
+                                            c(treateff.hba1c,treateff.start,treateff.end,treateff.decline), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
+                                            c(treateff.hdl,treateff.start,treateff.end,treateff.decline),  #treatment_effect_HDL_input 
+                                            c(treateff.ldl, treateff.start,treateff.end,treateff.decline),  #treatment_effect_LDL_input --> from COMPAR + Assumption                                                   0, #treatment_effect_BMI_input from MH2020
                                             0, #treatment_effect_BMI_input from MH2020
                                             0.035, #cost_disc_rate_input
                                             0.035, #qol_disc_rate_input
@@ -902,7 +916,7 @@ sim_CE_results_male_table <- matrix(c(sim_results_male$mean_complication_costs,s
 colnames(sim_CE_results_male_table) <- c("Complication costs", "No complication costs", "Tx costs","Informal care costs", "Productivity costs",
                                            "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
 rownames(sim_CE_results_male_table) <- "Intervention"
-View(sim_CE_results_male_table)
+#View(sim_CE_results_male_table)
 
 sim_clinical_results_male_table <- matrix(c(sim_results_male$mean_life_expectancy,
                                               sim_results_male$mean_CHF_rate,
@@ -918,18 +932,18 @@ colnames(sim_clinical_results_male_table) <- c("Life expectancy", "CHF rate", "M
                                                  "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
 rownames(sim_clinical_results_male_table) <- "Intervention"
 
-View(sim_clinical_results_male_table)
+# View(sim_clinical_results_male_table)
 
 # View(sim_results_male$simulation_patients_history[,c("HbA1c","LDL","HDL","SDURATION")])
 
 
 
-sim_results_male_comp <- SMDMII_model_simulation(100, #patient_size_input: run 500 for LOLA
+sim_results_male_comp <- SMDMII_model_simulation(npats, #patient_size_input: run 500 for LOLA
                                                  0, #female_input, 1 = female
-                                                 0, #tx_cost_input --> Gimon
-                                                 c(0,1,3,2), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
-                                                 c(0,0,0,0),  #treatment_effect_HDL_input 
-                                                 c(0,0,0,0),  #treatment_effect_LDL_input --> from COMPAR + Assumption
+                                                 tx.cost, #tx_cost_input --> Gimon
+                                                 rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
+                                                 rep(0,4),  #treatment_effect_HDL_input 
+                                                 rep(0,4),  #treatment_effect_LDL_input --> from COMPAR + Assumption                                                   0, #treatment_effect_BMI_input from MH2020
                                                  0, #treatment_effect_BMI_input from MH2020
                                                  0.035, #cost_disc_rate_input
                                                  0.035, #qol_disc_rate_input
@@ -952,7 +966,7 @@ sim_CE_results_male_table_comp <- matrix(c(sim_results_male_comp$mean_complicati
 colnames(sim_CE_results_male_table_comp) <- c("Complication costs", "No complication costs", "Tx costs","Informal care costs", "Productivity costs",
                                          "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
 rownames(sim_CE_results_male_table_comp) <- "Comparator"
-View(sim_CE_results_male_table_comp)
+# View(sim_CE_results_male_table_comp)
 
 sim_clinical_results_male_table_comp <- matrix(c(sim_results_male_comp$mean_life_expectancy,
                                             sim_results_male_comp$mean_CHF_rate,
@@ -968,7 +982,7 @@ colnames(sim_clinical_results_male_table_comp) <- c("Life expectancy", "CHF rate
                                                "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
 rownames(sim_clinical_results_male_table_comp) <- "Comaprator"
 
-View(sim_clinical_results_male_table_comp)
+# View(sim_clinical_results_male_table_comp)
 
 
 # Variable defined to keep track of simulation time (delete afterwards)
