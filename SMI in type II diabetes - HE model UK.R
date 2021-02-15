@@ -562,8 +562,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   # Informal care and productivity loss: We calculated above INF.CARE & PROD.LOSS = 0/1 but costs have to be calculated here: 
   
-  # Informal care cost per hour assumed = £20.26. Make this an input parameter in the model.
-  # Calculation: From Weatherly et al. 2014 "Valuing Informal Care for Economic Evaluation". Table 1 estimate from Wilson et al. 2009 = £13.11 (2004/UK)
+  # Informal care cost per hour assumed = ?20.26. Make this an input parameter in the model.
+  # Calculation: From Weatherly et al. 2014 "Valuing Informal Care for Economic Evaluation". Table 1 estimate from Wilson et al. 2009 = ?13.11 (2004/UK)
   # Inflated to 2020 costs using https://www.officialdata.org/uk/inflation/2004?amount=13.11
   simulation_patients_history$INF.CARE.COST <- (20.26*simulation_patients_history$INF.CARE*(1-simulation_patients_history$dead) + 20.26/2*simulation_patients_history$INF.CARE*simulation_patients_history$dead)/cost_discount_factor
   
@@ -787,12 +787,12 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
 
 # Intervention
 
-sim_results_female <- SMDMII_model_simulation(1000,  #patient_size_input: 
+sim_results_female <- SMDMII_model_simulation(100,  #patient_size_input: 
                                               1,  #female_input, 1 = female
-                                              91.78, #tx_cost_input --> Gimon
-                                              c(-1.01,1,4,2), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
-                                              c(0.12,1,4,2),  #treatment_effect_HDL_input 
-                                              c(-1.0199,1,4,2),  #treatment_effect_LDL_input --> from COMPAR + Assumption
+                                              0, #tx_cost_input --> Gimon
+                                              c(-1.82,1,3,2), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
+                                              c(0,0,0,0),  #treatment_effect_HDL_input 
+                                              c(0,0,0,0),  #treatment_effect_LDL_input --> from COMPAR + Assumption
                                               0, #treatment_effect_BMI_input from MH2020
                                               0.035, #cost_disc_rate_input
                                               0.035, #qol_disc_rate_input
@@ -831,12 +831,12 @@ View(sim_clinical_results_female_table)
 #Comparator
 
 
-sim_results_female_comp <- SMDMII_model_simulation(1000,  #patient_size_input: run 500 for LOLA
+sim_results_female_comp <- SMDMII_model_simulation(100,  #patient_size_input: run 500 for LOLA
                                                    1,  #female_input, 1 = female
                                                    0, #tx_cost_input --> Gimon
-                                                   c(0,1,4,2), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
-                                                   c(0,1,4,2),  #treatment_effect_HDL_input 
-                                                   c(0,1,4,2),  #treatment_effect_LDL_input --> from COMPAR + Assumption
+                                                   c(0,1,3,2), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
+                                                   c(0,0,0,0),  #treatment_effect_HDL_input 
+                                                   c(0,0,0,0),  #treatment_effect_LDL_input --> from COMPAR + Assumption
                                                    0, #treatment_effect_BMI_input from MH2020
                                                    0.035, #cost_disc_rate_input
                                                    0.035, #qol_disc_rate_input
@@ -880,12 +880,12 @@ View(sim_clinical_results_female_table_comp)
 
 ##### Males #####
 
-sim_results_male <- SMDMII_model_simulation(1000, #patient_size_input: run 500 for LOLA
+sim_results_male <- SMDMII_model_simulation(100, #patient_size_input: run 500 for LOLA
                                             0, #female_input, 1 = female
-                                            91.78, #tx_cost_input -- >> Gimon
-                                            c(-1.01,1,4,2), #treatment_effect_HbA1c_input --> -1.82 from COMPAR, 1 = init tx effect
-                                            c(0.12,1,4,2),  #treatment_effect_HDL_input
-                                            c(-1.0199,1,4,2), #treatment_effect_LDL_input --> from COMPAR + Assumption
+                                            0, #tx_cost_input --> Gimon
+                                            c(-1.82,1,3,2), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
+                                            c(0,0,0,0),  #treatment_effect_HDL_input 
+                                            c(0,0,0,0),  #treatment_effect_LDL_input --> from COMPAR + Assumption
                                             0, #treatment_effect_BMI_input from MH2020
                                             0.035, #cost_disc_rate_input
                                             0.035, #qol_disc_rate_input
@@ -924,12 +924,12 @@ View(sim_clinical_results_male_table)
 
 
 
-sim_results_male_comp <- SMDMII_model_simulation(1000, #patient_size_input: run 500 for LOLA
+sim_results_male_comp <- SMDMII_model_simulation(100, #patient_size_input: run 500 for LOLA
                                                  0, #female_input, 1 = female
-                                                 0, #tx_cost_input -- >> Gimon
-                                                 c(0,1,4,2), #treatment_effect_HbA1c_input --> -1.82 from COMPAR, 1 = init tx effect
-                                                 c(0,1,4,2),  #treatment_effect_HDL_input
-                                                 c(0,1,4,2), #treatment_effect_LDL_input --> from COMPAR + Assumption
+                                                 0, #tx_cost_input --> Gimon
+                                                 c(0,1,3,2), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
+                                                 c(0,0,0,0),  #treatment_effect_HDL_input 
+                                                 c(0,0,0,0),  #treatment_effect_LDL_input --> from COMPAR + Assumption
                                                  0, #treatment_effect_BMI_input from MH2020
                                                  0.035, #cost_disc_rate_input
                                                  0.035, #qol_disc_rate_input
@@ -974,3 +974,27 @@ View(sim_clinical_results_male_table_comp)
 # Variable defined to keep track of simulation time (delete afterwards)
 end <- Sys.time()
 end - init
+
+
+# SINK RESULTS DATA -------------------------------------------------------
+save(sim_CE_results_female_table,
+     sim_clinical_results_female_table,
+     sim_CE_results_female_table_comp,
+     sim_clinical_results_female_table_comp,
+     sim_CE_results_male_table,
+     sim_clinical_results_male_table,
+     sim_CE_results_male_table_comp,
+     sim_clinical_results_male_table_comp,
+     file = 'Sim_results.Rdata'
+)
+
+# Optional - save to csv's
+# write.csv(sim_CE_results_female_table, 'sim_CE_female_int.csv', quote = FALSE)
+# write.csv(sim_clinical_results_female_table, 'sim_clin_female_int.csv', quote = FALSE)
+# write.csv(sim_CE_results_female_table_comp, 'sim_CE_female_comp.csv', quote = FALSE)
+# write.csv(sim_clinical_results_female_table_comp, 'sim_clin_female_comp.csv', quote = FALSE)
+# 
+# write.csv(sim_CE_results_male_table,'sim_CE_male_int.csv', quote = FALSE)
+# write.csv(sim_clinical_results_male_table, 'sim_clin_male_int.csv', quote = FALSE)
+# write.csv(sim_CE_results_male_table_comp, 'sim_CE_male_comp.csv', quote = FALSE)
+# write.csv(sim_clinical_results_male_table_comp, 'sim_clin_male_comp.csv', quote = FALSE)
