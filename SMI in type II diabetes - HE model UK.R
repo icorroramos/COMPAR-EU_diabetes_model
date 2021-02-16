@@ -29,11 +29,11 @@ treateff.start <- 1 # Cycle in which treatment effect starts
 treateff.end <- 4 # Cycle in which treatment effect ends
 treateff.decline <- 2 # Cycle in which treatment effect strats to decline linearly
 
-treateff.hba1c <- -5 # Treatment effect on HbA1c (in absolute %-points HbA1c)
+treateff.hba1c <- -1.82 # Treatment effect on HbA1c (in absolute %-points HbA1c)
 treateff.hdl <- 0 # Treatment effect on HDL-choleresterol (absolute effect, which unit??)
 treateff.ldl <- 0 # Treatment effect on LDL-choleresterol (absolute effect, which unit??)
 
-
+sim.vars <- list(npats, tx.cost, mget(apropos('treateff.')))
 
 ##############################################
 ########## PART II - SIMULATION ##############
@@ -45,6 +45,7 @@ treateff.ldl <- 0 # Treatment effect on LDL-choleresterol (absolute effect, whic
 # A patient-level model make use of patient characteristics. 
 # QUESTION: still some issues, ask for units.
 baseline_characteristics <- read.csv("input/baseline_characteristics_UK.csv", sep=",")
+# baseline_characteristics <- read.csv("input/baseline_characteristics_UK_rank_1_study_pop.csv", sep=",")
 
 # Direct costs of diabetes-related complications for UK are age-gender dependent.
 male_cost_inputs   <- read.csv("input/Event cost male 2020.csv", sep=",")
@@ -991,7 +992,8 @@ end - init
 
 
 # SINK RESULTS DATA -------------------------------------------------------
-save(sim_CE_results_female_table,
+save(sim.vars,
+     sim_CE_results_female_table,
      sim_clinical_results_female_table,
      sim_CE_results_female_table_comp,
      sim_clinical_results_female_table_comp,
