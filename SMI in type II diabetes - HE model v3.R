@@ -598,7 +598,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   # Age and gender dependent
   qol_matrix <- inner_join(simulation_patients_history[c("CURR.AGE","FEMALE","CHF.EVENT","IHD.EVENT","MI.EVENT", "STROKE.EVENT",
-                                                         "ULCER.EVENT", "AMP1.EVENT","AMP2.EVENT", "BLIND.EVENT", "RENAL.EVENT","BMI")],qol_inputs_UK, by = 'CURR.AGE')
+                                                         "ULCER.EVENT", "AMP1.EVENT","AMP2.EVENT", "BLIND.EVENT", "RENAL.EVENT","BMI")],qol_inputs, by = 'CURR.AGE')
   
   # The following event variables are at this moment included in the model
   
