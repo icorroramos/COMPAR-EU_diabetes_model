@@ -96,14 +96,23 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   # Note: mind the units for all continuous variables since some of them were re-scaled in the UKPDS equations. Double-check the more/less variables!
   # See description in the file "aux_functions.R".
-  simulation_baseline_patients$SBP <- simulation_baseline_patients$SBP/100 #--> 100 or 10?
-  simulation_baseline_patients$HDL <- simulation_baseline_patients$HDL*10
-  simulation_baseline_patients$LDL <- simulation_baseline_patients$LDL*10
-  simulation_baseline_patients$LDL35more <- if_else(simulation_baseline_patients$LDL >= 35, simulation_baseline_patients$LDL, 0)
-  simulation_baseline_patients$eGFR <- simulation_baseline_patients$eGFR/10 
+  
+  # eGFR
+  simulation_baseline_patients$eGFR       <- simulation_baseline_patients$eGFR/10 # /10 according to UKPDS equations 
   simulation_baseline_patients$eGFR60more <- if_else(simulation_baseline_patients$eGFR >= 6, simulation_baseline_patients$eGFR, 0)
   simulation_baseline_patients$eGFR60less <- if_else(simulation_baseline_patients$eGFR <  6, simulation_baseline_patients$eGFR, 0)
+  
+  # HDL
+  simulation_baseline_patients$HDL <- simulation_baseline_patients$HDL*10
+  
+  # Heart rate
   simulation_baseline_patients$HEART.R <- simulation_baseline_patients$HEART.R/10 
+  
+  # LDL 
+  simulation_baseline_patients$LDL       <- simulation_baseline_patients$LDL*10
+  simulation_baseline_patients$LDL35more <- if_else(simulation_baseline_patients$LDL >= 35, simulation_baseline_patients$LDL, 0)
+  
+    simulation_baseline_patients$SBP        <- simulation_baseline_patients$SBP/100 #--> 100 or 10?
   
   # Create now the simulation patient history table (for now is just empty) to save all simulation results 
   simulation_patients_history <- simulation_baseline_patients[FALSE,c(history_characteristics)]
