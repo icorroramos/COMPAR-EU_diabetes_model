@@ -36,7 +36,7 @@
 # 2. AGE.DIAG: age in years at diagnosis of diabetes. HR per year increase in age at diagnosis
 # 3. FEMALE: 1 == female, 0 == male. HR referent == male
 # 4. INDIAN: 1 == asian-indian ethnicity, 0 == Otherwise. HR referent == Caucasian
-# 5. ATFIB: 1 == attrial fibrilation, 0 == otherwise. Defined from Minnesota codes 831 and 833. HR referent == no ATFIB
+# 5. ATFIB: 1 == attrial fibrillation, 0 == otherwise. Defined from Minnesota codes 831 and 833. HR referent == no ATFIB
 # 6. BMI: Body mass index (m/kg^2) measured continuously. HR per unit increase in BMI
 # 7. eGFR: Estimated glomerular filtration rate (ml/min/1.73m^2) from modification of diet in renal disease (MDRD) formula.
 #          Continuously measured and further DIVIDED by 10. HR per 10 ml/min/1.73m^2 increase 
