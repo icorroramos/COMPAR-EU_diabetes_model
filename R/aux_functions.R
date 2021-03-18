@@ -189,7 +189,7 @@ DEATHYSEVENT <- c(-4.868, 0, rep(0,3), 1.081, 0, 0, 0.050, 0.068, 0, 0, 0.352, 0
 # QUESTION: 2nd element in logistic not sure if 0 or 1 --> Think it is 0 if we look at paper! Not sure why I wrote that then...
 
 
-# Below we simply create a table (R data frame) with all the coefficients of the regresison equations used to predict death.
+# Below we simply create a table (R data frame) with all the coefficients of the regression equations used to predict death.
 # When we define the risk equations below in the code, these will read the coefficients from this table in order to predict the annual 
 # probability of death.
 mortality_risk_equations <- data.frame(DEATHNOHIST, DEATH1YEVENT, DEATHHISTNOEVENT, DEATHYSEVENT, row.names = parameters_mortality)

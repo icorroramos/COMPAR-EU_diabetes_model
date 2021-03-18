@@ -20,7 +20,7 @@ source("setup.R")
 source("aux_functions.R")
 
 # The following objects should be present in the environment where the simulation function is called
-# baseline_caracteristics
+# baseline_characteristics
 # male_cost_inputs
 # female_cost_inputs
 # future_medical_cost_inputs
@@ -31,11 +31,8 @@ source("aux_functions.R")
 
 # PART II - SIMULATION ----------------------------------------------------
 
-
 # The simulation consists of one main function called "SMDMII_model_simulation". 
 # This function is used to 1) simulate patients' clinical history, 2) calculate costs and 3) calculate QALYs. 
-
-
 
 # At this moment the input parameters of the "SMDMII_model_simulation" function are the following:
 SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, patient_size_input: number of patients included in the simulation.
@@ -79,9 +76,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # Hard-coded values from data: Primary analysis central countries assumed for UK
   
   simulation_baseline_patients$CURR.AGE.2 <- (simulation_baseline_patients$CURR.AGE)^2
-  simulation_baseline_patients$INF.CARE <- 0
-  
-  # Note: changed baseline age in Excel (from original 66 to 55) to have meaningful employment/productivity
+  simulation_baseline_patients$INF.CARE   <- 0
   
   # Assume retirement age 65 for now: this should also be an input in the model!
   # If age at baseline  >= 65 (retirement age), then we assume patient not employed and no productivity loss
