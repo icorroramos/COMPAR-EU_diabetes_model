@@ -98,7 +98,7 @@ sim_results_female_comp <- SMDMII_model_simulation(npats,  #patient_size_input: 
                                                    tx.cost, #tx_cost_input --> Gimon
                                                    rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
                                                    rep(0,4),  #treatment_effect_HDL_input 
-                                                   rep(0,4),  #treatment_effect_LDL_input --> from COMPAR + Assumption                                                   0, #treatment_effect_BMI_input from MH2020
+                                                   rep(0,4),  #treatment_effect_LDL_input --> from COMPAR + Assumption                                                   
                                                    0, #treatment_effect_BMI_input from MH2020
                                                    0.035, #cost_disc_rate_input
                                                    0.035, #qol_disc_rate_input
@@ -148,7 +148,7 @@ sim_results_male <- SMDMII_model_simulation(npats, #patient_size_input: run 500 
                                             tx.cost, #tx_cost_input --> Gimon
                                             c(treateff.hba1c,treateff.start,treateff.end,treateff.decline), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
                                             c(treateff.hdl,treateff.start,treateff.end,treateff.decline),  #treatment_effect_HDL_input 
-                                            c(treateff.ldl, treateff.start,treateff.end,treateff.decline),  #treatment_effect_LDL_input --> from COMPAR + Assumption                                                   0, #treatment_effect_BMI_input from MH2020
+                                            c(treateff.ldl, treateff.start,treateff.end,treateff.decline),  #treatment_effect_LDL_input --> from COMPAR + Assumption                                                   
                                             0, #treatment_effect_BMI_input from MH2020
                                             0.035, #cost_disc_rate_input
                                             0.035, #qol_disc_rate_input
@@ -193,7 +193,7 @@ sim_results_male_comp <- SMDMII_model_simulation(npats, #patient_size_input: run
                                                  tx.cost, #tx_cost_input --> Gimon
                                                  rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
                                                  rep(0,4),  #treatment_effect_HDL_input 
-                                                 rep(0,4),  #treatment_effect_LDL_input --> from COMPAR + Assumption                                                   0, #treatment_effect_BMI_input from MH2020
+                                                 rep(0,4),  #treatment_effect_LDL_input --> from COMPAR + Assumption                                                   
                                                  0, #treatment_effect_BMI_input from MH2020
                                                  0.035, #cost_disc_rate_input
                                                  0.035, #qol_disc_rate_input
