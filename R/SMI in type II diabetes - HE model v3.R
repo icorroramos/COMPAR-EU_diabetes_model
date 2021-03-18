@@ -14,7 +14,7 @@
 
 
 # For packages needed, etc. see: 
-source("setup.R")
+source("../setup.R")
 
 # For functions, global lists, etc. used in the simulation (e.g. UKPDS, informal care and productivity costs) see:
 source("aux_functions.R")
