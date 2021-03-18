@@ -34,7 +34,6 @@ source("aux_functions.R")
 # The simulation consists of one main function called "SMDMII_model_simulation". 
 # This function is used to 1) simulate patients' clinical history, 2) calculate costs and 3) calculate QALYs. 
 
-# At this moment the input parameters of the "SMDMII_model_simulation" function are the following:
 SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, patient_size_input: number of patients included in the simulation.
                                     female_input, # 1 = females, 0 = male
                                     tx_cost_input, # treatment costs -->> Need to implement
@@ -44,6 +43,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                                     treatment_effect_BMI_input, 
                                     cost_disc_rate_input, # discount rates for costs and effects 
                                     qol_disc_rate_input, 
+                                    retirement_age_input, # retirement age
                                     run_PSA_input, # run_PSA_input: 1 == runs the model in probabilistic mode, 0 == deterministic. Not implemented at the moment
                                     seed_input){ # A random seed that it is used to ensure consistency in the model results. 
   
@@ -78,10 +78,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   simulation_baseline_patients$CURR.AGE.2 <- (simulation_baseline_patients$CURR.AGE)^2
   simulation_baseline_patients$INF.CARE   <- 0
   
-  # Assume retirement age 65 for now: this should also be an input in the model!
-  # If age at baseline  >= 65 (retirement age), then we assume patient not employed and no productivity loss
-  # Otherwise, age at baseline < 65, we calculate the probability of being employed (at baseline)
-  ifelse(simulation_baseline_patients$CURR.AGE >= 65, simulation_baseline_patients$EMPLOYED <- 0,
+  # If age at baseline  >= retirement age, then we assume patient not employed and no productivity loss
+  # Otherwise, age at baseline < retirement age, we calculate the probability of being employed (at baseline)
+  ifelse(simulation_baseline_patients$CURR.AGE >= retirement_age_input, simulation_baseline_patients$EMPLOYED <- 0,
          {baseline_employed_prob <- apply(simulation_baseline_patients %>% select(risk_factors_employment), 1, function(x) annual_p_bernoulli(employment_equations$employment_coef,x)$p)
          simulation_baseline_patients$EMPLOYED <- unlist(lapply(baseline_employed_prob, function(x) rbinom(1,1,x))) #EMPLOYED = yes/no
          })
@@ -404,7 +403,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       current_patient_update$CURR.AGE.SCALE.INF  <- (current_patient$CURR.AGE - 73.75225)/9.938705 #hardcoded values from data
       current_patient_update$CURR.AGE.SCALE.PROD <- (current_patient$CURR.AGE - 70.34077)/9.578899 #hardcoded values from data
       
-      if(current_patient_update$CURR.AGE >= 65){
+      if(current_patient_update$CURR.AGE >= retirement_age_input){
         current_patient_update$EMPLOYED <- 0
         current_patient_update$PROD.LOSS <- 0
         }
