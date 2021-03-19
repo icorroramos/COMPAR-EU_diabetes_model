@@ -23,75 +23,51 @@
 # 8. Diabetic Ulcer [Assumption: It can happen just once as event. After that, it is considered as history.]
 # 9. Death [It can happen just once as event.]
 
-# Multiple events are possible in the same year but only the number of times specified above. 
-
-
-# The risk factors and the regression coefficients for each complication were taken from the UKPDS paper and are defined below.
+# Multiple events are possible in the same year but only the number of times specified above. The risk factors and the regression 
+# coefficients for each complication were taken from the UKPDS paper as explained below.
 
 # Macrovascular complications: UKPDS paper ESM Table 4. Macrovascular complications include CHF, IHD, MI and stroke.
-# The risk factors used to predict macrovascular complications are the following (notation used in the model, definition from 
-# UKPDS paper ESM Table 2):
-
-# 1. AFRO: 1 == afro-caribbean ethnicity, 0 == Otherwise. HR referent == Caucasian
-# 2. AGE.DIAG: age in years at diagnosis of diabetes. HR per year increase in age at diagnosis
-# 3. FEMALE: 1 == female, 0 == male. HR referent == male
-# 4. INDIAN: 1 == asian-indian ethnicity, 0 == Otherwise. HR referent == Caucasian
-# 5. ATFIB: 1 == attrial fibrillation, 0 == otherwise. Defined from Minnesota codes 831 and 833. HR referent == no ATFIB
-# 6. BMI: Body mass index (m/kg^2) measured continuously. HR per unit increase in BMI
-# 7. eGFR: Estimated glomerular filtration rate (ml/min/1.73m^2) from modification of diet in renal disease (MDRD) formula.
-#          Continuously measured and further DIVIDED by 10. HR per 10 ml/min/1.73m^2 increase 
-# 8. eGFR60less: Same as eGFR. Continuous spline (knot at 60) and further DIVIDED by 10. HR per 10 ml/min/1.73m^2 increase if < 60
-# 9. HbA1c: percentage HbA1c measured continuously. HR per 1% increase in HbA1c
-# 10. HDL: high density lipoprotein cholesterol (mmol/l) measured continuously and MULTIPLIED by 10. HR per 0.1 mg/dL increase in HDL
-# 11. LDL: low density lipoprotein cholesterol (mmol/l) measured continuously and MULTIPLIED by 10. HR per 0.1 mg/dL increase in LDL
-# 12. LDL35more: same as LDL. Continuous spline (knot at 3.5) and MULTIPLIED by 10. HR per 0.1 mg/dL increase in LDL if > 3.5 mg/dL
-# 13. MMALB: presence of micro- or macro-albuminuria. 1 == urine albumin >= 50 mg/l, 0 == otherwise. HR referent == no albuminuria
-# 14. PVD: 1 == peripheral vascular disease, 0 == otherwise. Defined from presence of intermittent claudication or ankle brachial
-#          pressure index < 0.9. HR referent == no presence/evidence of PVD
-# 15. SBP: systolic blood pressure (mm Hg) measured continuously and further DIVIDED by 10. HR per 10 mm Hg increase in SBP --> 10 or 100?
-# 16. SMOKER: 1 == current smoker, 0 == otherwise. HR referent == not current smoker
-# 17. WBC: white blood cell count measured continuously. HR per 1x10^6/ml increase
-# 18. AMP.HIST: 1 == history of amputation, 0 == otherwise. HR referent == no prior amputation
-# 19. CHF.HIST: 1 == history of CHF, 0 == otherwise. HR referent == no prior CHF
-# 20. IHD.HIST: 1 == history of IHD, 0 == otherwise. HR referent == no prior IHD
-# 21. STROKE.HIST: 1 == history of stroke, 0 == otherwise. HR referent == no prior stroke
-# 22. ULCER.HIST: 1 == history of diabetic ulcer, 0 == otherwise. HR referent == no prior diabetic ulcer
-
+# The risk factors used to predict macrovascular complications are read from the following file (UKPDS paper ESM Table 2):
 # Note: pay extra attention to the data transformation. Otherwise, the equations will not make sense!
 
-# QUESTION: Should we read these from external files?
+macrovascular_coef <- read.csv("input/UKPDS_macrovascular_coef.csv")
 
 # The vector below contains the names of all risk factors used to predict macrovascular complications in the model.
-risk_factors_macrovascular <- c("AFRO", "AGE.DIAG", "FEMALE", "INDIAN", "ATFIB", "BMI", "eGFR", "eGFR60less", "HbA1c", "HDL",
-                                "LDL", "LDL35more", "MMALB", "PVD", "SBP", "SMOKER", "WBC", "AMP.HIST", "CHF.HIST", "IHD.HIST", 
-                                "STROKE.HIST", "ULCER.HIST")
+# risk_factors_macrovascular <- c("AFRO", "AGE.DIAG", "FEMALE", "INDIAN", "ATFIB", "BMI", "eGFR", "eGFR60less", "HbA1c", "HDL",
+#                                 "LDL", "LDL35more", "MMALB", "PVD", "SBP", "SMOKER", "WBC", "AMP.HIST", "CHF.HIST", "IHD.HIST", 
+#                                 "STROKE.HIST", "ULCER.HIST") # Delete when it works
+
+risk_factors_macrovascular <- macrovascular_coef$X[-(1:2)] 
 
 # Besides the risk factors, there are two other parameters used in the UKPDS equations called "lambda" and "ro". We added them below.
 # Now we have the names of all the parameters (lambda, ro and risk factors) used to predict macrovascular risks in the model.
-parameters_macrovascular <- c("lambda", "ro", risk_factors_macrovascular)
+
+#parameters_macrovascular <- c("lambda", "ro", risk_factors_macrovascular) # Delete when it works
+parameters_macrovascular <- macrovascular_coef$X #not needed
 
 # And now, below we have the regression coefficients as reported in the UKPDS paper ESM Table 4.
 # Note that not all risk factors are used to predict all complications. For that reason, you see some 0's in the regression coefficients below.
 
 # The format for each vector below is c(lambda, ro, risk factors) where the values are taken from the UKPDS paper ESM Table 4.
-CHF <- c(-12.332, 1.514, 0, 0.068,  0, 0, 1.562, 0.072, 0, -0.220, 0, 0, 0.012, 0, 0.771, 0.479, 0, 0, 0, 0.658, 0, 0, 0, 0.654)
-IHD <- c(-6.709, 1.276, 0, 0.016, -0.532, 0, 0, 0, -0.053, 0, 0, -0.065, 0.023, 0, 0, 0.486, 0.058, 0, 0, 0.526, 0.824, 0, 0, 0)
-# first MI for males: exponential distribution ro = 1 (2nd element in vector) --> explanation below in "annual_p_weibull" function
-FMIMALE <- c(-8.791, 1, -0.83, 0.045, 0 , 0.279, 0, 0, 0, 0, 0.108, -0.049, 0.023, 0, 0.203, 0.340, 0.046, 0.277, 0.026, 0.743, 0.814, 0.846, 0.448, 0) 
-# first MI for females
-FMIFEMALE <- c(-8.708, 1.376, -1.684, 0.041, 0, 0, 0, 0, 0, -0.28, 0.078, 0, 0, 0.035, 0.277, 0.469, 0.056, 0.344, 0.07, 0, 0.853, 0.876, 0, 0)
-# second MI: exponential distribution ro = 1 (2nd element in vector)
-SMI <- c(-4.179, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.021, 0, 0.344, 0, 0, 0, 0, 0, 0, 0, 0, 0) 
-# first stroke
-FSTROKE <- c(-13.053, 1.466, 0, 0.066, -0.42, 0, 1.476, 0, 0, -0.190, 0.092, 0, 0.016, 0, 0.420, 0, 0.170, 0.331, 0.040, 1.090, 0, 0.481, 0, 0)
-# second stroke
-SSTROKE <- c(-9.431, 1.956, 0, 0.046, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.537, 0, 0, 0.656, 0, 0, 0, 0, 0, 0)
+# CHF <- c(-12.332, 1.514, 0, 0.068,  0, 0, 1.562, 0.072, 0, -0.220, 0, 0, 0.012, 0, 0.771, 0.479, 0, 0, 0, 0.658, 0, 0, 0, 0.654)
+# IHD <- c(-6.709, 1.276, 0, 0.016, -0.532, 0, 0, 0, -0.053, 0, 0, -0.065, 0.023, 0, 0, 0.486, 0.058, 0, 0, 0.526, 0.824, 0, 0, 0)
+# # first MI for males: exponential distribution ro = 1 (2nd element in vector) --> explanation below in "annual_p_weibull" function
+# FMIMALE <- c(-8.791, 1, -0.83, 0.045, 0 , 0.279, 0, 0, 0, 0, 0.108, -0.049, 0.023, 0, 0.203, 0.340, 0.046, 0.277, 0.026, 0.743, 0.814, 0.846, 0.448, 0) 
+# # first MI for females
+# FMIFEMALE <- c(-8.708, 1.376, -1.684, 0.041, 0, 0, 0, 0, 0, -0.28, 0.078, 0, 0, 0.035, 0.277, 0.469, 0.056, 0.344, 0.07, 0, 0.853, 0.876, 0, 0)
+# # second MI: exponential distribution ro = 1 (2nd element in vector)
+# SMI <- c(-4.179, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.021, 0, 0.344, 0, 0, 0, 0, 0, 0, 0, 0, 0) 
+# # first stroke
+# FSTROKE <- c(-13.053, 1.466, 0, 0.066, -0.42, 0, 1.476, 0, 0, -0.190, 0.092, 0, 0.016, 0, 0.420, 0, 0.170, 0.331, 0.040, 1.090, 0, 0.481, 0, 0)
+# # second stroke
+# SSTROKE <- c(-9.431, 1.956, 0, 0.046, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.537, 0, 0, 0.656, 0, 0, 0, 0, 0, 0)
 
 # Below we simply create a table (R data frame) with all the coefficients of the regression equations used to predict macrovascular complications.
 # When we define the risk equations below in the code, these will read the coefficients from this table in order to predict the annual 
-# probability of experiencing a mcrovascular complication.
-macrovascular_risk_equations <- data.frame(CHF, IHD, FMIMALE, FMIFEMALE, SMI, FSTROKE, SSTROKE, row.names = parameters_macrovascular)
-# macrovascular_risk_equations
+# probability of experiencing a macrovascular complication.
+#macrovascular_risk_equations <- data.frame(CHF, IHD, FMIMALE, FMIFEMALE, SMI, FSTROKE, SSTROKE, row.names = parameters_macrovascular)
+
+macrovascular_risk_equations <- macrovascular_coef
 
 
 # Microvascular complications: UKPDS paper ESM Table 5. Microvascular complications include blindness, diabetic ulcer amputation and renal failure.
