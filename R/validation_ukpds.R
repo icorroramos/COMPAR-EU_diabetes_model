@@ -66,11 +66,7 @@ risk_factors_simulation <- unique(sort(c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVEN
 
 ### UKPDS RISK FUNCTIONS ### 
 
-# For CHF, IHD, 1st MI for females, 1st and 2nd stroke and 1st amputation with no prior ulcer, 
-# H(t|x_j) is assumed to follow a (proportional hazards) Weibull distribution where t is the duration of diabetes.
-# The functional form of H(t|x_j) is thus the same, only the regression coefficients and the risk factors will be 
-# different for each complication. The function used to calculate the annual probabilities of experiencing those events
-# is called "annual_p_weibull" and it is defined below. Note that, with the notation used in the UKPDS paper, if ro = 1 then 
+# Note that, with the notation used in the UKPDS paper, if ro = 1 then 
 # weibull distribution == exponential distribution. Thus, the same function "annual_p_weibull" can be used when an exponential
 # distribution is assumed.
 
@@ -116,6 +112,86 @@ annual_p_weibull(macrovascular_risk_equations$IHD,validation_patient[2,] %>% sel
 
 # Is the predicted probability plausible? --> Gimon
 # Is a difference between gender expected? Yes, negative coefficient for females.
+
+# First MI males (for females there is a different equation)
+annual_p_weibull(macrovascular_risk_equations$FMIMALE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+# [1] 0.002285789
+# Is the predicted probability plausible? --> Gimon
+
+# First MI females (for males there is a different equation)
+annual_p_weibull(macrovascular_risk_equations$FMIFEMALE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+# [1] 0.02571863
+# Is the predicted probability plausible? --> Gimon. It looks quite large compared to males. Does it make sense?
+
+# Second MI females
+annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+# [1] 0.01946934
+# Second MI males
+annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+# [1] 0.01946934
+
+# Is the predicted probability plausible? --> Gimon
+# Is a difference between gender expected? No, gender is not a predictor.
+
+# First stroke females
+annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+# [1] 0.005297622
+# First stroke males
+annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+# [1] 0.00805162
+
+# Is the predicted probability plausible? --> Gimon
+# Is a difference between gender expected? Yes, negative coefficient for females.
+
+# Second stroke females
+annual_p_weibull(macrovascular_risk_equations$SSTROKE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+# [1] 0.01181782
+# Second stroke males
+annual_p_weibull(macrovascular_risk_equations$SSTROKE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+# [1] 0.01181782
+
+# Is the predicted probability plausible? --> Gimon
+# Is a difference between gender expected? No, gender is not a predictor.
+
+
+# Blindness females
+annual_p_weibull(microvascular_risk_equations$BLIND,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+# [1] 0.002737117
+# Blindness males
+annual_p_weibull(microvascular_risk_equations$BLIND,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
+# [1] 0.002737117
+
+# Is the predicted probability plausible? --> Gimon
+# Is a difference between gender expected? No, gender is not a predictor.
+
+
+# First amputation no ulcer females
+annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+# [1] 0.0002014471
+# First amputation no ulcer males
+annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
+# [1] 0.0003143385
+
+# Is the predicted probability plausible? --> Gimon
+# Is a difference between gender expected? Yes, negative coefficient for females.
+
+
+# First amputation ulcer females
+annual_p_weibull(microvascular_risk_equations$FAMPULCER,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+# [1] 0.01874466
+# First amputation ulcer males
+annual_p_weibull(microvascular_risk_equations$FAMPULCER,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
+# [1] 0.01874466
+
+# Is the predicted probability plausible? --> Gimon
+# Is a difference between gender expected? No, gender is not a predictor.
+
+
+
+
+
+
+
 
 
 
@@ -252,3 +328,8 @@ annual_p_bernoulli <- function(regression_coefficents_input, risk_factors_input)
   p <- exp(log.oods)/(1+exp(log.oods))
   return(list(p = p))
 }
+
+
+
+
+# ---> Check finally whether in the simulation code, these functions are indeed properly called with the right parameters.
