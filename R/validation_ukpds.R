@@ -93,6 +93,39 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
               p = p))
 }
 
+
+# Validation of the Weibull events <-- comment when finish
+validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
+validation_patient$AGE.DIAG <- validation_patient$CURR.AGE - validation_patient$YEAR 
+validation_patient$CURR.AGE.SCALE.INF  <- (validation_patient$CURR.AGE - 72.5474088)/10.4626624 
+validation_patient$CURR.AGE.SCALE.PROD <- (validation_patient$CURR.AGE - 60.2737989)/6.1177269 
+validation_patient$CURR.AGE.2 <- (validation_patient$CURR.AGE)^2
+validation_patient$INF.CARE   <- 0
+ifelse(validation_patient$CURR.AGE >= retirement_age_input, validation_patient$EMPLOYED <- 0,
+       {baseline_employed_prob <- apply(validation_patient %>% select(risk_factors_employment), 1, function(x) annual_p_bernoulli(employment_equations$employment_coef,x)$p)
+       validation_patient$EMPLOYED <- unlist(lapply(baseline_employed_prob, function(x) rbinom(1,1,x))) #EMPLOYED = yes/no
+       })
+validation_patient$PROD.LOSS <- 0 
+validation_patient$BMI1 <- if_else(validation_patient$BMI < 18.5, 1, 0)
+validation_patient$BMI3 <- if_else(validation_patient$BMI >= 25, 1, 0)
+
+#validation_patient[event_vars] <- 0 
+
+validation_patient$eGFR       <- validation_patient$eGFR/10 
+validation_patient$eGFR60more <- if_else(validation_patient$eGFR >= 6, validation_patient$eGFR, 0)
+validation_patient$eGFR60less <- if_else(validation_patient$eGFR <  6, validation_patient$eGFR, 0)
+validation_patient$HDL <- validation_patient$HDL*10
+validation_patient$HEART.R <- validation_patient$HEART.R/10 
+validation_patient$LDL       <- validation_patient$LDL*10
+validation_patient$LDL35more <- if_else(validation_patient$LDL >= 35, validation_patient$LDL, 0)
+validation_patient$SBP <- validation_patient$SBP/10
+
+annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+
+annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[2,] %>% select(risk_factors_macrovascular),current_patient$YEAR)$p
+
+
+
 # For death in years with no history or events and in years with history but no events, H(t|x_j) is assumed to follow a 
 # Gompertz distribution where t is the current age. The functional form of H(t|x_j) is the same for both types of death. 
 # Only the regression coefficients and the risk factors are different for each type of death. 
