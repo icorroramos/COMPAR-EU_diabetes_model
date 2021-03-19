@@ -30,44 +30,10 @@
 # The risk factors used to predict macrovascular complications are read from the following file (UKPDS paper ESM Table 2):
 # Note: pay extra attention to the data transformation. Otherwise, the equations will not make sense!
 
-macrovascular_coef <- read.csv("input/UKPDS_macrovascular_coef.csv")
-
+macrovascular_risk_equations <- read.csv("input/UKPDS_macrovascular_coef.csv")
 # The vector below contains the names of all risk factors used to predict macrovascular complications in the model.
-# risk_factors_macrovascular <- c("AFRO", "AGE.DIAG", "FEMALE", "INDIAN", "ATFIB", "BMI", "eGFR", "eGFR60less", "HbA1c", "HDL",
-#                                 "LDL", "LDL35more", "MMALB", "PVD", "SBP", "SMOKER", "WBC", "AMP.HIST", "CHF.HIST", "IHD.HIST", 
-#                                 "STROKE.HIST", "ULCER.HIST") # Delete when it works
-
-risk_factors_macrovascular <- macrovascular_coef$X[-(1:2)] 
-
-# Besides the risk factors, there are two other parameters used in the UKPDS equations called "lambda" and "ro". We added them below.
-# Now we have the names of all the parameters (lambda, ro and risk factors) used to predict macrovascular risks in the model.
-
-#parameters_macrovascular <- c("lambda", "ro", risk_factors_macrovascular) # Delete when it works
-parameters_macrovascular <- macrovascular_coef$X #not needed
-
-# And now, below we have the regression coefficients as reported in the UKPDS paper ESM Table 4.
-# Note that not all risk factors are used to predict all complications. For that reason, you see some 0's in the regression coefficients below.
-
-# The format for each vector below is c(lambda, ro, risk factors) where the values are taken from the UKPDS paper ESM Table 4.
-# CHF <- c(-12.332, 1.514, 0, 0.068,  0, 0, 1.562, 0.072, 0, -0.220, 0, 0, 0.012, 0, 0.771, 0.479, 0, 0, 0, 0.658, 0, 0, 0, 0.654)
-# IHD <- c(-6.709, 1.276, 0, 0.016, -0.532, 0, 0, 0, -0.053, 0, 0, -0.065, 0.023, 0, 0, 0.486, 0.058, 0, 0, 0.526, 0.824, 0, 0, 0)
-# # first MI for males: exponential distribution ro = 1 (2nd element in vector) --> explanation below in "annual_p_weibull" function
-# FMIMALE <- c(-8.791, 1, -0.83, 0.045, 0 , 0.279, 0, 0, 0, 0, 0.108, -0.049, 0.023, 0, 0.203, 0.340, 0.046, 0.277, 0.026, 0.743, 0.814, 0.846, 0.448, 0) 
-# # first MI for females
-# FMIFEMALE <- c(-8.708, 1.376, -1.684, 0.041, 0, 0, 0, 0, 0, -0.28, 0.078, 0, 0, 0.035, 0.277, 0.469, 0.056, 0.344, 0.07, 0, 0.853, 0.876, 0, 0)
-# # second MI: exponential distribution ro = 1 (2nd element in vector)
-# SMI <- c(-4.179, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.021, 0, 0.344, 0, 0, 0, 0, 0, 0, 0, 0, 0) 
-# # first stroke
-# FSTROKE <- c(-13.053, 1.466, 0, 0.066, -0.42, 0, 1.476, 0, 0, -0.190, 0.092, 0, 0.016, 0, 0.420, 0, 0.170, 0.331, 0.040, 1.090, 0, 0.481, 0, 0)
-# # second stroke
-# SSTROKE <- c(-9.431, 1.956, 0, 0.046, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.537, 0, 0, 0.656, 0, 0, 0, 0, 0, 0)
-
-# Below we simply create a table (R data frame) with all the coefficients of the regression equations used to predict macrovascular complications.
-# When we define the risk equations below in the code, these will read the coefficients from this table in order to predict the annual 
-# probability of experiencing a macrovascular complication.
-#macrovascular_risk_equations <- data.frame(CHF, IHD, FMIMALE, FMIFEMALE, SMI, FSTROKE, SSTROKE, row.names = parameters_macrovascular)
-
-macrovascular_risk_equations <- macrovascular_coef
+# this is needed below and in the simulation function.
+risk_factors_macrovascular <- macrovascular_risk_equations$X[-(1:2)] 
 
 
 # Microvascular complications: UKPDS paper ESM Table 5. Microvascular complications include blindness, diabetic ulcer amputation and renal failure.
