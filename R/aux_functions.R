@@ -34,7 +34,6 @@ macrovascular_risk_equations <- read.csv("input/UKPDS_macrovascular_coef.csv")
 # this is needed below and in the simulation function.
 risk_factors_macrovascular <- macrovascular_risk_equations$X[-(1:2)] 
 
-
 # Microvascular complications: UKPDS paper ESM Table 5. Microvascular complications include blindness, diabetic ulcer amputation and renal failure.
 # The risk factors used to predict microvascular complications are read from the following file (UKPDS paper ESM Table 5):
 microvascular_risk_equations <- read.csv("input/UKPDS_microvascular_coef.csv")
@@ -43,63 +42,11 @@ microvascular_risk_equations <- read.csv("input/UKPDS_microvascular_coef.csv")
 # this is needed below and in the simulation function.
 risk_factors_microvascular <- microvascular_risk_equations$X[-(1:2)]
   
-# Risk of death: UKPDS paper ESM Table 6. Four equations depending on events and history. The risk factors (the ones that are not 
-# defined above for macro/microvascular complications) are the following (notation used in the model, definition from UKPDS paper ESM Table 2):
-
-# 27. YEAR: duration of diabetes in years measured continuously. HR per year increase in duration of diabetes. 
-#           Note it increases + 1 after each simulated year.
-# 28. BMI1: 1 == BMI < 18.5 m/kg^2, 0 == otherwise. HR referent 18.5 m/kg^2 <= BMI < 25 m/kg^2. It depends thus on the variable BMI.
-# 29. BMI3: 1 == BMI >= 25 m/kg^2, 0 == otherwise. HR referent 18.5 m/kg^2 <= BMI < 25 m/kg^2. It depends thus on the variable BMI.
-# 30. CURR.AGE: current age in years measured continuously. HR per year increase in current age. Note CURR.AGE = AGE.DIAG + YEAR at the 
-#               beginning of the simulation. Also after each year in the simulation if YEAR is properly updated.
-# 31. AMP1.EVENT: 1 == first amputation, 0 == otherwise. HR referent == no first amputation event
-# 32. AMP2.EVENT: 1 == second amputation, 0 == otherwise. HR referent == no second amputation event
-# 33. IHD.EVENT: 1 == IHD, 0 == otherwise. HR referent == no IHD event
-# 34. MI.EVENT: 1 == MI, 0 == otherwise. HR referent == no MI event
-# 35. MI.HIST: 1 == history of MI, 0 == otherwise. HR referent == no prior MI
-# 36. RENAL.EVENT: 1 == renal failure event, 0 == otherwise. HR referent == no renal failure event
-# 37. RENAL.HIST: 1 == history of renal failure, 0 == otherwise. HR referent == no prior renal failure
-# 38. STROKE.EVENT: 1 == stroke, 0 == otherwise. HR referent == no stroke event
-
-
-# QUESTION: pay extra attention to the data transformation. Otherwise, the equations will not make sense!
+# Risk of death: UKPDS paper ESM Table 6. Four equations depending on events and history:
+mortality_risk_equations <- read.csv("input/UKPDS_mortality_coef.csv")
 
 # The vector below contains the names of all risk factors used to predict death in the model. 
-risk_factors_mortality <- c("FEMALE", "INDIAN", "YEAR", "ATFIB", "BMI1", "BMI3", "CURR.AGE", "HDL", "HEART.R", 
-                            "MMALB", "PVD", "SMOKER", "WBC", "AMP1.EVENT", "AMP.HIST", "AMP2.EVENT", "CHF.HIST", 
-                            "IHD.EVENT", "IHD.HIST", "MI.EVENT", "MI.HIST", "RENAL.EVENT", "RENAL.HIST", "STROKE.EVENT", "STROKE.HIST")
-
-# Besides the risk factors, there are two other parameters used in the UKPDS equations called "lambda" and "phi". We added them below.
-# Now we have the names of all the parameters (lambda, phi and risk factors) used to predict death in the model.
-parameters_mortality <- c("lambda", "phi", risk_factors_mortality)
-
-
-# And now, below we have the regression coefficients as reported in the UKPDS paper ESM Table 6.
-# Note that not all risk factors are used to predict all types of death. For that reason, you see some 0's in the regression coefficients below.
-# The format for each vector below is c(lambda, phi, risk factors) where the values are taken from the UKPDS paper ESM Table 6.
-
-# Death in years with no history or events: Gompertz distribution
-DEATHNOHIST <- c(-10.908, 0.098, -0.229, rep(0,10), 0.379, rep(0,13))
-
-# Death in first year of events (excluding blindness or ulcer): Logistic distribution
-DEATH1YEVENT <- c(-6.916, 0, 0, -0.540, 0.042, rep(0,3), 0.058, 0, 0.124, 0, 0.367, 0.444, 0, 0.321, rep(0,3), 0.423,0, 1.309, 0, 0.584,0, 0.547, 0) 
-
-# QUESTION: 2nd element in logistic not sure if 0 or 1
-
-# Death in years with history but no events (when there is history of ANY event): Gompertz distribution
-DEATHHISTNOEVENT <- c(-9.207, 0.073, rep(0,4), 1.083, -0.293, rep(0,3), 0.348, 0, 0.374, 0.048, 0, 0.539, 0, 0.632, rep(0, 5), 1.150, 0, 0.473)
-
-# Death in subsequent years of events(excluding blindness or ulcer): Logistic distribution
-DEATHYSEVENT <- c(-4.868, 0, rep(0,3), 1.081, 0, 0, 0.050, 0.068, 0, 0, 0.352, 0, 0.089, -1.267, 0.753, -1.727, 0, 0.583, -0.507, 0.982, 0.440, 0, 0.961, -0.619, 0) 
-
-# QUESTION: 2nd element in logistic not sure if 0 or 1 --> Think it is 0 if we look at paper! Not sure why I wrote that then...
-
-
-# Below we simply create a table (R data frame) with all the coefficients of the regression equations used to predict death.
-# When we define the risk equations below in the code, these will read the coefficients from this table in order to predict the annual 
-# probability of death.
-mortality_risk_equations <- data.frame(DEATHNOHIST, DEATH1YEVENT, DEATHHISTNOEVENT, DEATHYSEVENT, row.names = parameters_mortality)
-
+risk_factors_mortality <- mortality_risk_equations$X[-(1:2)]
 
 # Below we consider all the patient characteristics (38) that "define" a patient in this model. 
 risk_factors_simulation <- unique(sort(c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVENT",

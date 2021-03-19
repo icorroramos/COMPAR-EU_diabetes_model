@@ -41,3 +41,20 @@ UKPDS equations used for all countries.
 #              HR per 10 bpm increase.
 # 26. BLIND.HIST: 1 == history of blindness, 0 == otherwise. HR referent == no prior blindness
 
+# Risk of death: UKPDS paper ESM Table 6. Four equations depending on events and history. The risk factors (the ones that are not 
+# defined above for macro/microvascular complications) are the following (notation used in the model, definition from UKPDS paper ESM Table 2):
+
+# 27. YEAR: duration of diabetes in years measured continuously. HR per year increase in duration of diabetes. 
+#           Note it increases + 1 after each simulated year.
+# 28. BMI1: 1 == BMI < 18.5 m/kg^2, 0 == otherwise. HR referent 18.5 m/kg^2 <= BMI < 25 m/kg^2. It depends thus on the variable BMI.
+# 29. BMI3: 1 == BMI >= 25 m/kg^2, 0 == otherwise. HR referent 18.5 m/kg^2 <= BMI < 25 m/kg^2. It depends thus on the variable BMI.
+# 30. CURR.AGE: current age in years measured continuously. HR per year increase in current age. Note CURR.AGE = AGE.DIAG + YEAR at the 
+#               beginning of the simulation. Also after each year in the simulation if YEAR is properly updated.
+# 31. AMP1.EVENT: 1 == first amputation, 0 == otherwise. HR referent == no first amputation event
+# 32. AMP2.EVENT: 1 == second amputation, 0 == otherwise. HR referent == no second amputation event
+# 33. IHD.EVENT: 1 == IHD, 0 == otherwise. HR referent == no IHD event
+# 34. MI.EVENT: 1 == MI, 0 == otherwise. HR referent == no MI event
+# 35. MI.HIST: 1 == history of MI, 0 == otherwise. HR referent == no prior MI
+# 36. RENAL.EVENT: 1 == renal failure event, 0 == otherwise. HR referent == no renal failure event
+# 37. RENAL.HIST: 1 == history of renal failure, 0 == otherwise. HR referent == no prior renal failure
+# 38. STROKE.EVENT: 1 == stroke, 0 == otherwise. HR referent == no stroke event
