@@ -292,18 +292,34 @@ annual_p_gompertz <- function(regression_coefficents_input, risk_factors_input, 
 
 # Death in year with no history or events females
 annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
-annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p       
+# [1] 0.004071926
+annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating       
+# [1] 0.004071926
 
-
-# [1] 0.6601135
-# Death in subsequent year of events males
-annual_p_logistic(mortality_risk_equations$DEATHYSEVENT,validation_patient[2,] %>% select(risk_factors_mortality))$p
-# [1] 0.6601135
+# Death in year with no history or events males
+annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
+# [1] 0.005117118
+annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating       
+# [1] 0.005117118
 
 # Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? No, gender not predictor.
+# Is a difference between gender expected? Yes, negative coefficient for females.
 
 
+# Death in year with history but no events females
+annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
+# [1] 0.006813194
+annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating       
+# [1] 0.006813194
+
+# Death in year with history but no events males
+annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
+# [1] 0.006813194
+annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating       
+# [1] 0.006813194
+
+# Is the predicted probability plausible? --> Gimon
+# Is a difference between gender expected? No, gender is not a predictor.
 
 
-# ---> Check finally whether in the simulation code, these functions are indeed properly called with the right parameters.
+# Isaac: ---> Check again csv vs. UKPDS tables. Check finally whether in the simulation code, these functions are indeed properly called with the right parameters.
