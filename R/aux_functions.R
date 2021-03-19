@@ -53,8 +53,9 @@ risk_factors_simulation <- unique(sort(c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVEN
                                          risk_factors_macrovascular, 
                                          risk_factors_microvascular, 
                                          risk_factors_mortality)))
-# Even though not defined as such in the UKPDS equations, we have considered 
-# the variables CHF.EVENT, BLIND.EVENT, ULCER.EVENT XXXX to keep the code more consistent.
+# Even though not defined as such in the UKPDS equations, we have considered the .EVENT variables to keep the code more consistent.
+
+### RISK FUNCTION
 
 # The simulation model relies on the calculations of annual probabilities for the above mentioned complications.
 # For example, the unconditional probability of CHF in the interval t to t+1 is calculated as a function of the cumulative hazard as  
