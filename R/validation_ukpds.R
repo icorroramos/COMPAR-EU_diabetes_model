@@ -1,4 +1,37 @@
+#########################################################
 ########## VALIDATION UKPDS RISK EQUATIONS ##############
+#########################################################
+
+validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
+
+retirement_age_input <- 65
+
+validation_patient$AGE.DIAG <- validation_patient$CURR.AGE - validation_patient$YEAR 
+validation_patient$CURR.AGE.SCALE.INF  <- (validation_patient$CURR.AGE - 72.5474088)/10.4626624 
+validation_patient$CURR.AGE.SCALE.PROD <- (validation_patient$CURR.AGE - 60.2737989)/6.1177269 
+validation_patient$CURR.AGE.2 <- (validation_patient$CURR.AGE)^2
+validation_patient$INF.CARE   <- 0
+ifelse(validation_patient$CURR.AGE >= retirement_age_input, validation_patient$EMPLOYED <- 0,
+       {baseline_employed_prob <- apply(validation_patient %>% select(risk_factors_employment), 1, function(x) annual_p_bernoulli(employment_equations$employment_coef,x)$p)
+       validation_patient$EMPLOYED <- unlist(lapply(baseline_employed_prob, function(x) rbinom(1,1,x))) #EMPLOYED = yes/no
+       })
+validation_patient$PROD.LOSS <- 0 
+validation_patient$BMI1 <- if_else(validation_patient$BMI < 18.5, 1, 0)
+validation_patient$BMI3 <- if_else(validation_patient$BMI >= 25, 1, 0)
+
+#validation_patient[event_vars] <- 0 
+
+validation_patient$eGFR       <- validation_patient$eGFR/10 
+validation_patient$eGFR60more <- if_else(validation_patient$eGFR >= 6, validation_patient$eGFR, 0)
+validation_patient$eGFR60less <- if_else(validation_patient$eGFR <  6, validation_patient$eGFR, 0)
+validation_patient$HDL <- validation_patient$HDL*10
+validation_patient$HEART.R <- validation_patient$HEART.R/10 
+validation_patient$LDL       <- validation_patient$LDL*10
+validation_patient$LDL35more <- if_else(validation_patient$LDL >= 35, validation_patient$LDL, 0)
+validation_patient$SBP <- validation_patient$SBP/10
+
+validation_patient
+
 
 # Macrovascular complications: UKPDS paper ESM Table 4. Macrovascular complications include CHF, IHD, MI and stroke.
 # The risk factors used to predict macrovascular complications are read from the following file (UKPDS paper ESM Table 2):
@@ -27,14 +60,8 @@ risk_factors_simulation <- unique(sort(c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVEN
                                          risk_factors_macrovascular, 
                                          risk_factors_microvascular, 
                                          risk_factors_mortality)))
-# Even though not defined as such in the UKPDS equations, we have considered the .EVENT variables to keep the code more consistent.
 
 ### UKPDS RISK FUNCTIONS ### 
-
-# The simulation model relies on the calculations of annual probabilities for the above mentioned complications.
-# For example, the unconditional probability of CHF in the interval t to t+1 is calculated as a function of the cumulative hazard as  
-# P = 1 - exp{H(t|x_j) - H(t+1|x_j)}, where H is the cumulative hazard function, t is the duration of diabetes (years) and x_j are 
-# the covariates in the equation (also called risk factors). 
 
 # For CHF, IHD, 1st MI for females, 1st and 2nd stroke and 1st amputation with no prior ulcer, 
 # H(t|x_j) is assumed to follow a (proportional hazards) Weibull distribution where t is the duration of diabetes.
@@ -44,7 +71,6 @@ risk_factors_simulation <- unique(sort(c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVEN
 # weibull distribution == exponential distribution. Thus, the same function "annual_p_weibull" can be used when an exponential
 # distribution is assumed.
 
-# Notation: as a general rule, names for function input parameters end with "_input".
 annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, duration_diabetes_input){
   
   risk_factors_input <- as.numeric(risk_factors_input) # delete if not needed
@@ -65,31 +91,7 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
 }
 
 
-# Validation of the Weibull events <-- comment when finish
-validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
-validation_patient$AGE.DIAG <- validation_patient$CURR.AGE - validation_patient$YEAR 
-validation_patient$CURR.AGE.SCALE.INF  <- (validation_patient$CURR.AGE - 72.5474088)/10.4626624 
-validation_patient$CURR.AGE.SCALE.PROD <- (validation_patient$CURR.AGE - 60.2737989)/6.1177269 
-validation_patient$CURR.AGE.2 <- (validation_patient$CURR.AGE)^2
-validation_patient$INF.CARE   <- 0
-ifelse(validation_patient$CURR.AGE >= retirement_age_input, validation_patient$EMPLOYED <- 0,
-       {baseline_employed_prob <- apply(validation_patient %>% select(risk_factors_employment), 1, function(x) annual_p_bernoulli(employment_equations$employment_coef,x)$p)
-       validation_patient$EMPLOYED <- unlist(lapply(baseline_employed_prob, function(x) rbinom(1,1,x))) #EMPLOYED = yes/no
-       })
-validation_patient$PROD.LOSS <- 0 
-validation_patient$BMI1 <- if_else(validation_patient$BMI < 18.5, 1, 0)
-validation_patient$BMI3 <- if_else(validation_patient$BMI >= 25, 1, 0)
-
-#validation_patient[event_vars] <- 0 
-
-validation_patient$eGFR       <- validation_patient$eGFR/10 
-validation_patient$eGFR60more <- if_else(validation_patient$eGFR >= 6, validation_patient$eGFR, 0)
-validation_patient$eGFR60less <- if_else(validation_patient$eGFR <  6, validation_patient$eGFR, 0)
-validation_patient$HDL <- validation_patient$HDL*10
-validation_patient$HEART.R <- validation_patient$HEART.R/10 
-validation_patient$LDL       <- validation_patient$LDL*10
-validation_patient$LDL35more <- if_else(validation_patient$LDL >= 35, validation_patient$LDL, 0)
-validation_patient$SBP <- validation_patient$SBP/10
+# Validation of the Weibull events 
 
 annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
 
