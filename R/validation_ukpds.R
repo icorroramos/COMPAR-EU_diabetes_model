@@ -2,6 +2,7 @@
 ########## VALIDATION UKPDS RISK EQUATIONS ##############
 #########################################################
 
+# Patient characteristics
 validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
 
 retirement_age_input <- 65
@@ -32,6 +33,8 @@ validation_patient$SBP <- validation_patient$SBP/10
 
 validation_patient
 
+
+# Regression equations
 
 # Macrovascular complications: UKPDS paper ESM Table 4. Macrovascular complications include CHF, IHD, MI and stroke.
 # The risk factors used to predict macrovascular complications are read from the following file (UKPDS paper ESM Table 2):
