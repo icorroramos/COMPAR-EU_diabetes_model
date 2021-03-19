@@ -1,33 +1,4 @@
-#######################################################
-########## PART I - UKPDS RISK EQUATIONS ##############
-#######################################################
-
-# This model makes use of previously estimated regression equations to predict the risk of experiencing diabetes-related 
-# complications. These regression equations were sourced from UKPDS 82 and can be found in the paper by Hayes et al. 2013:
-
-# UKPDS outcomes model 2: a new version of a model to simulate lifetime health outcomes of patients with type 2 diabetes mellitus
-# using data from the 30 year United Kingdom Prospective Diabetes Study: UKPDS 82.
-# Hayes AJ, Leal J, Gray AM, Holman RR, Clarke PM. Diabetologia. 2013 Sep;56(9):1925-33. Epub 2013 Jun 22.
-# DOI: 10.1007/s00125-013-2940-y
-
-
-### COMPLICATIONS ### 
-
-# The simulation model reads these coefficients and uses the functions below to predict the annual risk of experiencing the following 
-# nine diabetes-related complications: 
-
-# 1. Congestive heart failure (CHF) [Assumption: It can happen just once as event. After that, it is considered as history.]
-# 2. Myocardial Infarction (MI) [Assumption: There is a distinction between first and second. Third and above is not possible.]
-# 3. Stroke [Assumption: There is a distinction between first and second. Third and above is not possible.]
-# 4. Ischaemic Heart Disease (IHD) [Assumption: It can happen just once as event. After that, it is considered as history.]
-# 5. Amputation [Assumption: There is a distinction between first and second. Third and above is not possible.]
-# 6. Blindness [Assumption: It can happen just once as event, even though it is defined as blindness in one eye (UKPDS OM1 paper). After that, it is considered as history.]
-# 7. Renal failure [Assumption: It can happen just once as event. After that, it is considered as history.]
-# 8. Diabetic Ulcer [Assumption: It can happen just once as event. After that, it is considered as history.]
-# 9. Death [It can happen just once as event.]
-
-# Multiple events are possible in the same year but only the number of times specified above. The risk factors and the regression 
-# coefficients for each complication were taken from the UKPDS paper as explained below.
+########## VALIDATION UKPDS RISK EQUATIONS ##############
 
 # Macrovascular complications: UKPDS paper ESM Table 4. Macrovascular complications include CHF, IHD, MI and stroke.
 # The risk factors used to predict macrovascular complications are read from the following file (UKPDS paper ESM Table 2):
