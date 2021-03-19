@@ -112,7 +112,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   simulation_baseline_patients$LDL       <- simulation_baseline_patients$LDL*10
   simulation_baseline_patients$LDL35more <- if_else(simulation_baseline_patients$LDL >= 35, simulation_baseline_patients$LDL, 0)
   
-    simulation_baseline_patients$SBP        <- simulation_baseline_patients$SBP/100 #--> 100 or 10?
+  # SBP
+  simulation_baseline_patients$SBP <- simulation_baseline_patients$SBP/100 #--> 100 or 10?
   
   # Create now the simulation patient history table (for now is just empty) to save all simulation results 
   simulation_patients_history <- simulation_baseline_patients[FALSE,c(history_characteristics)]
