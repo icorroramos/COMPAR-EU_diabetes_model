@@ -10,12 +10,15 @@ tx.cost <- 0 # Total treatment cost
 
 treateff.start <- 1 # Cycle in which treatment effect starts
 treateff.end <- 4 # Cycle in which treatment effect ends
-treateff.decline <- 2 # Cycle in which treatment effect strats to decline linearly
+treateff.decline <- 2 # Cycle in which treatment effect starts to decline linearly
 
 treateff.hba1c <- -1.82 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff.hdl <- 0 # Treatment effect on HDL-choleresterol (absolute effect, which unit??)
-treateff.ldl <- 0 # Treatment effect on LDL-choleresterol (absolute effect, which unit??)
+treateff.hdl <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
+treateff.ldl <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
 
+# The sim.vars object collects all parameters that define the simulation into one object
+# Then, it is saved with the output of the simulation. This way, if we  have multiple output files, we always have the information 
+# on the relevant input parameters that were used to produce the output.
 sim.vars <- list(npats, tx.cost, mget(apropos('treateff.')))
 
 
