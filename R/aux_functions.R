@@ -10,6 +10,9 @@
 # Hayes AJ, Leal J, Gray AM, Holman RR, Clarke PM. Diabetologia. 2013 Sep;56(9):1925-33. Epub 2013 Jun 22.
 # DOI: 10.1007/s00125-013-2940-y
 
+
+### COMPLICATIONS ### 
+
 # The simulation model reads these coefficients and uses the functions below to predict the annual risk of experiencing the following 
 # nine diabetes-related complications: 
 
