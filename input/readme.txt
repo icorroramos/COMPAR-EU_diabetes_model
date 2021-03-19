@@ -31,4 +31,13 @@ UKPDS equations used for all countries.
 # 21. STROKE.HIST: 1 == history of stroke, 0 == otherwise. HR referent == no prior stroke
 # 22. ULCER.HIST: 1 == history of diabetic ulcer, 0 == otherwise. HR referent == no prior diabetic ulcer
 
+# Microvascular complications: UKPDS paper ESM Table 5. Microvascular complications include blindness, diabetic ulcer amputation and renal failure.
+# The risk factors (the ones that are not defined above for macrovascular complications) used to predict microvascular complications 
+# are the following (notation used in the model, definition from UKPDS paper ESM Table 2):
+
+# 23. eGFR60more: Same as eGFR. Continuous spline (knot at 60) and further DIVIDED by 10. HR per 10 ml/min/1.73m^2 increase if > 60
+# 24. HAEM: haemoglobin g/dL measured continuously. HR per 1 g/dL increase
+# 25. HEART.R: heart rate (beats per minute) determined from inspiration/expiration RR on ECG. Continuously measured and further DIVIDED by 10.
+#              HR per 10 bpm increase.
+# 26. BLIND.HIST: 1 == history of blindness, 0 == otherwise. HR referent == no prior blindness
 

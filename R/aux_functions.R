@@ -28,59 +28,21 @@
 
 # Macrovascular complications: UKPDS paper ESM Table 4. Macrovascular complications include CHF, IHD, MI and stroke.
 # The risk factors used to predict macrovascular complications are read from the following file (UKPDS paper ESM Table 2):
-# Note: pay extra attention to the data transformation. Otherwise, the equations will not make sense!
-
 macrovascular_risk_equations <- read.csv("input/UKPDS_macrovascular_coef.csv")
+
 # The vector below contains the names of all risk factors used to predict macrovascular complications in the model.
 # this is needed below and in the simulation function.
 risk_factors_macrovascular <- macrovascular_risk_equations$X[-(1:2)] 
 
 
 # Microvascular complications: UKPDS paper ESM Table 5. Microvascular complications include blindness, diabetic ulcer amputation and renal failure.
-# The risk factors (the ones that are not defined above for macrovascular complications) used to predict microvascular complications 
-# are the following (notation used in the model, definition from UKPDS paper ESM Table 2):
-
-# 23. eGFR60more: Same as eGFR. Continuous spline (knot at 60) and further DIVIDED by 10. HR per 10 ml/min/1.73m^2 increase if > 60
-# 24. HAEM: haemoglobin g/dL measured continuously. HR per 1 g/dL increase
-# 25. HEART.R: heart rate (beats per minute) determined from inspiration/expiration RR on ECG. Continuously measured and further DIVIDED by 10.
-#              HR per 10 bpm increase.
-# 26. BLIND.HIST: 1 == history of blindness, 0 == otherwise. HR referent == no prior blindness
-
-# Note: pay extra attention to the data transformation. Otherwise, the equations will not make sense!
+# The risk factors used to predict microvascular complications are read from the following file (UKPDS paper ESM Table 5):
+microvascular_risk_equations <- read.csv("input/UKPDS_microvascular_coef.csv")
 
 # The vector below contains the names of all risk factors used to predict microvascular complications in the model.
-risk_factors_microvascular <- c("AFRO", "AGE.DIAG", "FEMALE", "ATFIB", "BMI", "eGFR60less", "eGFR60more", "HAEM", "HbA1c", "HDL",
-                                "HEART.R", "LDL", "MMALB", "PVD", "SBP", "WBC", "AMP.HIST", "BLIND.HIST", "CHF.HIST", 
-                                "IHD.HIST", "STROKE.HIST")
-
-# Besides the risk factors, there are two other parameters used in the UKPDS equations called "lambda" and "ro". We added them below.
-# Now we have the names of all the parameters (lambda, ro and risk factors) used to predict microvascular risks in the model.
-parameters_microvascular <- c("lambda", "ro", risk_factors_microvascular)
-
-# And now, below we have the regression coefficients as reported in the UKPDS paper ESM Table 5.
-# Note that not all risk factors are used to predict all complications. For that reason, you see some 0's in the regression coefficients below.
-# The format for each vector below is c(lambda, ro, risk factors) where the values are taken from the UKPDS paper ESM Table 5.
-
-# Blindness: ro == 1  --> exponential distribution
-BLIND <- c(-11.607, 1, 0, 0.047, 0, 0, 0, 0, 0, 0, 0.171, 0, 0.08, 0, 0, 0, 0.068, 0.052, 0, 0, 0.841, 0.610, 0) 
-# Diabetic ulcer: 
-ULCER <- c(-11.295, 0, 0, 0.043, 0, 0, 0.053, 0, 0, 0, 0.160, 0, 0, 0, 0, 0.968, 0, 0, 0, 0, 0, 0, 0) 
-# QUESTION: ro is 2nd element. ULCER is logistic so don't know yet if ro = 1  or 0
-
-# First amputation, no prior ulcer history
-FAMPNOULCER <- c(-14.844, 2.067, 0, 0.023, -0.445, 1.088, 0, 0, 0, 0, 0.248, -0.059, 0.098, 0, 0.602, 1.010, 0.086, 0.040, 0, 0, 0, 0, 1.299)
-# First amputation, prior ulcer history
-FAMPULCER <- c(-0.811, 1, 0, -0.065, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.769, 0, 0, 0, 0, 0, 0, 0)
-# Second amputation
-SAMP <- c(-3.455, 1, rep(0,8), 0.127, rep(0,12))
-# Renal failure
-RENALF <- c(3.549, 1, 0.686, -0.029, -0.869, 0, -0.054, -1.031, -0.487, -0.268, 0, 0, 0, 0.027, 1.373, 0, 0.085, 0.029, 1.108, 0.732, 0, 0, 0)
-
-# Below we simply create a table (R data frame) with all the coefficients of the regression equations used to predict microvascular complications.
-# When we define the risk equations below in the code, these will read the coefficients from this table in order to predict the annual 
-# probability of experiencing a microvascular complication.
-microvascular_risk_equations <- data.frame(BLIND, ULCER, FAMPNOULCER, FAMPULCER, SAMP, RENALF, row.names = parameters_microvascular)
-
+# this is needed below and in the simulation function.
+risk_factors_microvascular <- microvascular_risk_equations$X[-(1:2)]
+  
 # Risk of death: UKPDS paper ESM Table 6. Four equations depending on events and history. The risk factors (the ones that are not 
 # defined above for macro/microvascular complications) are the following (notation used in the model, definition from UKPDS paper ESM Table 2):
 
