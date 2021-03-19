@@ -223,7 +223,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # ULCER is Logistic. This is assumed to happen only once; that's why the if condition below is used. 
       if(current_patient$ULCER.HIST == 0){
-        current_ULCER_prob  <- annual_p_logistic(microvascular_risk_equations$BLIND,current_patient %>% select(risk_factors_microvascular))$p
+        current_ULCER_prob  <- annual_p_logistic(microvascular_risk_equations$ULCER,current_patient %>% select(risk_factors_microvascular))$p #typo corrected
         current_patient$ULCER.EVENT <- rbinom(1,1,current_ULCER_prob) # Update current_patient$ULCER.HIST at the end of the year.
       }
       
