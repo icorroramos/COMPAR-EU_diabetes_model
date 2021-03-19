@@ -61,7 +61,7 @@
 
 # QUESTION: Should we read these from external files?
 
-# The vector below contains the names of all risk factors used to predict macrovacular complications in the model.
+# The vector below contains the names of all risk factors used to predict macrovascular complications in the model.
 risk_factors_macrovascular <- c("AFRO", "AGE.DIAG", "FEMALE", "INDIAN", "ATFIB", "BMI", "eGFR", "eGFR60less", "HbA1c", "HDL",
                                 "LDL", "LDL35more", "MMALB", "PVD", "SBP", "SMOKER", "WBC", "AMP.HIST", "CHF.HIST", "IHD.HIST", 
                                 "STROKE.HIST", "ULCER.HIST")
