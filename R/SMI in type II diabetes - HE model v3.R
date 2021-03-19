@@ -98,7 +98,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # See description in the file "aux_functions.R".
   
   # eGFR
-  simulation_baseline_patients$eGFR       <- simulation_baseline_patients$eGFR/10 # /10 according to UKPDS equations 
+  simulation_baseline_patients$eGFR       <- simulation_baseline_patients$eGFR/10 
   simulation_baseline_patients$eGFR60more <- if_else(simulation_baseline_patients$eGFR >= 6, simulation_baseline_patients$eGFR, 0)
   simulation_baseline_patients$eGFR60less <- if_else(simulation_baseline_patients$eGFR <  6, simulation_baseline_patients$eGFR, 0)
   
@@ -113,7 +113,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   simulation_baseline_patients$LDL35more <- if_else(simulation_baseline_patients$LDL >= 35, simulation_baseline_patients$LDL, 0)
   
   # SBP
-  simulation_baseline_patients$SBP <- simulation_baseline_patients$SBP/100 #--> 100 or 10?
+  simulation_baseline_patients$SBP <- simulation_baseline_patients$SBP/10
   
   # Create now the simulation patient history table (for now is just empty) to save all simulation results 
   simulation_patients_history <- simulation_baseline_patients[FALSE,c(history_characteristics)]
