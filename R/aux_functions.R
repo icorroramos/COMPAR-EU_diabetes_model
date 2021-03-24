@@ -137,30 +137,6 @@ annual_p_logistic <- function(regression_coefficents_input, risk_factors_input){
 }
 
 
-#####
-
-# Small validation exercise. Delete when OK.
-
-# Reproduce examples in statistical appendix of UKPDS paper:
-# annual_p_gompertz is a function of (regression_coefficients_input, risk_factors_input, current_age_input)
-# risk factors inputs for mortality are ("FEMALE", "INDIAN", "YEAR", "ATFIB", "BMI1", "BMI3", "CURR.AGE", "HDL", "HEART.R", 
-# "MMALB", "PVD", "SMOKER", "WBC", "AMP1.EVENT", "AMP.HIST", "AMP2.EVENT", "CHF.HIST", 
-# "IHD.EVENT", "IHD.HIST", "MI.EVENT", "MI.HIST", "RENAL.EVENT", "RENAL.HIST", "STROKE.EVENT", "STROKE.HIST") 
-# Probability of death in the current year for a male, 70 years old, smoker, with 12 years of diabetes, overweight, white blood cell count 6*10^6/ml, history of heart failure but no events in current year:
-# annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT,c(0,0,12,0,0,1,70,0,0,0,0,1,6,0,0,0,1,0,0,0,0,0,0,0,0),70)
-# $`H_t1`
-# [1] 0.6158459
-# 
-# $H_t2
-# [1] 0.6627674
-# 
-# $p
-# [1] 0.04583776
-# I do not get the same numbers as in the paper. But also with the calculations in the paper, I do not get the same numbers.
-
-# QUESTION: double-check the "annual_p_gompertz" function
-
-
 #################################
 # PART II - Define global lists #
 #################################
