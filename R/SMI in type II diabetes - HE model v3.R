@@ -181,7 +181,6 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         else{
           # First MI for male Exponential
           current_FMIMALE_prob <- annual_p_weibull(macrovascular_risk_equations$FMIMALE,current_patient %>% select(risk_factors_macrovascular),current_patient$YEAR)$p
-          #print(current_FMIMALE_prob)
           current_patient$MI.EVENT <- rbinom(1,1,current_FMIMALE_prob) # Update current_patient$MI.HIST after the year simulation is finished
         } # end if/else for gender
       }
