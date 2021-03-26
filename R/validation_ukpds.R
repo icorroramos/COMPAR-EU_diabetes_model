@@ -2,6 +2,8 @@
 ########## VALIDATION UKPDS RISK EQUATIONS ##############
 #########################################################
 
+source("setup.R")
+
 # Patient characteristics
 validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
 
