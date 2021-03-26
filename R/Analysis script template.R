@@ -12,9 +12,9 @@ treateff_start_input   <- 1 # Cycle in which treatment effect starts
 treateff_end_input     <- 4 # Cycle in which treatment effect ends
 treateff_decline_input <- 2 # Cycle in which treatment effect starts to decline linearly
 
-treateff.hba1c <- -1.82 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff.hdl <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
-treateff.ldl <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
+treateff_hba1c_input <- -1.82 # Treatment effect on HbA1c (in absolute %-points HbA1c)
+treateff_hdl_input   <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
+treateff_ldl_input   <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
 
 # The sim.vars object collects all parameters that define the simulation into one object
 # Then, it is saved with the output of the simulation. This way, if we  have multiple output files, we always have the information 
@@ -31,7 +31,7 @@ male_cost_inputs   <- read.csv("input/UK/Event cost male 2020.csv", sep=",")
 female_cost_inputs <- read.csv("input/UK/Event cost female 2020.csv", sep=",")
 
 # When a societal perspective is adopted, we also have future costs. This are obtained from the PAID online tool.
-future_medical_cost_inputs <- read.csv("input/UK/UKPAID__AllORUnrelated_Costs_2020.csv", sep=",") # Ingelin: 15/12/2020
+future_medical_cost_inputs    <- read.csv("input/UK/UKPAID__AllORUnrelated_Costs_2020.csv", sep=",") # Ingelin: 15/12/2020
 future_nonmedical_cost_inputs <- read.csv("input/UK/UK_nonmedical_futurecosts_data.csv", sep=",") # UK costs updated 11/12/2020 - corrected version from Hamraz
 
 # Utilities are UK-based and age/gender dependent
@@ -52,9 +52,9 @@ qol_inputs <- read.csv("input/UK/qol_inputs_UK.csv", sep=",")
 sim_results_female <- SMDMII_model_simulation(npats_input,  #patient_size_input: 
                                               1,  #female_input, 1 = female
                                               tx_cost_input, #tx_cost_input
-                                              c(treateff.hba1c,treateff_start_input,treateff_end_input,treateff_decline_input), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
-                                              c(treateff.hdl,treateff_start_input,treateff_end_input,treateff_decline_input),  #treatment_effect_HDL_input 
-                                              c(treateff.ldl, treateff_start_input,treateff_end_input,treateff_decline_input),  #treatment_effect_LDL_input --> from COMPAR + Assumption
+                                              c(treateff_hba1c_input,treateff_start_input,treateff_end_input,treateff_decline_input), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
+                                              c(treateff_hdl_input,treateff_start_input,treateff_end_input,treateff_decline_input),  #treatment_effect_HDL_input 
+                                              c(treateff_ldl_input, treateff_start_input,treateff_end_input,treateff_decline_input),  #treatment_effect_LDL_input --> from COMPAR + Assumption
                                               0, #treatment_effect_BMI_input from MH2020
                                               0.035, #cost_disc_rate_input
                                               0.035, #qol_disc_rate_input
@@ -147,9 +147,9 @@ rownames(sim_clinical_results_female_table_comp) <- "Comparator"
 sim_results_male <- SMDMII_model_simulation(npats_input, #patient_size_input: run 500 for LOLA
                                             0, #female_input, 1 = female
                                             tx_cost_input, #tx_cost_input --> Gimon
-                                            c(treateff.hba1c,treateff_start_input,treateff_end_input,treateff_decline_input), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
-                                            c(treateff.hdl,treateff_start_input,treateff_end_input,treateff_decline_input),  #treatment_effect_HDL_input 
-                                            c(treateff.ldl, treateff_start_input,treateff_end_input,treateff_decline_input),  #treatment_effect_LDL_input --> from COMPAR + Assumption                                                   
+                                            c(treateff_hba1c_input,treateff_start_input,treateff_end_input,treateff_decline_input), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
+                                            c(treateff_hdl_input,treateff_start_input,treateff_end_input,treateff_decline_input),  #treatment_effect_HDL_input 
+                                            c(treateff_ldl_input, treateff_start_input,treateff_end_input,treateff_decline_input),  #treatment_effect_LDL_input --> from COMPAR + Assumption                                                   
                                             0, #treatment_effect_BMI_input from MH2020
                                             0.035, #cost_disc_rate_input
                                             0.035, #qol_disc_rate_input
