@@ -5,7 +5,7 @@ init <- Sys.time()
 source("R/SMI in type II diabetes - HE model v3.R")
 
 # Control variables of simulation
-npats <- 5 # Number of patients in simulation
+npats_input <- 5 # Number of patients in simulation
 tx_cost_input <- 0 # Total treatment cost
 
 treateff.start <- 1 # Cycle in which treatment effect starts
@@ -19,7 +19,7 @@ treateff.ldl <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which 
 # The sim.vars object collects all parameters that define the simulation into one object
 # Then, it is saved with the output of the simulation. This way, if we  have multiple output files, we always have the information 
 # on the relevant input parameters that were used to produce the output.
-sim.vars <- list(npats, tx_cost_input, mget(apropos('treateff.')))
+sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
 
 
 
@@ -51,7 +51,7 @@ qol_inputs <- read.csv("input/UK/qol_inputs_UK.csv", sep=",")
 
 # Intervention
 
-sim_results_female <- SMDMII_model_simulation(npats,  #patient_size_input: 
+sim_results_female <- SMDMII_model_simulation(npats_input,  #patient_size_input: 
                                               1,  #female_input, 1 = female
                                               tx_cost_input, #tx_cost_input
                                               c(treateff.hba1c,treateff.start,treateff.end,treateff.decline), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
@@ -96,7 +96,7 @@ rownames(sim_clinical_results_female_table) <- "Intervention"
 #Comparator
 
 
-sim_results_female_comp <- SMDMII_model_simulation(npats,  #patient_size_input: run 500 for LOLA
+sim_results_female_comp <- SMDMII_model_simulation(npats_input,  #patient_size_input: run 500 for LOLA
                                                    1,  #female_input, 1 = female
                                                    tx_cost_input, #tx_cost_input --> Gimon
                                                    rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
@@ -146,7 +146,7 @@ rownames(sim_clinical_results_female_table_comp) <- "Comparator"
 
 ##### Males #####
 
-sim_results_male <- SMDMII_model_simulation(npats, #patient_size_input: run 500 for LOLA
+sim_results_male <- SMDMII_model_simulation(npats_input, #patient_size_input: run 500 for LOLA
                                             0, #female_input, 1 = female
                                             tx_cost_input, #tx_cost_input --> Gimon
                                             c(treateff.hba1c,treateff.start,treateff.end,treateff.decline), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
@@ -191,7 +191,7 @@ rownames(sim_clinical_results_male_table) <- "Intervention"
 
 
 
-sim_results_male_comp <- SMDMII_model_simulation(npats, #patient_size_input: run 500 for LOLA
+sim_results_male_comp <- SMDMII_model_simulation(npats_input, #patient_size_input: run 500 for LOLA
                                                  0, #female_input, 1 = female
                                                  tx_cost_input, #tx_cost_input --> Gimon
                                                  rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
