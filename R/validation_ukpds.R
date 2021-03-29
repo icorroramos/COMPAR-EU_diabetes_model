@@ -14,11 +14,11 @@ validation_patient$CURR.AGE.SCALE.INF  <- (validation_patient$CURR.AGE - 72.5474
 validation_patient$CURR.AGE.SCALE.PROD <- (validation_patient$CURR.AGE - 60.2737989)/6.1177269 
 validation_patient$CURR.AGE.2 <- (validation_patient$CURR.AGE)^2
 validation_patient$INF.CARE   <- 0
-ifelse(validation_patient$CURR.AGE >= retirement_age_input, validation_patient$EMPLOYED <- 0,
-       {baseline_employed_prob <- apply(validation_patient %>% select(risk_factors_employment), 1, function(x) annual_p_bernoulli(employment_equations$employment_coef,x)$p)
-       validation_patient$EMPLOYED <- unlist(lapply(baseline_employed_prob, function(x) rbinom(1,1,x))) #EMPLOYED = yes/no
-       })
-validation_patient$PROD.LOSS <- 0 
+# ifelse(validation_patient$CURR.AGE >= retirement_age_input, validation_patient$EMPLOYED <- 0,
+#        {baseline_employed_prob <- apply(validation_patient %>% select(risk_factors_employment), 1, function(x) annual_p_bernoulli(employment_equations$employment_coef,x)$p)
+#        validation_patient$EMPLOYED <- unlist(lapply(baseline_employed_prob, function(x) rbinom(1,1,x))) #EMPLOYED = yes/no
+#        })
+# validation_patient$PROD.LOSS <- 0 
 validation_patient$BMI1 <- if_else(validation_patient$BMI < 18.5, 1, 0)
 validation_patient$BMI3 <- if_else(validation_patient$BMI >= 25, 1, 0)
 
