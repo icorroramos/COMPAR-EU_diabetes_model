@@ -7,6 +7,9 @@ source("setup.R")
 # Patient characteristics
 validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
 
+# We can change patient characteristics for testing purposes below (un-comment)
+#validation_patient$CURR.AGE <- 35
+
 retirement_age_input <- 65
 
 validation_patient$AGE.DIAG <- validation_patient$CURR.AGE - validation_patient$YEAR 
