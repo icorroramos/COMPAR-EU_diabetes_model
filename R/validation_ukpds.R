@@ -322,6 +322,3 @@ annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[
 
 # Is the predicted probability plausible? --> Gimon
 # Is a difference between gender expected? No, gender is not a predictor.
-
-
-# Isaac: ---> Check again csv vs. UKPDS tables. Check finally whether in the simulation code, these functions are indeed properly called with the right parameters.
