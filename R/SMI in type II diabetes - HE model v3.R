@@ -26,6 +26,7 @@ source("R/aux_functions.R")
 # future_medical_cost_inputs
 # future_nonmedical_cost_inputs
 # qol_inputs
+# qol_events_inputs
 
 # TODO: annotate the objects above on their requirements of format/ content
 
