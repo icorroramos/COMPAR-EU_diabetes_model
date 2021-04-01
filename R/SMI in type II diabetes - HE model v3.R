@@ -647,12 +647,11 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   renal_qaly_female <- qol_matrix$FEMALE*qol_matrix$RENAL.EVENT
   simulation_patients_history$RENAL.QALY <- (renal_qaly_male + renal_qaly_female)/qaly_discount_factor
   
-  # Comorbidity: Excess BMI (each unit above 25 kg/m2)	-0.006	-0.008	-0.004
-  qol_matrix$BMI <- max(qol_matrix$BMI-25,0)*(-0.005)
+  # Comorbidity: Excess BMI (each unit above 25 kg/m2):	
+  qol_matrix$BMI <- max(qol_matrix$BMI-25,0)*qol_events_inputs$BMI
   bmi_qaly_male   <- (1-qol_matrix$FEMALE)*qol_matrix$BMI
   bmi_qaly_female <- qol_matrix$FEMALE*qol_matrix$BMI
   simulation_patients_history$BMI.QALY <- (bmi_qaly_male + bmi_qaly_female)/qaly_discount_factor
-  # Note: 25 in formula above is HARDCODED!
   
   # Total annual utilities
   total_utils <- ((1-qol_matrix$FEMALE)*(qol_matrix$BASELINE.MALE) + qol_matrix$FEMALE*qol_matrix$BASELINE.FEMALE +
