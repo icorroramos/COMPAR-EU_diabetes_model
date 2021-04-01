@@ -21,33 +21,23 @@ treateff_ldl_input   <- 0 # Treatment effect on LDL-cholesterol (absolute effect
 # on the relevant input parameters that were used to produce the output.
 sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
 
-
 # A patient-level model make use of patient characteristics. 
 baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
 # baseline_characteristics <- read.csv("/input/UK/baseline_characteristics_UK_rank_1_study_pop.csv", sep=",")
 
 # Direct costs of diabetes-related complications for UK are age-gender dependent.
-#male_cost_inputs   <- read.csv("input/UK/Event cost male 2020.csv", sep=",")
-#female_cost_inputs <- read.csv("input/UK/Event cost female 2020.csv", sep=",")
-male_cost_inputs   <- read.csv("input/UK/Event cost male 2020 debug.csv", sep=",") # for validation purposes only
-female_cost_inputs <- read.csv("input/UK/Event cost female 2020 debug.csv", sep=",") # for validation purposes only
+male_cost_inputs   <- read.csv("input/UK/Event cost male 2020.csv", sep=",")
+female_cost_inputs <- read.csv("input/UK/Event cost female 2020.csv", sep=",")
 
 # When a societal perspective is adopted, we also have future costs. This are obtained from the PAID online tool.
-# future_medical_cost_inputs    <- read.csv("input/UK/UKPAID__AllORUnrelated_Costs_2020.csv", sep=",") # Ingelin: 15/12/2020
-# future_nonmedical_cost_inputs <- read.csv("input/UK/UK_nonmedical_futurecosts_data.csv", sep=",") # UK costs updated 11/12/2020 - corrected version from Hamraz
-
-future_medical_cost_inputs    <- read.csv("input/UK/UKPAID__AllORUnrelated_Costs_2020 debug.csv", sep=",") # for validation purposes only
-future_nonmedical_cost_inputs <- read.csv("input/UK/UK_nonmedical_futurecosts_data debug.csv", sep=",") # for validation purposes only
-
+future_medical_cost_inputs    <- read.csv("input/UK/UKPAID__AllORUnrelated_Costs_2020.csv", sep=",") # Ingelin: 15/12/2020
+future_nonmedical_cost_inputs <- read.csv("input/UK/UK_nonmedical_futurecosts_data.csv", sep=",") # UK costs updated 11/12/2020 - corrected version from Hamraz
 
 # Utilities are UK-based and age/gender dependent
 qol_inputs <- read.csv("input/UK/qol_inputs_UK.csv", sep=",")
-# qol_inputs <- read.csv("input/UK/qol_inputs_UK debug.csv", sep=",") # for validation purposes only
 
 # Utility decrements associated to diabetes-related events
 qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
-# qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK debug.csv", sep=",") # for validation purposes only
-
 
 # TODO: also extract output processing scripts to here.
 
