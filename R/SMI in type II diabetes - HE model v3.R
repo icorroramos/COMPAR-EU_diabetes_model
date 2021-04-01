@@ -306,8 +306,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       }
       
       # Sampling "dead" status
-      current_DEATH_event <- rbinom(1,1,current_DEATH_prob) 
-      #print(current_DEATH_prob)
+      current_DEATH_event <- rbinom(1,1,current_DEATH_prob)
       current_patient$dead <- current_DEATH_event
       
       ### INFORMAL CARE AND PRODUCTIVITY COSTS: Added 29/08/2020
