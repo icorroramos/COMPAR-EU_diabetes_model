@@ -35,18 +35,17 @@ future_medical_cost_inputs    <- read.csv("input/UK/UKPAID__AllORUnrelated_Costs
 future_nonmedical_cost_inputs <- read.csv("input/UK/UK_nonmedical_futurecosts_data.csv", sep=",") # UK costs updated 11/12/2020 - corrected version from Hamraz
 
 # Utilities are UK-based and age/gender dependent
-qol_inputs <- read.csv("input/UK/qol_inputs_UK.csv", sep=",")
+#qol_inputs <- read.csv("input/UK/qol_inputs_UK.csv", sep=",")
+qol_inputs <- read.csv("input/UK/qol_inputs_UK debug.csv", sep=",") # for validation purposes only
 
 # Utility decrements associated to diabetes-related events
-qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
+#qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
+qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK debug.csv", sep=",") # for validation purposes only
 
 
 # TODO: also extract output processing scripts to here.
 
-
-
 ### Run the model below for females and males separately.
-
 
 ##### Females #####
 
@@ -77,6 +76,8 @@ colnames(sim_CE_results_female_table) <- c("Complication costs", "No complicatio
 rownames(sim_CE_results_female_table) <- "Intervention"
 View(sim_CE_results_female_table)
 
+
+
 sim_clinical_results_female_table <- matrix(c(sim_results_female$mean_life_expectancy,
                                               sim_results_female$mean_CHF_rate,
                                               sim_results_female$mean_MI_rate, 
@@ -91,7 +92,7 @@ colnames(sim_clinical_results_female_table) <- c("Life expectancy", "CHF rate", 
                                                  "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
 rownames(sim_clinical_results_female_table) <- "Intervention"
 
-#View(sim_clinical_results_female_table)
+View(sim_clinical_results_female_table)
 
 
 #Comparator
