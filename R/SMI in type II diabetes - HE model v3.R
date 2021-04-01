@@ -620,7 +620,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   simulation_patients_history$CHD.QALY <- (chd_qaly_male + chd_qaly_female)/qaly_discount_factor
   
   # Cerebrovascular disease: only stroke
-  qol_matrix$STROKE.EVENT <- qol_matrix$STROKE.EVENT*(-0.135)
+  qol_matrix$STROKE.EVENT <- qol_matrix$STROKE.EVENT*qol_events_inputs$STROKE
   stroke_qaly_male   <- (1-qol_matrix$FEMALE)*qol_matrix$STROKE.EVENT
   stroke_qaly_female <- qol_matrix$FEMALE*qol_matrix$STROKE.EVENT
   
