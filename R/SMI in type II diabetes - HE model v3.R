@@ -610,9 +610,10 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
     # -0.089	   -0.074	    -0.045	  -0.135	     -0.14	      -0.231	   -0.061	     -0.135	   -0.005
    
   # Coronary heart disease group:	
-  qol_matrix$CHF.EVENT <- qol_matrix$CHF.EVENT*(-0.089)
+  #qol_matrix$CHF.EVENT <- qol_matrix$CHF.EVENT*(-0.089)
+  qol_matrix$CHF.EVENT <- qol_matrix$CHF.EVENT*qol_events_inputs$CHF
   qol_matrix$IHD.EVENT <- qol_matrix$IHD.EVENT*(-0.074)
-  qol_matrix$MI.EVENT <- qol_matrix$MI.EVENT*(-0.045)
+  qol_matrix$MI.EVENT  <- qol_matrix$MI.EVENT*(-0.045)
   
   chd_qaly_male   <- (1-qol_matrix$FEMALE)*pmin(qol_matrix$CHF.EVENT,qol_matrix$IHD.EVENT,qol_matrix$MI.EVENT)
   chd_qaly_female <- qol_matrix$FEMALE*pmin(qol_matrix$CHF.EVENT,qol_matrix$IHD.EVENT,qol_matrix$MI.EVENT)
