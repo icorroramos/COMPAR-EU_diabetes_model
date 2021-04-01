@@ -642,7 +642,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   
   # Nephropathy: so far we only have RENAL.EVENT: assumed disutility from haemodialysis but not sure
-  qol_matrix$RENAL.EVENT <- qol_matrix$RENAL.EVENT*(-0.135)
+  qol_matrix$RENAL.EVENT <- qol_matrix$RENAL.EVENT*qol_events_inputs$RENAL
   renal_qaly_male   <- (1-qol_matrix$FEMALE)*qol_matrix$RENAL.EVENT
   renal_qaly_female <- qol_matrix$FEMALE*qol_matrix$RENAL.EVENT
   simulation_patients_history$RENAL.QALY <- (renal_qaly_male + renal_qaly_female)/qaly_discount_factor
