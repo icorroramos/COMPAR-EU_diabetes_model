@@ -37,6 +37,9 @@ future_nonmedical_cost_inputs <- read.csv("input/UK/UK_nonmedical_futurecosts_da
 # Utilities are UK-based and age/gender dependent
 qol_inputs <- read.csv("input/UK/qol_inputs_UK.csv", sep=",")
 
+# Utility decrements associated to diabetes-related events
+# qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
+
 
 # TODO: also extract output processing scripts to here.
 
