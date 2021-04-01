@@ -75,7 +75,7 @@ sim_CE_results_female_table <- matrix(c(sim_results_female$mean_complication_cos
 colnames(sim_CE_results_female_table) <- c("Complication costs", "No complication costs", "Tx costs","Informal care costs", "Productivity costs",
                                            "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
 rownames(sim_CE_results_female_table) <- "Intervention"
-#View(sim_CE_results_female_table)
+View(sim_CE_results_female_table)
 
 sim_clinical_results_female_table <- matrix(c(sim_results_female$mean_life_expectancy,
                                               sim_results_female$mean_CHF_rate,
