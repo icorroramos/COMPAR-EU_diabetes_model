@@ -635,7 +635,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   simulation_patients_history$NEUROPATHY.QALY <- (neuro_qaly_male + neuro_qaly_female)/qaly_discount_factor
   
   # Retinopathy: so far we only have BLIND.EVENT 
-  qol_matrix$BLIND.EVENT <- qol_matrix$BLIND.EVENT*(-0.061)
+  qol_matrix$BLIND.EVENT <- qol_matrix$BLIND.EVENT*qol_events_inputs$BLIND
   blind_qaly_male   <- (1-qol_matrix$FEMALE)*qol_matrix$BLIND.EVENT
   blind_qaly_female <- qol_matrix$FEMALE*qol_matrix$BLIND.EVENT
   simulation_patients_history$BLIND.QALY <- (blind_qaly_male + blind_qaly_female)/qaly_discount_factor
