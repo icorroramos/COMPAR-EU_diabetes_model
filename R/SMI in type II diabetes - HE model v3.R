@@ -598,17 +598,16 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   ########## MAIN PART III: Calculate QALYs ##########
   
   # Discounting is applied to total QALYs only at this moment.
-  qaly_discount_factor <- ((1+qol_disc_rate_input)^(simulation_patients_history$SDURATION)) # Note if SDURATION starts at 0 then we don't need to add -1
+  qaly_discount_factor <- ((1+qol_disc_rate_input)^(simulation_patients_history$SDURATION)) 
+  # Note if SDURATION starts at 0 then we don't need to add -1
   
   # Age and gender dependent
   qol_matrix <- inner_join(simulation_patients_history[c("CURR.AGE","FEMALE","CHF.EVENT","IHD.EVENT","MI.EVENT", "STROKE.EVENT",
                                                          "ULCER.EVENT", "AMP1.EVENT","AMP2.EVENT", "BLIND.EVENT", "RENAL.EVENT","BMI")],qol_inputs, by = 'CURR.AGE')
   
   # The following event utility decrements are at this moment included in the model (sourced from Beaudet at al.)
+  # Grouped as per Mount Hood Challenge
   
-  # CHF.EVENT	IHD.EVENT	MI.EVENT	STROKE.EVENT	ULCER.EVENT	AMP.EVENT	BLIND.EVENT	RENAL.EVENT	BMI.HIGH
-    # -0.089	   -0.074	    -0.045	  -0.135	     -0.14	      -0.231	   -0.061	     -0.135	   -0.005
-   
   # Coronary heart disease group:	
   qol_matrix$CHF.EVENT <- qol_matrix$CHF.EVENT*qol_events_inputs$CHF
   qol_matrix$IHD.EVENT <- qol_matrix$IHD.EVENT*qol_events_inputs$IHD
@@ -616,39 +615,41 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   chd_qaly_male   <- (1-qol_matrix$FEMALE)*pmin(qol_matrix$CHF.EVENT,qol_matrix$IHD.EVENT,qol_matrix$MI.EVENT)
   chd_qaly_female <- qol_matrix$FEMALE*pmin(qol_matrix$CHF.EVENT,qol_matrix$IHD.EVENT,qol_matrix$MI.EVENT)
-  
   simulation_patients_history$CHD.QALY <- (chd_qaly_male + chd_qaly_female)/qaly_discount_factor
   
   # Cerebrovascular disease: only stroke
   qol_matrix$STROKE.EVENT <- qol_matrix$STROKE.EVENT*qol_events_inputs$STROKE
+  
   stroke_qaly_male   <- (1-qol_matrix$FEMALE)*qol_matrix$STROKE.EVENT
   stroke_qaly_female <- qol_matrix$FEMALE*qol_matrix$STROKE.EVENT
-  
   simulation_patients_history$STROKE.QALY <- (stroke_qaly_male + stroke_qaly_female)/qaly_discount_factor
   
   # Neuropathy group: so far we have ULCER.EVENT, AMP1.EVENT and AMP2.EVENT
   qol_matrix$ULCER.EVENT <- qol_matrix$ULCER.EVENT*qol_events_inputs$ULCER
   qol_matrix$AMP1.EVENT  <- qol_matrix$AMP1.EVENT*qol_events_inputs$AMP1
   qol_matrix$AMP2.EVENT  <- qol_matrix$AMP2.EVENT*qol_events_inputs$AMP2
+  
   neuro_qaly_male   <- (1-qol_matrix$FEMALE)*pmin(qol_matrix$ULCER.EVENT,qol_matrix$AMP1.EVENT,qol_matrix$AMP2.EVENT)
   neuro_qaly_female <- qol_matrix$FEMALE*pmin(qol_matrix$ULCER.EVENT,qol_matrix$AMP1.EVENT,qol_matrix$AMP2.EVENT)
   simulation_patients_history$NEUROPATHY.QALY <- (neuro_qaly_male + neuro_qaly_female)/qaly_discount_factor
   
   # Retinopathy: so far we only have BLIND.EVENT 
   qol_matrix$BLIND.EVENT <- qol_matrix$BLIND.EVENT*qol_events_inputs$BLIND
+  
   blind_qaly_male   <- (1-qol_matrix$FEMALE)*qol_matrix$BLIND.EVENT
   blind_qaly_female <- qol_matrix$FEMALE*qol_matrix$BLIND.EVENT
   simulation_patients_history$BLIND.QALY <- (blind_qaly_male + blind_qaly_female)/qaly_discount_factor
   
-  
   # Nephropathy: so far we only have RENAL.EVENT: assumed disutility from haemodialysis but not sure
   qol_matrix$RENAL.EVENT <- qol_matrix$RENAL.EVENT*qol_events_inputs$RENAL
+  
   renal_qaly_male   <- (1-qol_matrix$FEMALE)*qol_matrix$RENAL.EVENT
   renal_qaly_female <- qol_matrix$FEMALE*qol_matrix$RENAL.EVENT
   simulation_patients_history$RENAL.QALY <- (renal_qaly_male + renal_qaly_female)/qaly_discount_factor
   
   # Comorbidity: Excess BMI (each unit above 25 kg/m2):	
-  qol_matrix$BMI <- max(qol_matrix$BMI-25,0)*qol_events_inputs$BMI
+  qol_matrix$BMI  <- max(qol_matrix$BMI-25,0)*qol_events_inputs$BMI
+  
   bmi_qaly_male   <- (1-qol_matrix$FEMALE)*qol_matrix$BMI
   bmi_qaly_female <- qol_matrix$FEMALE*qol_matrix$BMI
   simulation_patients_history$BMI.QALY <- (bmi_qaly_male + bmi_qaly_female)/qaly_discount_factor
@@ -661,8 +662,6 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                     
   # Annual discounted QALYs
   simulation_patients_history$QALY <- (total_utils*(1-simulation_patients_history$dead) + (total_utils/2)*simulation_patients_history$dead)
-  
-  #View(simulation_patients_history)
   
   ########## MAIN PART IV: Calculate aggregated results ##########
   
@@ -750,12 +749,17 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   total_qalys_patient <- aggregate(simulation_patients_history$QALY, list(Patient = simulation_patients_history$SIMID), sum)
   mean_total_qalys <- sum(total_qalys_patient$x)/patient_size_input
   
-  
-  ### Return model outcomes: 
+  # Return model outcomes: 
   return(list(simulation_patients_history=simulation_patients_history, 
               mean_life_expectancy = mean_life_expectancy,
-              mean_CHF_rate = mean_CHF_rate, mean_BLIND_rate = mean_BLIND_rate, mean_ULCER_rate = mean_ULCER_rate, mean_STROKE_rate = mean_STROKE_rate,
-              mean_AMP1_rate = mean_AMP1_rate, mean_AMP2_rate = mean_AMP2_rate, mean_MI_rate = mean_MI_rate, mean_RENAL_rate = mean_RENAL_rate,
+              mean_CHF_rate = mean_CHF_rate, 
+              mean_BLIND_rate = mean_BLIND_rate, 
+              mean_ULCER_rate = mean_ULCER_rate, 
+              mean_STROKE_rate = mean_STROKE_rate,
+              mean_AMP1_rate = mean_AMP1_rate, 
+              mean_AMP2_rate = mean_AMP2_rate, 
+              mean_MI_rate = mean_MI_rate, 
+              mean_RENAL_rate = mean_RENAL_rate,
               mean_total_costs = mean_total_costs, 
               mean_total_qalys = mean_total_qalys,
               mean_inf_care_costs = mean_inf_care_costs, 
