@@ -627,9 +627,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   simulation_patients_history$STROKE.QALY <- (stroke_qaly_male + stroke_qaly_female)/qaly_discount_factor
   
   # Neuropathy group: so far we have ULCER.EVENT, AMP1.EVENT and AMP2.EVENT
-  qol_matrix$ULCER.EVENT <- qol_matrix$ULCER.EVENT*(-0.14)
-  qol_matrix$AMP1.EVENT  <- qol_matrix$AMP1.EVENT*(-0.231)
-  qol_matrix$AMP2.EVENT  <- qol_matrix$AMP2.EVENT*(-0.231)
+  qol_matrix$ULCER.EVENT <- qol_matrix$ULCER.EVENT*qol_events_inputs$ULCER
+  qol_matrix$AMP1.EVENT  <- qol_matrix$AMP1.EVENT*qol_events_inputs$AMP1
+  qol_matrix$AMP2.EVENT  <- qol_matrix$AMP2.EVENT*qol_events_inputs$AMP2
   neuro_qaly_male   <- (1-qol_matrix$FEMALE)*pmin(qol_matrix$ULCER.EVENT,qol_matrix$AMP1.EVENT,qol_matrix$AMP2.EVENT)
   neuro_qaly_female <- qol_matrix$FEMALE*pmin(qol_matrix$ULCER.EVENT,qol_matrix$AMP1.EVENT,qol_matrix$AMP2.EVENT)
   simulation_patients_history$NEUROPATHY.QALY <- (neuro_qaly_male + neuro_qaly_female)/qaly_discount_factor
