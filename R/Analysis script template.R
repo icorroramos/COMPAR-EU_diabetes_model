@@ -5,14 +5,14 @@ init <- Sys.time()
 source("R/SMI in type II diabetes - HE model v3.R")
 
 # Control variables of simulation
-npats_input <- 5 # Number of patients in simulation
+npats_input <- 500 # Number of patients in simulation
 tx_cost_input <- 0 # Total treatment cost
 
 treateff_start_input   <- 1 # Cycle in which treatment effect starts
 treateff_end_input     <- 4 # Cycle in which treatment effect ends
 treateff_decline_input <- 2 # Cycle in which treatment effect starts to decline linearly
 
-treateff_hba1c_input <- -1.82 # Treatment effect on HbA1c (in absolute %-points HbA1c)
+treateff_hba1c_input <- -4#1.82 # Treatment effect on HbA1c (in absolute %-points HbA1c)
 treateff_hdl_input   <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
 treateff_ldl_input   <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
 
