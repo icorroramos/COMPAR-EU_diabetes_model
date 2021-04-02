@@ -5,7 +5,7 @@ init <- Sys.time()
 source("R/SMI in type II diabetes - HE model v3.R")
 
 # Control variables of simulation
-npats_input <- 5 # Number of patients in simulation
+npats_input <- 50 # Number of patients in simulation
 tx_cost_input <- 0 # Total treatment cost
 
 treateff_start_input   <- 1 # Cycle in which treatment effect starts
@@ -122,7 +122,7 @@ sim_CE_results_female_table_comp <- matrix(c(sim_results_female_comp$mean_compli
 colnames(sim_CE_results_female_table_comp) <- c("Complication costs", "No complication costs", "Tx costs","Informal care costs", "Productivity costs",
                                                 "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
 rownames(sim_CE_results_female_table_comp) <- "Comparator"
-#View(sim_CE_results_female_table_comp)
+View(sim_CE_results_female_table_comp)
 
 sim_clinical_results_female_table_comp <- matrix(c(sim_results_female_comp$mean_life_expectancy,
                                                    sim_results_female_comp$mean_CHF_rate,
@@ -138,7 +138,7 @@ colnames(sim_clinical_results_female_table_comp) <- c("Life expectancy", "CHF ra
                                                       "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
 rownames(sim_clinical_results_female_table_comp) <- "Comparator"
 
-#View(sim_clinical_results_female_table_comp)
+View(sim_clinical_results_female_table_comp)
 
 
 
