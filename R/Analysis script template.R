@@ -243,6 +243,12 @@ end - init
 
 
 # SINK RESULTS DATA -------------------------------------------------------
+
+# Probably we need to explain the purpose of this Rdata file:
+# Change the name automatically so that it is not overwritten?
+# How to access it after it is saved?
+# Anything else?
+
 save(sim.vars,
      sim_CE_results_female_table,
      sim_clinical_results_female_table,
@@ -252,8 +258,7 @@ save(sim.vars,
      sim_clinical_results_male_table,
      sim_CE_results_male_table_comp,
      sim_clinical_results_male_table_comp,
-     file = 'Sim_results.Rdata'
-)
+     file = 'Sim_results.Rdata')
 
 # Optional - save to csv's
 # write.csv(sim_CE_results_female_table, 'sim_CE_female_int.csv', quote = FALSE)
