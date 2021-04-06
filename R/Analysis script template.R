@@ -1,8 +1,8 @@
-# Variable defined to keep track of simulation time (delete afterwards)
-init <- Sys.time()
-
 # Model function: 
 source("R/SMI in type II diabetes - HE model v3.R")
+
+# Variable defined to keep track of simulation time (delete afterwards)
+init <- Sys.time()
 
 # Control variables of simulation
 npats_input <- 10 # Number of patients in simulation
