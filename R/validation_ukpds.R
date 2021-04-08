@@ -7,12 +7,13 @@ source("setup.R")
 # Patient characteristics
 validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
 
-# We can change patient characteristics for testing purposes below (un-comment)
+# We can change patient characteristics for testing purposes below (un-comment) 
 # Special interest on those characteristics that are targeted as treatment effect: see how a expected treatment effect
 # would impact the annual risk.
 
 # validation_patient$CURR.AGE <- 35
 # validation_patient$HbA1c <- 3.8
+# validation_patient$SBP <- 129
 
 retirement_age_input <- 65
 
