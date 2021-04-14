@@ -143,9 +143,16 @@ View(sim_clinical_results_female_table_comp)
 
 # Results per year
 
-sim_results_female_comp$simulation_patients_history
+n_years <- 1:max(sim_results_female_comp$simulation_patients_history$SDURATION)
+current_survival <- rep(1,length(event_vars))
+KM_data <- sim_results_female_comp$simulation_patients_history[,event_vars]
+KM_data <- KM_data[FALSE,]
+for(i in n_years){
+current_survival <- current_survival*(1-colMeans(sim_results_female_comp$simulation_patients_history[which(sim_results_female_comp$simulation_patients_history$SDURATION == i),event_vars]))
+KM_data[i,] <- current_survival
+}
 
-
+View(tail(KM_data))
  
 # ##### Males #####
 # 
