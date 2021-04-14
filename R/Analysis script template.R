@@ -140,8 +140,13 @@ rownames(sim_clinical_results_female_table_comp) <- "Comparator"
 
 View(sim_clinical_results_female_table_comp)
 
-# 
-# 
+
+# Results per year
+
+sim_results_female_comp$simulation_patients_history
+
+
+ 
 # ##### Males #####
 # 
 # sim_results_male <- SMDMII_model_simulation(npats_input, #patient_size_input: run 500 for LOLA
