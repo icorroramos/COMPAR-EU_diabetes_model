@@ -94,6 +94,7 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
   # lambda and ro (with the notation from UKPDS paper - hence the tail(,-2) command) and the rest are the coefficients 
   # for the risk factors associated to each complication.
   linear_predictor <- sum(tail(regression_coefficents_input,n = -2)*c(risk_factors_input))
+  print(linear_predictor)
   
   # Then H returns the value of the cumulative hazard function 
   H_t1 <- exp(regression_coefficents_input[1] + linear_predictor)*duration_diabetes_input^regression_coefficents_input[2]
