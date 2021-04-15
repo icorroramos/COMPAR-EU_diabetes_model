@@ -109,16 +109,10 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
 
 # Validation of the Weibull events 
 
-# CHF females
+# CHF females and males is the same equation
 annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
-# [1] 0.00657647 
-# CHF males
 annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
 # [1] 0.00657647
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? NO
-
 
 # IHD females
 annual_p_weibull(macrovascular_risk_equations$IHD,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
