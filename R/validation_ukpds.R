@@ -101,8 +101,8 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
   H_t2 <- exp(regression_coefficents_input[1] + linear_predictor)*(1+duration_diabetes_input)^regression_coefficents_input[2]
   p = 1 - exp(H_t1 -H_t2)
   
-  return(list(#H_t1 = H_t1, # no need to return the H's, keep them for now just for validation purposes
-              #H_t2 = H_t2,
+  return(list(H_t1 = H_t1, # no need to return the H's, keep them for now just for validation purposes
+              H_t2 = H_t2,
               p = p))
 }
 
@@ -129,6 +129,11 @@ annual_p_weibull(macrovascular_risk_equations$FMIMALE,validation_patient[2,] %>%
 annual_p_weibull(macrovascular_risk_equations$FMIFEMALE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
 # [1] 0.02571863
 # This looks quite large compared to males. Does not make sense. Confirmed with simulation results.
+
+
+
+
+
 
 # Second MI females
 annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
