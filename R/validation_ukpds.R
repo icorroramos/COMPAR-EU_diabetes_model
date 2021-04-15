@@ -114,25 +114,21 @@ annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[1,] %>% sel
 annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
 # [1] 0.00657647
 
-# IHD females
+# IHD females and males. Is a difference between gender expected? Yes, negative coefficient for females.
 annual_p_weibull(macrovascular_risk_equations$IHD,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
 # [1] 0.0009983311
-# IHD males
 annual_p_weibull(macrovascular_risk_equations$IHD,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
 # [1] 0.001698897
 
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? Yes, negative coefficient for females.
 
-# First MI males (for females there is a different equation)
+# First MI males
 annual_p_weibull(macrovascular_risk_equations$FMIMALE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
 # [1] 0.002285789
-# Is the predicted probability plausible? --> Gimon
 
-# First MI females (for males there is a different equation)
+# First MI females
 annual_p_weibull(macrovascular_risk_equations$FMIFEMALE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
 # [1] 0.02571863
-# Is the predicted probability plausible? --> Gimon. It looks quite large compared to males. Does it make sense?
+# This looks quite large compared to males. Does not make sense. Confirmed with simulation results.
 
 # Second MI females
 annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
