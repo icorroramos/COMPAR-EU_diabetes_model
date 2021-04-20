@@ -133,196 +133,196 @@ annual_p_weibull(macrovascular_risk_equations$FMIFEMALE,validation_patient[1,] %
 
 
 
-
-
-# Second MI females
-annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
-# [1] 0.01946934
-# Second MI males
-annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
-# [1] 0.01946934
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? No, gender is not a predictor.
-
-# First stroke females
-annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
-# [1] 0.005297622
-# First stroke males
-annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
-# [1] 0.00805162
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? Yes, negative coefficient for females.
-
-# Second stroke females
-annual_p_weibull(macrovascular_risk_equations$SSTROKE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
-# [1] 0.01181782
-# Second stroke males
-annual_p_weibull(macrovascular_risk_equations$SSTROKE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
-# [1] 0.01181782
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? No, gender is not a predictor.
-
-
-# Blindness females
-annual_p_weibull(microvascular_risk_equations$BLIND,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
-# [1] 0.002737117
-# Blindness males
-annual_p_weibull(microvascular_risk_equations$BLIND,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
-# [1] 0.002737117
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? No, gender is not a predictor.
-
-
-# First amputation no ulcer females
-annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
-# [1] 0.0002014471
-# First amputation no ulcer males
-annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
-# [1] 0.0003143385
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? Yes, negative coefficient for females.
-
-
-# First amputation ulcer females
-annual_p_weibull(microvascular_risk_equations$FAMPULCER,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
-# [1] 0.01874466
-# First amputation ulcer males
-annual_p_weibull(microvascular_risk_equations$FAMPULCER,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
-# [1] 0.01874466
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? No, gender is not a predictor.
-
-
-# Second amputation females
-annual_p_weibull(microvascular_risk_equations$SAMP,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
-# [1] 0.0920613
-# Second amputation males
-annual_p_weibull(microvascular_risk_equations$SAMP,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
-# [1] 0.0920613
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? No, gender is not a predictor.
-
-
-# Renal failure females
-annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
-# [1] 0.002630565
-# Renal failure males
-annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
-# [1] 0.006261229
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? Yes, negative coefficient for females.
-
-
-# The annual probability of experiencing diabetic ulcer, death in first year of event and death in subsequent years of events, 
-# is assumed to follow a logistic distribution where t is the current age. 
-annual_p_logistic <- function(regression_coefficents_input, risk_factors_input){
-  
-  risk_factors_input <- as.numeric(risk_factors_input) # delete if not needed
-  
-  # Note: mind the format of the regression coefficients. It should be a list where the first two coefficients are
-  # lambda and ro (with the notation from UKPDS paper - hence the tail(,-2) command) and the rest are the coefficients 
-  # for the risk factors associated to each complication. Note for logistic, ro (also called phi in ESM Table 6) == 0.
-  
-  linear_predictor <- regression_coefficents_input[1] + sum(tail(regression_coefficents_input,n = -2)*c(risk_factors_input))
-  
-  # Then p returns the annual probability 
-  p = 1 - (exp(-linear_predictor)/(1+exp(-linear_predictor)))
-  
-  return(list(p = p))
-}
-
-
-# Ulcer females
-annual_p_logistic(microvascular_risk_equations$ULCER,validation_patient[1,] %>% select(risk_factors_microvascular))$p
-# [1] 0.0008675062
-# Ulcer males
-annual_p_logistic(microvascular_risk_equations$ULCER,validation_patient[2,] %>% select(risk_factors_microvascular))$p
-# [1] 0.002267019
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? Yes, negative coefficient for females. There was a typo in the csv table, which has been corrected
-
-
-# Death in 1st year of events females
-annual_p_logistic(mortality_risk_equations$DEATH1YEVENT,validation_patient[1,] %>% select(risk_factors_mortality))$p
-# [1] 0.09313699
-# Death in 1st year of events males
-annual_p_logistic(mortality_risk_equations$DEATH1YEVENT,validation_patient[2,] %>% select(risk_factors_mortality))$p
-# [1] 0.09313699
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? No, gender not predictor.
-
-
-# Death in subsequent year of events females
-annual_p_logistic(mortality_risk_equations$DEATHYSEVENT,validation_patient[1,] %>% select(risk_factors_mortality))$p
-# [1] 0.6601135
-# Death in subsequent year of events males
-annual_p_logistic(mortality_risk_equations$DEATHYSEVENT,validation_patient[2,] %>% select(risk_factors_mortality))$p
-# [1] 0.6601135
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? No, gender not predictor.
-
-
-# For death in years with no history or events and in years with history but no events, H(t|x_j) is assumed to follow a 
-# Gompertz distribution where t is the current age. The functional form of H(t|x_j) is the same for both types of death. 
-# Only the regression coefficients and the risk factors are different for each type of death. 
-# The function used to calculate the annual death probabilities is called "annual_p_gompertz" and it is defined below. 
-annual_p_gompertz <- function(regression_coefficents_input, risk_factors_input, current_age_input){
-  
-  risk_factors_input <- as.numeric(risk_factors_input) # delete if not needed
-  
-  # Note: mind the format of the regression coefficients. It should be a list where the first two coefficients are
-  # lambda and ro (with the notation from UKPDS paper - hence the tail(,-2) command) and the rest are the coefficients 
-  # for the risk factors associated to each complication.
-  linear_predictor <- sum(tail(regression_coefficents_input,n = -2)*c(risk_factors_input))
-  
-  # Then H returns the value of the cumulative hazard function 
-  H_t1 <- ((regression_coefficents_input[2])^-1)*exp(regression_coefficents_input[1] + linear_predictor)*(exp(current_age_input*regression_coefficents_input[2])-1)
-  H_t2 <- ((regression_coefficents_input[2])^-1)*exp(regression_coefficents_input[1] + linear_predictor)*(exp((1+current_age_input)*regression_coefficents_input[2])-1)
-  p = 1 - exp(H_t1 - H_t2)
-  
-  return(list(#H_t1 = H_t1, # no need to return the H's, keep them for now just for validation purposes
-    #H_t2 = H_t2,
-    p = p))
-}
-
-
-# Death in year with no history or events females
-annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
-# [1] 0.004071926
-annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating       
-# [1] 0.004071926
-
-# Death in year with no history or events males
-annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
-# [1] 0.005117118
-annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating       
-# [1] 0.005117118
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? Yes, negative coefficient for females.
-
-
-# Death in year with history but no events females
-annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
-# [1] 0.006813194
-annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating       
-# [1] 0.006813194
-
-# Death in year with history but no events males
-annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
-# [1] 0.006813194
-annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating       
-# [1] 0.006813194
-
-# Is the predicted probability plausible? --> Gimon
-# Is a difference between gender expected? No, gender is not a predictor.
+# 
+# 
+# # Second MI females
+# annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+# # [1] 0.01946934
+# # Second MI males
+# annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+# # [1] 0.01946934
+# 
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? No, gender is not a predictor.
+# 
+# # First stroke females
+# annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+# # [1] 0.005297622
+# # First stroke males
+# annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+# # [1] 0.00805162
+# 
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? Yes, negative coefficient for females.
+# 
+# # Second stroke females
+# annual_p_weibull(macrovascular_risk_equations$SSTROKE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+# # [1] 0.01181782
+# # Second stroke males
+# annual_p_weibull(macrovascular_risk_equations$SSTROKE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+# # [1] 0.01181782
+# 
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? No, gender is not a predictor.
+# 
+# 
+# # Blindness females
+# annual_p_weibull(microvascular_risk_equations$BLIND,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+# # [1] 0.002737117
+# # Blindness males
+# annual_p_weibull(microvascular_risk_equations$BLIND,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
+# # [1] 0.002737117
+# 
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? No, gender is not a predictor.
+# 
+# 
+# # First amputation no ulcer females
+# annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+# # [1] 0.0002014471
+# # First amputation no ulcer males
+# annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
+# # [1] 0.0003143385
+# 
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? Yes, negative coefficient for females.
+# 
+# 
+# # First amputation ulcer females
+# annual_p_weibull(microvascular_risk_equations$FAMPULCER,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+# # [1] 0.01874466
+# # First amputation ulcer males
+# annual_p_weibull(microvascular_risk_equations$FAMPULCER,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
+# # [1] 0.01874466
+# 
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? No, gender is not a predictor.
+# 
+# 
+# # Second amputation females
+# annual_p_weibull(microvascular_risk_equations$SAMP,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+# # [1] 0.0920613
+# # Second amputation males
+# annual_p_weibull(microvascular_risk_equations$SAMP,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
+# # [1] 0.0920613
+# 
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? No, gender is not a predictor.
+# 
+# 
+# # Renal failure females
+# annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+# # [1] 0.002630565
+# # Renal failure males
+# annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
+# # [1] 0.006261229
+# 
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? Yes, negative coefficient for females.
+# 
+# 
+# # The annual probability of experiencing diabetic ulcer, death in first year of event and death in subsequent years of events, 
+# # is assumed to follow a logistic distribution where t is the current age. 
+# annual_p_logistic <- function(regression_coefficents_input, risk_factors_input){
+#   
+#   risk_factors_input <- as.numeric(risk_factors_input) # delete if not needed
+#   
+#   # Note: mind the format of the regression coefficients. It should be a list where the first two coefficients are
+#   # lambda and ro (with the notation from UKPDS paper - hence the tail(,-2) command) and the rest are the coefficients 
+#   # for the risk factors associated to each complication. Note for logistic, ro (also called phi in ESM Table 6) == 0.
+#   
+#   linear_predictor <- regression_coefficents_input[1] + sum(tail(regression_coefficents_input,n = -2)*c(risk_factors_input))
+#   
+#   # Then p returns the annual probability 
+#   p = 1 - (exp(-linear_predictor)/(1+exp(-linear_predictor)))
+#   
+#   return(list(p = p))
+# }
+# 
+# 
+# # Ulcer females
+# annual_p_logistic(microvascular_risk_equations$ULCER,validation_patient[1,] %>% select(risk_factors_microvascular))$p
+# # [1] 0.0008675062
+# # Ulcer males
+# annual_p_logistic(microvascular_risk_equations$ULCER,validation_patient[2,] %>% select(risk_factors_microvascular))$p
+# # [1] 0.002267019
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? Yes, negative coefficient for females. There was a typo in the csv table, which has been corrected
+# 
+# 
+# # Death in 1st year of events females
+# annual_p_logistic(mortality_risk_equations$DEATH1YEVENT,validation_patient[1,] %>% select(risk_factors_mortality))$p
+# # [1] 0.09313699
+# # Death in 1st year of events males
+# annual_p_logistic(mortality_risk_equations$DEATH1YEVENT,validation_patient[2,] %>% select(risk_factors_mortality))$p
+# # [1] 0.09313699
+# 
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? No, gender not predictor.
+# 
+# 
+# # Death in subsequent year of events females
+# annual_p_logistic(mortality_risk_equations$DEATHYSEVENT,validation_patient[1,] %>% select(risk_factors_mortality))$p
+# # [1] 0.6601135
+# # Death in subsequent year of events males
+# annual_p_logistic(mortality_risk_equations$DEATHYSEVENT,validation_patient[2,] %>% select(risk_factors_mortality))$p
+# # [1] 0.6601135
+# 
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? No, gender not predictor.
+# 
+# 
+# # For death in years with no history or events and in years with history but no events, H(t|x_j) is assumed to follow a 
+# # Gompertz distribution where t is the current age. The functional form of H(t|x_j) is the same for both types of death. 
+# # Only the regression coefficients and the risk factors are different for each type of death. 
+# # The function used to calculate the annual death probabilities is called "annual_p_gompertz" and it is defined below. 
+# annual_p_gompertz <- function(regression_coefficents_input, risk_factors_input, current_age_input){
+#   
+#   risk_factors_input <- as.numeric(risk_factors_input) # delete if not needed
+#   
+#   # Note: mind the format of the regression coefficients. It should be a list where the first two coefficients are
+#   # lambda and ro (with the notation from UKPDS paper - hence the tail(,-2) command) and the rest are the coefficients 
+#   # for the risk factors associated to each complication.
+#   linear_predictor <- sum(tail(regression_coefficents_input,n = -2)*c(risk_factors_input))
+#   
+#   # Then H returns the value of the cumulative hazard function 
+#   H_t1 <- ((regression_coefficents_input[2])^-1)*exp(regression_coefficents_input[1] + linear_predictor)*(exp(current_age_input*regression_coefficents_input[2])-1)
+#   H_t2 <- ((regression_coefficents_input[2])^-1)*exp(regression_coefficents_input[1] + linear_predictor)*(exp((1+current_age_input)*regression_coefficents_input[2])-1)
+#   p = 1 - exp(H_t1 - H_t2)
+#   
+#   return(list(#H_t1 = H_t1, # no need to return the H's, keep them for now just for validation purposes
+#     #H_t2 = H_t2,
+#     p = p))
+# }
+# 
+# 
+# # Death in year with no history or events females
+# annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
+# # [1] 0.004071926
+# annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating       
+# # [1] 0.004071926
+# 
+# # Death in year with no history or events males
+# annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
+# # [1] 0.005117118
+# annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating       
+# # [1] 0.005117118
+# 
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? Yes, negative coefficient for females.
+# 
+# 
+# # Death in year with history but no events females
+# annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
+# # [1] 0.006813194
+# annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating       
+# # [1] 0.006813194
+# 
+# # Death in year with history but no events males
+# annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
+# # [1] 0.006813194
+# annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating       
+# # [1] 0.006813194
+# 
+# # Is the predicted probability plausible? --> Gimon
+# # Is a difference between gender expected? No, gender is not a predictor.
