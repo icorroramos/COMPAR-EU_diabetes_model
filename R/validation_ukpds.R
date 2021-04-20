@@ -11,9 +11,15 @@ validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep="
 # Special interest on those characteristics that are targeted as treatment effect: see how a expected treatment effect
 # would impact the annual risk.
 
-# validation_patient$CURR.AGE <- 35
+validation_patient$CURR.AGE <- 70
 # validation_patient$HbA1c <- 3.8
 # validation_patient$SBP <- 129
+validation_patient$YEAR <- 8
+validation_patient$LDL <- 3
+validation_patient$BMI <- 32
+validation_patient$eGFR <- 50
+validation_patient$MMALB <- 1
+validation_patient$AMP.HIST <- 1
 
 retirement_age_input <- 65
 
@@ -41,11 +47,11 @@ validation_patient[event_vars] <- 0
 validation_patient$eGFR       <- validation_patient$eGFR/10 
 validation_patient$eGFR60more <- if_else(validation_patient$eGFR >= 6, validation_patient$eGFR, 0)
 validation_patient$eGFR60less <- if_else(validation_patient$eGFR <  6, validation_patient$eGFR, 0)
-validation_patient$HDL <- validation_patient$HDL*10
-validation_patient$HEART.R <- validation_patient$HEART.R/10 
-validation_patient$LDL       <- validation_patient$LDL*10
-validation_patient$LDL35more <- if_else(validation_patient$LDL >= 35, validation_patient$LDL, 0)
-validation_patient$SBP <- validation_patient$SBP/10
+validation_patient$HDL        <- validation_patient$HDL*10
+validation_patient$HEART.R    <- validation_patient$HEART.R/10 
+validation_patient$LDL        <- validation_patient$LDL*10
+validation_patient$LDL35more  <- if_else(validation_patient$LDL >= 35, validation_patient$LDL, 0)
+validation_patient$SBP        <- validation_patient$SBP/10
 
 validation_patient
 
@@ -94,11 +100,12 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
   # lambda and ro (with the notation from UKPDS paper - hence the tail(,-2) command) and the rest are the coefficients 
   # for the risk factors associated to each complication.
   linear_predictor <- sum(tail(regression_coefficents_input,n = -2)*c(risk_factors_input))
-  print(linear_predictor)
   
   # Then H returns the value of the cumulative hazard function 
   H_t1 <- exp(regression_coefficents_input[1] + linear_predictor)*duration_diabetes_input^regression_coefficents_input[2]
   H_t2 <- exp(regression_coefficents_input[1] + linear_predictor)*(1+duration_diabetes_input)^regression_coefficents_input[2]
+  print(H_t1)
+  print(H_t2)
   p = 1 - exp(H_t1 -H_t2)
   
   return(list(H_t1 = H_t1, # no need to return the H's, keep them for now just for validation purposes
@@ -113,6 +120,10 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
 annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
 annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
 # [1] 0.00657647
+
+
+
+
 
 # IHD females and males. Is a difference between gender expected? Yes, negative coefficient for females.
 annual_p_weibull(macrovascular_risk_equations$IHD,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
