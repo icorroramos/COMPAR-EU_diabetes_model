@@ -67,7 +67,7 @@ event_vars <- c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVENT", "AMP1.EVENT", "AMP2.E
 validation_patient[event_vars] <- 0 
 
 validation_patient$eGFR       <- validation_patient$eGFR/10 
-validation_patient$eGFR60more <- if_else(validation_patient$eGFR >= 6, validation_patient$eGFR, 0)
+validation_patient$eGFR60more <- max(validation_patient$eGFR, 6)
 validation_patient$eGFR60less <- min(validation_patient$eGFR, 6)
 validation_patient$HDL        <- validation_patient$HDL*10
 validation_patient$HEART.R    <- validation_patient$HEART.R/10 
