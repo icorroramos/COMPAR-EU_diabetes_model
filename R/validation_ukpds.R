@@ -15,15 +15,15 @@ validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep="
 
 validation_patient$CURR.AGE    <- 70
 validation_patient$YEAR        <- 8 
-validation_patient$eGFR        <- 61
+validation_patient$eGFR        <- 59
 validation_patient$HbA1c       <- 8
-validation_patient$HDL         <- 0 # HDL is really pushing the male prob low
+validation_patient$HDL         <- 3 # HDL is really pushing the male prob low
 validation_patient$LDL         <- 1.2 
 validation_patient$MMALB       <- 0
 validation_patient$PVD         <- 0
 validation_patient$SBP         <- 100
 validation_patient$SMOKER      <- 0
-validation_patient$WBC         <- 5
+validation_patient$WBC         <- 6.6
 
 # With all the above = 0 probabilities are similar, slightly higher for females (0.00016 vs. 0.00015)
 
