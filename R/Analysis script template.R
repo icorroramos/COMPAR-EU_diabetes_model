@@ -95,7 +95,7 @@ qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
 
 
 sim_results_female_comp <- SMDMII_model_simulation(npats_input,  #patient_size_input: run 500 for LOLA
-                                                   1,  #female_input, 1 = female
+                                                   0,  #female_input, 1 = female
                                                    tx_cost_input, #tx_cost_input --> Gimon
                                                    rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
                                                    rep(0,4),  #treatment_effect_HDL_input
@@ -154,6 +154,10 @@ KM_data[i,] <- current_survival
 
 View(tail(KM_data))
  
+
+write.csv(sim_clinical_results_male_table_comp, 'sim_clinical_results_female_table_comp.csv', quote = FALSE)
+write.csv(KM_data, 'KM_data_male_table_comp.csv', quote = FALSE)
+
 # ##### Males #####
 # 
 # sim_results_male <- SMDMII_model_simulation(npats_input, #patient_size_input: run 500 for LOLA
