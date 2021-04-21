@@ -15,10 +15,12 @@ validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep="
 
 # validation_patient$CURR.AGE    <- 70
 # validation_patient$YEAR        <- 8 
-# validation_patient$eGFR        <- 59
+# validation_patient$eGFR        <- 90
 # validation_patient$HbA1c       <- 8
 # validation_patient$HDL         <- 3 # HDL is really pushing the male prob low
-# validation_patient$LDL         <- 1.2 
+
+ validation_patient$LDL <- 0 
+
 # validation_patient$MMALB       <- 0
 # validation_patient$PVD         <- 0
 # validation_patient$SBP         <- 100
@@ -40,8 +42,6 @@ validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep="
 # Effect of HDL: for males only: negative coefficient. HDL = 3 makes prob for males 10 times lower already
 
 # Effect of LDL: continuous for males and only if >35 for females, both positive coefficient larger for females, makes it go really high
-
-
 
 retirement_age_input <- 65
 
@@ -68,11 +68,13 @@ validation_patient[event_vars] <- 0
 
 validation_patient$eGFR       <- validation_patient$eGFR/10 
 validation_patient$eGFR60more <- max(validation_patient$eGFR, 6)
-validation_patient$eGFR60less <- min(validation_patient$eGFR, 6)
+validation_patient$eGFR60less <- min(validation_patient$eGFR, 6) #not sure but better than before
 validation_patient$HDL        <- validation_patient$HDL*10
 validation_patient$HEART.R    <- validation_patient$HEART.R/10 
 validation_patient$LDL        <- validation_patient$LDL*10
-validation_patient$LDL35more  <- if_else(validation_patient$LDL >= 35, validation_patient$LDL, 0)
+
+validation_patient$LDL35more  <- if_else(validation_patient$LDL >= 35, validation_patient$LDL, 0) # not sure either, but I think it does not make sense to cut at 35
+
 validation_patient$SBP        <- validation_patient$SBP/10
 
 validation_patient
@@ -126,8 +128,8 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
   # Then H returns the value of the cumulative hazard function 
   H_t1 <- exp(regression_coefficents_input[1] + linear_predictor)*duration_diabetes_input^regression_coefficents_input[2]
   H_t2 <- exp(regression_coefficents_input[1] + linear_predictor)*(1+duration_diabetes_input)^regression_coefficents_input[2]
-  print(H_t1)
-  print(H_t2)
+  #print(H_t1)
+  #print(H_t2)
   p = 1 - exp(H_t1 -H_t2)
   
   return(list(H_t1 = H_t1, # no need to return the H's, keep them for now just for validation purposes
