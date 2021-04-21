@@ -139,7 +139,9 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
 # Validation of the Weibull events 
 
 # CHF females and males is the same equation
-annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+#male_macro <- unlist(validation_patient[1,] %>% select(risk_factors_macrovascular))
+#annual_p_weibull(macrovascular_risk_equations$CHF,male_macro,validation_patient[1,"YEAR"])$p
+
 annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
 # [1] 0.001761057
 
