@@ -117,8 +117,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   # LDL 
   simulation_baseline_patients$LDL       <- simulation_baseline_patients$LDL*10
-  #simulation_baseline_patients$LDL35more <- if_else(simulation_baseline_patients$LDL >= 35, simulation_baseline_patients$LDL, 0) # to be confirmed
-  simulation_baseline_patients$LDL35more <- max(simulation_baseline_patients$LDL, 35) # to be confirmed
+  simulation_baseline_patients$LDL35more <- if_else(simulation_baseline_patients$LDL >= 35, simulation_baseline_patients$LDL, 0) # to be confirmed
   
   # SBP
   simulation_baseline_patients$SBP <- simulation_baseline_patients$SBP/10
