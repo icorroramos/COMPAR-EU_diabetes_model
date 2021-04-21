@@ -18,9 +18,7 @@ validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep="
 # validation_patient$eGFR        <- 90
 # validation_patient$HbA1c       <- 8
 # validation_patient$HDL         <- 3 # HDL is really pushing the male prob low
-
- validation_patient$LDL <- 0 
-
+# validation_patient$LDL <- 0 
 # validation_patient$MMALB       <- 0
 # validation_patient$PVD         <- 0
 # validation_patient$SBP         <- 100
@@ -67,7 +65,7 @@ event_vars <- c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVENT", "AMP1.EVENT", "AMP2.E
 validation_patient[event_vars] <- 0 
 
 validation_patient$eGFR       <- validation_patient$eGFR/10 
-validation_patient$eGFR60more <- max(validation_patient$eGFR, 6)
+validation_patient$eGFR60more <- max(validation_patient$eGFR, 6) #not sure but better than before
 validation_patient$eGFR60less <- min(validation_patient$eGFR, 6) #not sure but better than before
 validation_patient$HDL        <- validation_patient$HDL*10
 validation_patient$HEART.R    <- validation_patient$HEART.R/10 
