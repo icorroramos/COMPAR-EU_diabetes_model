@@ -13,18 +13,18 @@ validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep="
 
 # Explore difference in MI equation for males and females
 
-validation_patient$CURR.AGE    <- 43+11
-validation_patient$YEAR        <- 11 
-validation_patient$eGFR        <- 90
-# validation_patient$HbA1c       <- 7
-# validation_patient$HDL         <- 9 # HDL is really pushing the male prob low
-validation_patient$LDL         <- 3.3
-validation_patient$MMALB       <- 0
-# # validation_patient$PVD         <- 0
-# validation_patient$SBP         <- 120
-# # validation_patient$SMOKER      <- 0
-# # validation_patient$WBC         <- 6.6
-validation_patient$BMI         <- 32
+# validation_patient$CURR.AGE    <- 43+11
+# validation_patient$YEAR        <- 11 
+# validation_patient$eGFR        <- 90
+# # validation_patient$HbA1c       <- 7
+# # validation_patient$HDL         <- 9 # HDL is really pushing the male prob low
+# validation_patient$LDL         <- 3.3
+# validation_patient$MMALB       <- 0
+# # # validation_patient$PVD         <- 0
+# # validation_patient$SBP         <- 120
+# # # validation_patient$SMOKER      <- 0
+# # # validation_patient$WBC         <- 6.6
+# validation_patient$BMI         <- 32
 
 # With all the above = 0 probabilities are similar, slightly higher for females (0.00016 vs. 0.00015)
 
@@ -62,7 +62,6 @@ validation_patient$BMI3 <- if_else(validation_patient$BMI >= 25, 1, 0)
 
 event_vars <- c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVENT", "AMP1.EVENT", "AMP2.EVENT", 
                 "MI.EVENT", "IHD.EVENT", "RENAL.EVENT", "STROKE.EVENT")
-
 validation_patient[event_vars] <- 0 
 
 validation_patient$eGFR       <- validation_patient$eGFR/10 
@@ -71,11 +70,8 @@ validation_patient$eGFR60less <- if_else(validation_patient$eGFR <= 6, validatio
 validation_patient$HDL        <- validation_patient$HDL*10
 validation_patient$HEART.R    <- validation_patient$HEART.R/10 
 validation_patient$LDL        <- validation_patient$LDL*10
-
 validation_patient$LDL35more  <- if_else(validation_patient$LDL >= 35, validation_patient$LDL, 0) # not sure either, but I think it does not make sense to cut at 35
-
 validation_patient$SBP        <- validation_patient$SBP/10
-
 validation_patient
 
 
