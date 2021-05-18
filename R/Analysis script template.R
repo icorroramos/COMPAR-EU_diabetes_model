@@ -5,7 +5,7 @@ source("R/SMI in type II diabetes - HE model v3.R")
 init <- Sys.time()
 
 # Control variables of simulation
-npats_input   <- 500  # Number of patients in simulation
+npats_input   <- 10  # Number of patients in simulation
 tx_cost_input <- 0 # Total treatment cost
 
 treateff_start_input   <- 1 # Cycle in which treatment effect starts
@@ -25,8 +25,6 @@ sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
 baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
 # baseline_characteristics <- read.csv("/input/UK/baseline_characteristics_UK_rank_1_study_pop.csv", sep=",")
 
-# VALIDATION
-baseline_characteristics$SMOKER <- 1
 
 # Direct costs of diabetes-related complications for UK are age-gender dependent.
 male_cost_inputs   <- read.csv("input/UK/Event cost male 2020.csv", sep=",")
@@ -98,7 +96,7 @@ qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
 
 
 sim_results_female_comp <- SMDMII_model_simulation(npats_input,  #patient_size_input: run 500 for LOLA
-                                                   0,  #female_input, 1 = female
+                                                   1,  #female_input, 1 = female
                                                    tx_cost_input, #tx_cost_input --> Gimon
                                                    rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
                                                    rep(0,4),  #treatment_effect_HDL_input
@@ -285,3 +283,5 @@ end - init
 # write.csv(sim_clinical_results_male_table, 'sim_clin_male_int.csv', quote = FALSE)
 # write.csv(sim_CE_results_male_table_comp, 'sim_CE_male_comp.csv', quote = FALSE)
 # write.csv(sim_clinical_results_male_table_comp, 'sim_clin_male_comp.csv', quote = FALSE)
+
+write.csv(sim_results_female_comp$simulation_patients_history, 'sim_results_female_comp_history.csv', quote = FALSE)
