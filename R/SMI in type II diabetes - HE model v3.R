@@ -167,6 +167,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       if(current_patient$CHF.HIST == 0){
         current_CHF_prob  <- annual_p_weibull(macrovascular_risk_equations$CHF,current_patient_macrovascular,current_patient$YEAR)$p
         current_patient$CHF.EVENT <- rbinom(1,1,current_CHF_prob) 
+        print(current_CHF_prob)
       } # Update current_patient$CHF.HIST after the year simulation is finished
       
       # IHD is Weibull. This can happen only once; that's why the if condition below is used.
