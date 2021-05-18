@@ -13,18 +13,18 @@ validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep="
 
 # Explore difference in MI equation for males and females
 
-validation_patient$CURR.AGE    <- 65
-validation_patient$YEAR        <- 5 
-# validation_patient$eGFR        <- 90
-validation_patient$HbA1c       <- 7
-validation_patient$HDL         <- 9 # HDL is really pushing the male prob low
-# validation_patient$LDL         <- 0 
-# validation_patient$MMALB       <- 0
-# validation_patient$PVD         <- 0
-validation_patient$SBP         <- 120
-# validation_patient$SMOKER      <- 0
-# validation_patient$WBC         <- 6.6
-validation_patient$BMI         <- 25.12
+validation_patient$CURR.AGE    <- 43+11
+validation_patient$YEAR        <- 11 
+validation_patient$eGFR        <- 90
+# validation_patient$HbA1c       <- 7
+# validation_patient$HDL         <- 9 # HDL is really pushing the male prob low
+validation_patient$LDL         <- 3.3
+validation_patient$MMALB       <- 0
+# # validation_patient$PVD         <- 0
+# validation_patient$SBP         <- 120
+# # validation_patient$SMOKER      <- 0
+# # validation_patient$WBC         <- 6.6
+validation_patient$BMI         <- 32
 
 # With all the above = 0 probabilities are similar, slightly higher for females (0.00016 vs. 0.00015)
 
@@ -67,7 +67,7 @@ validation_patient[event_vars] <- 0
 
 validation_patient$eGFR       <- validation_patient$eGFR/10 
 validation_patient$eGFR60more <- if_else(validation_patient$eGFR > 6,  validation_patient$eGFR,0)
-validation_patient$eGFR60less <- if_else(validation_patient$eGFR <= 6, validation_patient$eGFR,0)
+validation_patient$eGFR60less <- if_else(validation_patient$eGFR <= 6, validation_patient$eGFR,0) #defining it like this makes the equation for MI females unrealistically high
 validation_patient$HDL        <- validation_patient$HDL*10
 validation_patient$HEART.R    <- validation_patient$HEART.R/10 
 validation_patient$LDL        <- validation_patient$LDL*10
@@ -131,6 +131,7 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
   
   return(list(H_t1 = H_t1, # no need to return the H's, keep them for now just for validation purposes
               H_t2 = H_t2,
+              linear_predictor = linear_predictor,
               p = p))
 }
 
@@ -141,22 +142,31 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
 #male_macro <- unlist(validation_patient[1,] %>% select(risk_factors_macrovascular))
 #annual_p_weibull(macrovascular_risk_equations$CHF,male_macro,validation_patient[1,"YEAR"])$p
 
-p_CHF <- annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_CHF <- annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[2,] 
+                          %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_CHF
+mean(rbinom(1000,1,p_CHF))
 
-# [1] 0.001761057
 
 # IHD females and males. Is a difference between gender expected? Yes, negative coefficient for females.
-annual_p_weibull(macrovascular_risk_equations$IHD,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
-# [1] 0.0009983311
-annual_p_weibull(macrovascular_risk_equations$IHD,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
-# [1] 0.001698897
+p_IHD_female <- annual_p_weibull(macrovascular_risk_equations$IHD,validation_patient[1,] 
+                       %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+p_IHD_female
+mean(rbinom(1000,1,p_IHD_female))
+
+p_IHD_male <- annual_p_weibull(macrovascular_risk_equations$IHD,validation_patient[2,]%>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_IHD_male
+mean(rbinom(1000,1,p_IHD_male))
+
 
 # First MI males
-annual_p_weibull(macrovascular_risk_equations$FMIMALE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_MI_male <- annual_p_weibull(macrovascular_risk_equations$FMIMALE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_MI_male
 # [1] 0.002285789
 
 # First MI females
-annual_p_weibull(macrovascular_risk_equations$FMIFEMALE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+p_MI_female <- annual_p_weibull(macrovascular_risk_equations$FMIFEMALE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+p_MI_female
 # [1] 0.004844228
 
 # Second MI females and males
@@ -165,7 +175,8 @@ annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[2,] %>% sel
 # [1] 0.01946934
 
 # First stroke females
-annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[1,] 
+                 %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
 # [1] 0.001697342
 # First stroke males
 annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
