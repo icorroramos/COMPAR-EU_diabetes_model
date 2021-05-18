@@ -127,8 +127,6 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
   # Then H returns the value of the cumulative hazard function 
   H_t1 <- exp(regression_coefficents_input[1] + linear_predictor)*duration_diabetes_input^regression_coefficents_input[2]
   H_t2 <- exp(regression_coefficents_input[1] + linear_predictor)*(1+duration_diabetes_input)^regression_coefficents_input[2]
-  #print(H_t1)
-  #print(H_t2)
   p = 1 - exp(H_t1 -H_t2)
   
   return(list(H_t1 = H_t1, # no need to return the H's, keep them for now just for validation purposes
