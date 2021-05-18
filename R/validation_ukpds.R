@@ -13,17 +13,18 @@ validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep="
 
 # Explore difference in MI equation for males and females
 
-# validation_patient$CURR.AGE    <- 70
-# validation_patient$YEAR        <- 8 
+validation_patient$CURR.AGE    <- 65
+validation_patient$YEAR        <- 5 
 # validation_patient$eGFR        <- 90
-# validation_patient$HbA1c       <- 8
-# validation_patient$HDL         <- 3 # HDL is really pushing the male prob low
+validation_patient$HbA1c       <- 7
+validation_patient$HDL         <- 9 # HDL is really pushing the male prob low
 # validation_patient$LDL         <- 0 
 # validation_patient$MMALB       <- 0
 # validation_patient$PVD         <- 0
-# validation_patient$SBP         <- 100
+validation_patient$SBP         <- 120
 # validation_patient$SMOKER      <- 0
 # validation_patient$WBC         <- 6.6
+validation_patient$BMI         <- 25.12
 
 # With all the above = 0 probabilities are similar, slightly higher for females (0.00016 vs. 0.00015)
 
