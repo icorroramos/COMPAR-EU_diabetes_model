@@ -66,8 +66,8 @@ event_vars <- c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVENT", "AMP1.EVENT", "AMP2.E
 validation_patient[event_vars] <- 0 
 
 validation_patient$eGFR       <- validation_patient$eGFR/10 
-validation_patient$eGFR60more <- max(validation_patient$eGFR, 6) #not sure but better than before
-validation_patient$eGFR60less <- min(validation_patient$eGFR, 6) #not sure but better than before
+validation_patient$eGFR60more <- if_else(validation_patient$eGFR > 6,  validation_patient$eGFR,0)
+validation_patient$eGFR60less <- if_else(validation_patient$eGFR <= 6, validation_patient$eGFR,0)
 validation_patient$HDL        <- validation_patient$HDL*10
 validation_patient$HEART.R    <- validation_patient$HEART.R/10 
 validation_patient$LDL        <- validation_patient$LDL*10
@@ -141,7 +141,8 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
 #male_macro <- unlist(validation_patient[1,] %>% select(risk_factors_macrovascular))
 #annual_p_weibull(macrovascular_risk_equations$CHF,male_macro,validation_patient[1,"YEAR"])$p
 
-annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_CHF <- annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+
 # [1] 0.001761057
 
 # IHD females and males. Is a difference between gender expected? Yes, negative coefficient for females.
@@ -200,7 +201,8 @@ annual_p_weibull(microvascular_risk_equations$SAMP,validation_patient[2,] %>% se
 # [1] 0.0920613
 
 # Renal failure females
-annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+p_renal_female <- annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+p_renal_female
 # [1] 0.000005420932
 # Renal failure males
 annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
