@@ -5,7 +5,7 @@ source("R/SMI in type II diabetes - HE model v3.R")
 init <- Sys.time()
 
 # Control variables of simulation
-npats_input   <- 1000  # Number of patients in simulation
+npats_input   <- 500  # Number of patients in simulation
 tx_cost_input <- 0 # Total treatment cost
 
 treateff_start_input   <- 1 # Cycle in which treatment effect starts
@@ -98,7 +98,7 @@ qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
 
 
 sim_results_female_comp <- SMDMII_model_simulation(npats_input,  #patient_size_input: run 500 for LOLA
-                                                   1,  #female_input, 1 = female
+                                                   0,  #female_input, 1 = female
                                                    tx_cost_input, #tx_cost_input --> Gimon
                                                    rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
                                                    rep(0,4),  #treatment_effect_HDL_input
