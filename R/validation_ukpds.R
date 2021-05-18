@@ -189,38 +189,33 @@ p_sstroke
 
 
 # Blindness females
-annual_p_weibull(microvascular_risk_equations$BLIND,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
-# [1] 0.002737117
-# Blindness males
-annual_p_weibull(microvascular_risk_equations$BLIND,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
-# [1] 0.002737117
+p_blind <- annual_p_weibull(microvascular_risk_equations$BLIND,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+p_blind
 
 # First amputation no ulcer females
-annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+p_amp_no_ulcer_female <- annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+p_amp_no_ulcer_female
 # [1] 0.0002014471
+
 # First amputation no ulcer males
-annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
-# [1] 0.0003143385
+p_amp_no_ulcer_male <- annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
+p_amp_no_ulcer_male
 
 # First amputation ulcer females and males
-annual_p_weibull(microvascular_risk_equations$FAMPULCER,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
-annual_p_weibull(microvascular_risk_equations$FAMPULCER,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
-# [1] 0.01874466
+p_amp_ulcer <- annual_p_weibull(microvascular_risk_equations$FAMPULCER,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+p_amp_ulcer
 
-# Second amputation females
-annual_p_weibull(microvascular_risk_equations$SAMP,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
-annual_p_weibull(microvascular_risk_equations$SAMP,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
-# [1] 0.0920613
+# Second amputation 
+p_sec_amp <- annual_p_weibull(microvascular_risk_equations$SAMP,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+p_sec_amp
 
 # Renal failure females
 p_renal_female <- annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
 p_renal_female
-# [1] 0.000005420932
+
 # Renal failure males
-annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
-# [1] 0.0000129263
-# After changing the definitions of the spline variables, renal failure probability is much smaller than before.
-# Compare with UKPDS model results to see whether it makes sense.
+p_renal_male <- annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
+p_renal_male
 
 # The annual probability of experiencing diabetic ulcer, death in first year of event and death in subsequent years of events,
 # is assumed to follow a logistic distribution where t is the current age.
@@ -242,11 +237,13 @@ annual_p_logistic <- function(regression_coefficents_input, risk_factors_input){
 
 
 # Ulcer females
-annual_p_logistic(microvascular_risk_equations$ULCER,validation_patient[1,] %>% select(risk_factors_microvascular))$p
-# [1] 0.0008675062
+p_ulcer_female <- annual_p_logistic(microvascular_risk_equations$ULCER,validation_patient[1,] %>% select(risk_factors_microvascular))$p
+p_ulcer_female
+
 # Ulcer males
-annual_p_logistic(microvascular_risk_equations$ULCER,validation_patient[2,] %>% select(risk_factors_microvascular))$p
-# [1] 0.002267019
+p_ulcer_male <- annual_p_logistic(microvascular_risk_equations$ULCER,validation_patient[2,] %>% select(risk_factors_microvascular))$p
+p_ulcer_male
+
 
 # Death in 1st year of events females
 annual_p_logistic(mortality_risk_equations$DEATH1YEVENT,validation_patient[1,] %>% select(risk_factors_mortality))$p
