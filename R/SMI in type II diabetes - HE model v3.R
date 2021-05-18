@@ -188,7 +188,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
           # First MI for female Weibull
           current_FMIFEMALE_prob  <- annual_p_weibull(macrovascular_risk_equations$FMIFEMALE,current_patient_macrovascular,current_patient$YEAR)$p
           current_patient$MI.EVENT <- rbinom(1,1,current_FMIFEMALE_prob) # Update current_patient$MI.HIST after the year simulation is finished
-          #print(current_FMIFEMALE_prob)
+          print(current_FMIFEMALE_prob)
         }
         else{
           # First MI for male Exponential
@@ -213,7 +213,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       if(current_patient$STROKE.HIST == 0){
         # If no history of STROKE, then it is first and Weibull. 
         current_FSTROKE_prob <- annual_p_weibull(macrovascular_risk_equations$FSTROKE,current_patient_macrovascular,current_patient$YEAR)$p
-        print(current_FSTROKE_prob)
+        #print(current_FSTROKE_prob)
         current_patient$STROKE.EVENT <- rbinom(1,1,current_FSTROKE_prob) #Update current_patient$STROKE.HIST after the year
       }
       else{ 
