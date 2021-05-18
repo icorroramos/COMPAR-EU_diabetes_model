@@ -18,7 +18,7 @@ validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep="
 # validation_patient$eGFR        <- 90
 # validation_patient$HbA1c       <- 8
 # validation_patient$HDL         <- 3 # HDL is really pushing the male prob low
-# validation_patient$LDL <- 0 
+# validation_patient$LDL         <- 0 
 # validation_patient$MMALB       <- 0
 # validation_patient$PVD         <- 0
 # validation_patient$SBP         <- 100
