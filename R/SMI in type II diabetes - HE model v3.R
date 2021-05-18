@@ -132,8 +132,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   for(patient_index in 1:patient_size_input){
     
     # Print the patient index to know how advanced is the simulation. Delete later if not needed
-    if(run_PSA_input == 0){#print(patient_index)
-      }
+    if(run_PSA_input == 0){print(patient_index)}
     
     # Pick the current patient from those selected at baseline and set simulation ID ("SIMID"). This is needed to produce aggregated results.
     current_patient <- simulation_baseline_patients[patient_index,]
@@ -204,7 +203,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         if(current_SMI_event == 0){
           current_SMI_prob <- annual_p_weibull(macrovascular_risk_equations$SMI,current_patient_macrovascular,current_patient$YEAR)$p
           current_patient$MI.EVENT <- rbinom(1,1,current_SMI_prob)
-          print(current_SMI_prob)
+          #print(current_SMI_prob)
           if(current_patient$MI.EVENT == 1){current_SMI_event <- 1}
         }
       }
@@ -214,7 +213,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       if(current_patient$STROKE.HIST == 0){
         # If no history of STROKE, then it is first and Weibull. 
         current_FSTROKE_prob <- annual_p_weibull(macrovascular_risk_equations$FSTROKE,current_patient_macrovascular,current_patient$YEAR)$p
-        #print(current_FSTROKE_prob)
+        print(current_FSTROKE_prob)
         current_patient$STROKE.EVENT <- rbinom(1,1,current_FSTROKE_prob) #Update current_patient$STROKE.HIST after the year
       }
       else{ 
