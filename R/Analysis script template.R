@@ -24,6 +24,8 @@ sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
 # A patient-level model make use of patient characteristics. 
 baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
 # baseline_characteristics <- read.csv("/input/UK/baseline_characteristics_UK_rank_1_study_pop.csv", sep=",")
+
+# VALIDATION
 baseline_characteristics$SMOKER <- 1
 
 # Direct costs of diabetes-related complications for UK are age-gender dependent.
