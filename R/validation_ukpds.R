@@ -67,13 +67,15 @@ validation_patient[event_vars] <- 0
 validation_patient$eGFR       <- validation_patient$eGFR/10 
 validation_patient$eGFR60more <- if_else(validation_patient$eGFR > 6,  validation_patient$eGFR,0)
 validation_patient$eGFR60less <- if_else(validation_patient$eGFR <= 6, validation_patient$eGFR,0) #defining it like this makes the equation for MI females unrealistically high
+
 validation_patient$HDL        <- validation_patient$HDL*10
 validation_patient$HEART.R    <- validation_patient$HEART.R/10 
+
 validation_patient$LDL        <- validation_patient$LDL*10
 validation_patient$LDL35more  <- if_else(validation_patient$LDL >= 35, validation_patient$LDL, 0) # not sure either, but I think it does not make sense to cut at 35
+
 validation_patient$SBP        <- validation_patient$SBP/10
 validation_patient
-
 
 # Complications
 
@@ -166,22 +168,25 @@ p_MI_female
 # [1] 0.004844228
 
 # Second MI females and males
-annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
-annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_SMI <- annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+#annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_SMI
+mean(rbinom(1000,1,p_SMI))
 # [1] 0.01946934
 
 # First stroke females
-annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[1,] 
-                 %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
-# [1] 0.001697342
+p_stroke_female <- annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[1,]%>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+p_stroke_female
+
 # First stroke males
-annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
-# [1] 0.00258214
+p_stroke_male <- annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_stroke_male
+
 
 # Second stroke females and males
-annual_p_weibull(macrovascular_risk_equations$SSTROKE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
-annual_p_weibull(macrovascular_risk_equations$SSTROKE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
-# [1] 0.01181782
+p_sstroke <- annual_p_weibull(macrovascular_risk_equations$SSTROKE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+p_sstroke
+
 
 # Blindness females
 annual_p_weibull(microvascular_risk_equations$BLIND,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
