@@ -157,19 +157,18 @@ KM_data[i,] <- current_survival
 View(tail(KM_data))
 
 
-
-# Try this: not sure now... my numbers look similar to those in UKPDS, not sure what's the difference with KM below
-
-# CHF KM
-CHF_data <- sim_results_female_comp$simulation_patients_history[,c("SIMID","SDURATION","CHF.EVENT","dead")]
-CHF_data$event <- CHF_data$CHF.EVENT + CHF_data$dead
-CHF_data_agg <- CHF_data[which(CHF_data$event>=1),]
-CHF_data_agg$status <- if_else(CHF_data_agg$CHF.EVENT>CHF_data_agg$dead,1,0)
-CHF_data_agg <- CHF_data_agg[!duplicated(CHF_data_agg$SIMID),]
-km.chf <- with(CHF_data_agg, Surv(SDURATION, status))
-km.chf.fit <- survfit(Surv(SDURATION, status) ~ 1, data=CHF_data_agg)
-summary(km.chf.fit)
-plot(km.chf.fit)
+# # Try this: not sure now... my numbers look similar to those in UKPDS, not sure what's the difference with KM below
+# 
+# # CHF KM
+# CHF_data <- sim_results_female_comp$simulation_patients_history[,c("SIMID","SDURATION","CHF.EVENT","dead")]
+# CHF_data$event <- CHF_data$CHF.EVENT + CHF_data$dead
+# CHF_data_agg <- CHF_data[which(CHF_data$event>=1),]
+# CHF_data_agg$status <- if_else(CHF_data_agg$CHF.EVENT>CHF_data_agg$dead,1,0)
+# CHF_data_agg <- CHF_data_agg[!duplicated(CHF_data_agg$SIMID),]
+# km.chf <- with(CHF_data_agg, Surv(SDURATION, status))
+# km.chf.fit <- survfit(Surv(SDURATION, status) ~ 1, data=CHF_data_agg)
+# summary(km.chf.fit)
+# plot(km.chf.fit)
 
 
 
