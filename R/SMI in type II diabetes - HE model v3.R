@@ -104,9 +104,11 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   # eGFR
   simulation_baseline_patients$eGFR       <- simulation_baseline_patients$eGFR/10 
-  simulation_baseline_patients$eGFR60more <- if_else(simulation_baseline_patients$eGFR >= 6, simulation_baseline_patients$eGFR, 0)
+  #simulation_baseline_patients$eGFR60more <- if_else(simulation_baseline_patients$eGFR >= 6, simulation_baseline_patients$eGFR, 0)
+  simulation_baseline_patients$eGFR60more <- if_else(simulation_baseline_patients$eGFR >= 6, simulation_baseline_patients$eGFR - 6, 0)
   #simulation_baseline_patients$eGFR60more <- max(simulation_baseline_patients$eGFR, 6) # to be confirmed
-  simulation_baseline_patients$eGFR60less <- if_else(simulation_baseline_patients$eGFR <  6, simulation_baseline_patients$eGFR, 0)
+  #simulation_baseline_patients$eGFR60less <- if_else(simulation_baseline_patients$eGFR <  6, simulation_baseline_patients$eGFR, 0)
+  simulation_baseline_patients$eGFR60less <- if_else(simulation_baseline_patients$eGFR <  6, simulation_baseline_patients$eGFR, 6)
   #simulation_baseline_patients$eGFR60less <- min(simulation_baseline_patients$eGFR, 6) # to be confirmed
   
   # HDL
