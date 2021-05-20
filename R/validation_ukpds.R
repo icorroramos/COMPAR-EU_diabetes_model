@@ -7,41 +7,6 @@ source("setup.R")
 # Patient characteristics
 validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
 
-# We can change patient characteristics for testing purposes below (un-comment) 
-# Special interest on those characteristics that are targeted as treatment effect: see how a expected treatment effect
-# would impact the annual risk.
-
-# Explore difference in MI equation for males and females
-
-# validation_patient$CURR.AGE    <- 43+11
-# validation_patient$YEAR        <- 11 
-# validation_patient$eGFR        <- 90
-# # validation_patient$HbA1c       <- 7
-# # validation_patient$HDL         <- 9 # HDL is really pushing the male prob low
-# validation_patient$LDL         <- 3.3
-# validation_patient$MMALB       <- 0
-# # # validation_patient$PVD         <- 0
-# # validation_patient$SBP         <- 120
-# # # validation_patient$SMOKER      <- 0
-# # # validation_patient$WBC         <- 6.6
-# validation_patient$BMI         <- 32
-
-# With all the above = 0 probabilities are similar, slightly higher for females (0.00016 vs. 0.00015)
-
-# Effect of age (all the others = 0): both coefficients positive but larger for males. As age increases, it is expected that the probability for males becomes larger.
-# for age = 70, we get 0.0035 for males and 0.0029 for females
-
-# Effect of diabetes duration: this is quite substantial already due to the functional form Exponential vs. Weibull, when this is = 10 then
-# the probability for females 70 years (all the rest are 0) old is more than twice larger
-
-# Effect of egfr only for females if < 60. If >60 the prob for females is twice larger
-
-# Effect of HBA1c: larger effect for males, as expected
-
-# Effect of HDL: for males only: negative coefficient. HDL = 3 makes prob for males 10 times lower already
-
-# Effect of LDL: continuous for males and only if >35 for females, both positive coefficient larger for females, makes it go really high
-
 retirement_age_input <- 65
 
 validation_patient$AGE.DIAG <- validation_patient$CURR.AGE - validation_patient$YEAR 
