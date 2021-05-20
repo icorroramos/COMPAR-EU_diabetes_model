@@ -144,7 +144,7 @@ View(sim_clinical_results_female_table_comp)
 
 # Results per year
 
-# This KM data is incorrect I think
+# Check these KM data:
 n_years <- 1:max(sim_results_female_comp$simulation_patients_history$SDURATION)
 current_survival <- rep(1,length(event_vars)+1)
 KM_data <- sim_results_female_comp$simulation_patients_history[,c(event_vars,"dead")]
