@@ -156,6 +156,7 @@ KM_data[i,] <- current_survival
 
 View(tail(KM_data))
 
+write.csv(KM_data, 'KM_data.csv', quote = FALSE)
 
 # # Try this: not sure now... my numbers look similar to those in UKPDS, not sure what's the difference with KM below
 # 
@@ -302,5 +303,3 @@ end - init
 # write.csv(sim_clinical_results_male_table, 'sim_clin_male_int.csv', quote = FALSE)
 # write.csv(sim_CE_results_male_table_comp, 'sim_CE_male_comp.csv', quote = FALSE)
 # write.csv(sim_clinical_results_male_table_comp, 'sim_clin_male_comp.csv', quote = FALSE)
-
-write.csv(sim_results_female_comp$simulation_patients_history, 'sim_results_female_comp_history.csv', quote = FALSE)
