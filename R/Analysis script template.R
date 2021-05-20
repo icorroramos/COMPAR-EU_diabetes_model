@@ -156,7 +156,7 @@ KM_data[i,] <- current_survival
 
 View(tail(KM_data))
 
-write.csv(KM_data, 'KM_data.csv', quote = FALSE)
+write.csv(KM_data, 'KM_data_smoker.csv', quote = FALSE)
 
 # # Try this: not sure now... my numbers look similar to those in UKPDS, not sure what's the difference with KM below
 # 
