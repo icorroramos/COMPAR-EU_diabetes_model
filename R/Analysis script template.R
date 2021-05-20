@@ -106,7 +106,7 @@ sim_results_female_comp <- SMDMII_model_simulation(npats_input,  #patient_size_i
                                                    0.035, #qol_disc_rate_input
                                                    65, #retirement_age_input
                                                    0, #run_PSA_input, 0 == no PSA
-                                                   77 #seed_input
+                                                   177 #seed_input
 )
 
 # Results tables
@@ -158,10 +158,7 @@ View(tail(KM_data))
 
 
 
-
-# Try this
-
-
+# Try this: not sure now... my numbers look similar to those in UKPDS, not sure what's the difference with KM below
 
 # CHF KM
 CHF_data <- sim_results_female_comp$simulation_patients_history[,c("SIMID","SDURATION","CHF.EVENT","dead")]
