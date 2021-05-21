@@ -26,12 +26,24 @@ baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK.csv",
 # baseline_characteristics <- read.csv("/input/UK/baseline_characteristics_UK_rank_1_study_pop.csv", sep=",")
 
 
+
+
+
+
+
+
+###########################################################
+
 # Validation
-female_input <-1 # 1 = female
+female_input <-1 # 1 = female, 0 = male
 #baseline_characteristics$SMOKER <- 1
 
 results_dir <- ("validation/female_base_case_")
 #dir.create(results_dir)
+
+###########################################################
+
+
 
 
 
@@ -169,7 +181,11 @@ export_csv <- function(object_input){
   write.csv(object_input, paste(results_dir, substitute(object_input),"_", format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), ".csv", sep = ""))
 }
 
+
+clinical_results_table <- sim_clinical_results_female_table_comp # Validation, delete afterwards
+  
 export_csv(KM_data)
+export_csv(clinical_results_table)
 #write.csv(KM_data, 'KM_data_smoker.csv', quote = FALSE)
 
 
