@@ -106,7 +106,7 @@ sim_results_female_comp <- SMDMII_model_simulation(npats_input,  #patient_size_i
                                                    0.035, #qol_disc_rate_input
                                                    65, #retirement_age_input
                                                    0, #run_PSA_input, 0 == no PSA
-                                                   177 #seed_input
+                                                   77 #seed_input
 )
 
 # Results tables
