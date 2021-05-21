@@ -28,10 +28,10 @@ baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK.csv",
 
 # Validation
 
-female_input <-1
+female_input <-1 # 1 = female
 #baseline_characteristics$SMOKER <- 1
 
-results_dir <- ("validation/")
+results_dir <- ("validation/female_base_case_")
 #dir.create(results_dir)
 
 
@@ -170,11 +170,7 @@ export_csv <- function(object_input){
 }
 
 export_csv(KM_data)
-
 #write.csv(KM_data, 'KM_data_smoker.csv', quote = FALSE)
-
-
-
 
 
 # # Try this: not sure now... my numbers look similar to those in UKPDS, not sure what's the difference with KM below
