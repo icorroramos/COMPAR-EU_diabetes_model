@@ -31,7 +31,6 @@ baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK.csv",
 
 
 
-
 ###########################################################
 
 # Validation
@@ -158,7 +157,7 @@ colnames(sim_clinical_results_female_table_comp) <- c("Life expectancy", "CHF ra
                                                       "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
 rownames(sim_clinical_results_female_table_comp) <- "Comparator"
 
-View(sim_clinical_results_female_table_comp)
+# View(sim_clinical_results_female_table_comp)
 
 
 # Results per year
@@ -173,7 +172,7 @@ current_survival <- current_survival*(1-colMeans(sim_results_female_comp$simulat
 KM_data[i,] <- current_survival
 }
 
-View(tail(KM_data))
+# View(tail(KM_data))
 
 
 # Export tables into Excel using this function:
