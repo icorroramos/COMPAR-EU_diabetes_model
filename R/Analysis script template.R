@@ -6,7 +6,7 @@ init <- Sys.time()
 
 # Control variables of simulation
 npats_input   <- 1000  # Number of patients in simulation
-tx_cost_input <- 0 # Total treatment cost
+tx_cost_input <- 0     # Total treatment cost
 
 treateff_start_input   <- 1 # Cycle in which treatment effect starts
 treateff_end_input     <- 4 # Cycle in which treatment effect ends
@@ -41,8 +41,6 @@ qol_inputs <- read.csv("input/UK/qol_inputs_UK.csv", sep=",")
 qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
 
 # TODO: also extract output processing scripts to here.
-
-### Run the model below for females and males separately.
 
 # ##### Females #####
 # 
