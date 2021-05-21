@@ -95,10 +95,8 @@ qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
 female_input <-1
 #baseline_characteristics$SMOKER <- 1
 
-results_dir <- ("output/population 1/TEST/")
-dir.create(results_dir)
-
-
+results_dir <- ("validation/")
+#dir.create(results_dir)
 
 sim_results_female_comp <- SMDMII_model_simulation(npats_input,  #patient_size_input: run 500 for LOLA
                                                    female_input,  #female_input, 1 = female
