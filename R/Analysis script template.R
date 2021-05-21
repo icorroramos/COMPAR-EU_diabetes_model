@@ -92,9 +92,16 @@ qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
  
 #Comparator
 
+female_input <-1
+#baseline_characteristics$SMOKER <- 1
+
+results_dir <- ("output/population 1/TEST/")
+dir.create(results_dir)
+
+
 
 sim_results_female_comp <- SMDMII_model_simulation(npats_input,  #patient_size_input: run 500 for LOLA
-                                                   1,  #female_input, 1 = female
+                                                   female_input,  #female_input, 1 = female
                                                    tx_cost_input, #tx_cost_input --> Gimon
                                                    rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
                                                    rep(0,4),  #treatment_effect_HDL_input
@@ -154,7 +161,19 @@ KM_data[i,] <- current_survival
 
 View(tail(KM_data))
 
-write.csv(KM_data, 'KM_data_smoker.csv', quote = FALSE)
+
+# Export tables into Excel using this function:
+export_csv <- function(object_input){
+  write.csv(object_input, paste(results_dir, substitute(object_input),"_", format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), ".csv", sep = ""))
+}
+
+export_csv(KM_data)
+
+#write.csv(KM_data, 'KM_data_smoker.csv', quote = FALSE)
+
+
+
+
 
 # # Try this: not sure now... my numbers look similar to those in UKPDS, not sure what's the difference with KM below
 # 
