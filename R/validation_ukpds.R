@@ -254,7 +254,6 @@ annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[2,] %
 annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating
 # [1] 0.005117118
 
-
 # Death in year with history but no events females
 annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
 annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating
