@@ -282,8 +282,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       current_year_event <- sum(current_patient$CHF.EVENT, current_patient$IHD.EVENT, 
                                 current_patient$MI.EVENT, # could be 1st or 2nd, no distinction
                                 current_patient$STROKE.EVENT, # could be 1st or 2nd, no distinction
-                                current_patient$BLIND.EVENT, current_patient$ULCER.EVENT, current_patient$AMP1.EVENT, 
-                                current_patient$AMP2.EVENT, current_patient$RENAL.EVENT)
+                                current_patient$BLIND.EVENT, current_patient$ULCER.EVENT, 
+                                current_patient$AMP1.EVENT, current_patient$AMP2.EVENT, current_patient$RENAL.EVENT)
       
       print(paste("current_year_event = ", current_year_event))
       
