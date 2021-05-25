@@ -495,7 +495,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # And update current patient and go up to while loop
       current_patient <- current_patient_update
-      print(current_patient)
+      #print(current_patient)
       
       # All the _event and .EVENT variables have to be reset to 0 because for the next year it only counts .HIST
       # Note "event_vars" defined in aux_functions.R
