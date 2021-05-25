@@ -40,6 +40,9 @@ validation_patient$LDL        <- validation_patient$LDL*10
 validation_patient$LDL35more  <- if_else(validation_patient$LDL >= 35, validation_patient$LDL, 0) # not sure either, but I think it does not make sense to cut at 35
 
 validation_patient$SBP        <- validation_patient$SBP/10
+
+validation_patient$CHF.HIST <- 1
+
 validation_patient
 
 # Complications
