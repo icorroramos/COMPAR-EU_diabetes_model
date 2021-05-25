@@ -166,19 +166,17 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       current_patient_macrovascular <- current_patient %>% select(risk_factors_macrovascular)
       
       # Heart Failure is Weibull. This can happen only once; that's why the if condition below is used. 
-      print(current_patient$CHF.HIST == 0)
+      #print(current_patient$CHF.HIST)
       if(current_patient$CHF.HIST == 0){
         current_CHF_prob  <- annual_p_weibull(macrovascular_risk_equations$CHF,current_patient_macrovascular,current_patient$YEAR)$p
         current_patient$CHF.EVENT <- rbinom(1,1,current_CHF_prob) 
-        #print(current_CHF_prob)
-      } # Update current_patient$CHF.HIST after the year simulation is finished
+        } # Update current_patient$CHF.HIST after the year simulation is finished
       
       # IHD is Weibull. This can happen only once; that's why the if condition below is used.
       if(current_patient$IHD.HIST == 0){
         current_IHD_prob  <- annual_p_weibull(macrovascular_risk_equations$IHD,current_patient_macrovascular,current_patient$YEAR)$p
         current_patient$IHD.EVENT <- rbinom(1,1,current_IHD_prob) 
-        #print(current_IHD_prob)
-      } # Update current_patient$IHD.HIST after the year simulation is finished
+        } # Update current_patient$IHD.HIST after the year simulation is finished
       
       # MI could be first or second. If it is first, then it is different for male and female. 
       # If it is second, then it is the same for both genders.
@@ -191,14 +189,12 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
           # First MI for female Weibull
           current_FMIFEMALE_prob   <- annual_p_weibull(macrovascular_risk_equations$FMIFEMALE,current_patient_macrovascular,current_patient$YEAR)$p
           current_patient$MI.EVENT <- rbinom(1,1,current_FMIFEMALE_prob) # Update current_patient$MI.HIST after the year simulation is finished
-          #print(current_FMIFEMALE_prob)
-        }
+          }
         else{
           # First MI for male Exponential
           current_FMIMALE_prob     <- annual_p_weibull(macrovascular_risk_equations$FMIMALE,current_patient_macrovascular,current_patient$YEAR)$p
           current_patient$MI.EVENT <- rbinom(1,1,current_FMIMALE_prob) # Update current_patient$MI.HIST after the year simulation is finished
-          #print(current_FMIMALE_prob)
-        } # end if/else for gender
+          } # end if/else for gender
       }
       else{
         # Second MI is Exponential, regardless the gender. MI.HIST will remain == 1. If a patient has a second MI, it is not  possible to have a 3rd. 
@@ -206,7 +202,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         if(current_SMI_event == 0){
           current_SMI_prob <- annual_p_weibull(macrovascular_risk_equations$SMI,current_patient_macrovascular,current_patient$YEAR)$p
           current_patient$MI.EVENT <- rbinom(1,1,current_SMI_prob)
-          #print(current_SMI_prob)
+          
           if(current_patient$MI.EVENT == 1){current_SMI_event <- 1}
         }
       }
@@ -216,7 +212,6 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       if(current_patient$STROKE.HIST == 0){
         # If no history of STROKE, then it is first and Weibull. 
         current_FSTROKE_prob <- annual_p_weibull(macrovascular_risk_equations$FSTROKE,current_patient_macrovascular,current_patient$YEAR)$p
-        #print(current_FSTROKE_prob)
         current_patient$STROKE.EVENT <- rbinom(1,1,current_FSTROKE_prob) #Update current_patient$STROKE.HIST after the year
       }
       else{ 
@@ -310,24 +305,28 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       if(current_year_event == 0 & current_hist == 0){ 
         print("no history & no event")
         current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, current_patient_mortality,current_patient$AGE.DIAG + current_patient$YEAR)$p       
+        print(current_DEATH_prob)
       }
       
       #2. First year of events (so no previous history) excluding blindness or ulcer, then logistic distribution
       if(current_year_event_no_blind_no_ulcer == 1 & current_hist == 0){
         print("first event and no history") #not sure if this is correct
         current_DEATH_prob <- annual_p_logistic(mortality_risk_equations$DEATH1YEVENT, current_patient_mortality)$p       
+        print(current_DEATH_prob)
       }
       
       #3. Years with history of previous events but no events in the current year, then gompertz distribution
       if(current_year_event == 0 & current_hist == 1){
         print("history and no event")
         current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, current_patient_mortality,current_patient$AGE.DIAG + current_patient$YEAR)$p       
+        print(current_DEATH_prob)
       }
       
       #4. Subsequent years (so there is previous history) of events excluding blindness or ulcer, then logistic distribution
       if(current_year_event_no_blind_no_ulcer == 1 & current_hist == 1){
         print("history and events") #not sure if this is correct
         current_DEATH_prob  <- annual_p_logistic(mortality_risk_equations$DEATHYSEVENT, current_patient_mortality)$p       
+        print(current_DEATH_prob)
       }
       
       # Sampling "dead" status
@@ -496,6 +495,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # And update current patient and go up to while loop
       current_patient <- current_patient_update
+      print(current_patient)
       
       # All the _event and .EVENT variables have to be reset to 0 because for the next year it only counts .HIST
       # Note "event_vars" defined in aux_functions.R
