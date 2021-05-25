@@ -307,21 +307,25 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # 1. If no history of previous events and no events in the current year, then gompertz distribution
       if(current_year_event == 0 & current_hist == 0){ 
+        print("no history & no event")
         current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, current_patient_mortality,current_patient$AGE.DIAG + current_patient$YEAR)$p       
       }
       
       #2. First year of events (so no previous history) excluding blindness or ulcer, then logistic distribution
       if(current_year_event_no_blind_no_ulcer == 1 & current_hist == 0){
+        print("first event and no history") #not sure if this is correct
         current_DEATH_prob <- annual_p_logistic(mortality_risk_equations$DEATH1YEVENT, current_patient_mortality)$p       
       }
       
       #3. Years with history of previous events but no events in the current year, then gompertz distribution
       if(current_year_event == 0 & current_hist == 1){
+        print("history and no event")
         current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, current_patient_mortality,current_patient$AGE.DIAG + current_patient$YEAR)$p       
       }
       
       #4. Subsequent years (so there is previous history) of events excluding blindness or ulcer, then logistic distribution
       if(current_year_event_no_blind_no_ulcer == 1 & current_hist == 1){
+        print("history and events") #not sure if this is correct
         current_DEATH_prob  <- annual_p_logistic(mortality_risk_equations$DEATHYSEVENT, current_patient_mortality)$p       
       }
       
