@@ -5,7 +5,7 @@ source("R/SMI in type II diabetes - HE model v3.R")
 init <- Sys.time()
 
 # Control variables of simulation
-npats_input   <- 1000  # Number of patients in simulation
+npats_input   <- 5  # Number of patients in simulation
 tx_cost_input <- 0     # Total treatment cost
 
 treateff_start_input   <- 1 # Cycle in which treatment effect starts
