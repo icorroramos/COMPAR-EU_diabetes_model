@@ -370,7 +370,12 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # Sampling "dead" status
       print(paste("P[dead] = ",current_DEATH_prob))
-      current_DEATH_event <- rbinom(1,1,current_DEATH_prob)
+      
+      current_background_DEATH_prob <- background_DEATH_prob[background_DEATH_prob$Age==current_patient$CURR.AGE,if_else(female_input == 1,"Females", "Males")]
+      
+      #print(current_background_DEATH_prob)
+      
+      current_DEATH_event <- rbinom(1,1,max(current_DEATH_prob, current_background_DEATH_prob))
       print(paste("dead = ", current_DEATH_event))
       current_patient$dead <- current_DEATH_event
       
