@@ -159,7 +159,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       if(run_PSA_input == 0){set.seed(factor_for_seed*current_patient$SIMID + current_patient$SDURATION)}
       else{set.seed(factor_for_seed*seed_input*current_patient$SIMID + current_patient$SDURATION)}
       
-      # Sample annual event probabilities #
+      # Sample annual event probabilities: there is no order.
+      # Note that more than one event can happen in one year but the occurrence of one 
+      # does not influence the occurrence of the other until the next year.
       
       ### MACROVASCULAR COMPLICATIONS ###
       
@@ -343,8 +345,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       # To check:
       # 1. All 4 equations should be mutually exclusive.
       # 2. What equations should be used when blindness or ulcer occur?
-      # 3. Multiple events per year are possible? --> Yes
-      # 4. Currently our model assumes patients live the full last year: better to assume half as a sort of half-cycle? --> See mean_life_expectancy
+      # 3. Multiple events per year are possible? 
+      # 4. Currently our model assumes patients live the full last year.
+      #    Is it better to assume half as a sort of half-cycle? --> See mean_life_expectancy
       # 5. Random order of events? Does that have any impact? I'd think yes, but only if events influence those happening next in the same year.
       
       
