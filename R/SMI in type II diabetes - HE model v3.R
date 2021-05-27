@@ -746,7 +746,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   ########## MAIN PART IV: Calculate aggregated results ##########
   
   # Life expectancy
-  mean_life_expectancy <- mean(simulation_patients_history[which(simulation_patients_history$dead==1),"SDURATION"] - 0.5) # Assumption: -0.5 added to assume patients die halfway the last year
+  mean_life_expectancy <- mean(simulation_patients_history[which(simulation_patients_history$dead==1),"SDURATION"] - 0.) # Assumption: -0.5 added to assume patients die halfway the last year
   
   # Event rates: note events calculated differently depending on how were defined: .EVENT or .HIST
   # Total number of events per patient during lifetime and rate per year
