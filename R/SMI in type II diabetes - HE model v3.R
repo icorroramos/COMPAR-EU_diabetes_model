@@ -341,6 +341,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # To check:
       # 1. All 4 equations should be mutually exclusive.
+      # 2. What equations should be used when blindness or ulcer occur?
       
       #print(paste("current history = ", current_hist))
       
