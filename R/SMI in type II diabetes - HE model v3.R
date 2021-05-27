@@ -339,6 +339,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # mortality ----->>>>
       
+      # To check:
+      # 1. All 4 equations should be mutually exclusive.
+      
       #print(paste("current history = ", current_hist))
       
       if(current_hist == 0){ 
