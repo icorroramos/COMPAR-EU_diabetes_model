@@ -35,9 +35,9 @@ baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK.csv",
 
 # Validation
 female_input <- 1 #1 = female, 0 = male
-baseline_characteristics$CHF.HIST <- 1
+#baseline_characteristics$CHF.HIST <- 1
 
-results_dir <- ("validation/female_CHF_HIST_")
+results_dir <- ("validation/female_base-case_")
 #dir.create(results_dir)
 
 ###########################################################

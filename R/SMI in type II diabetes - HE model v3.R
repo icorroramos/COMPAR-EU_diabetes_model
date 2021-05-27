@@ -285,7 +285,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                                 current_patient$BLIND.EVENT, current_patient$ULCER.EVENT, 
                                 current_patient$AMP1.EVENT, current_patient$AMP2.EVENT, current_patient$RENAL.EVENT)
       
-      #print(paste("current_year_event = ", current_year_event))
+      if(current_year_event > 1){print(paste("current_year_event = ", current_year_event))}
       
       # If any event except blindness and ulcer happened in the current year, it should be captured with the following variable:
       current_year_event_no_blind_no_ulcer <- sum(current_patient$CHF.EVENT, current_patient$IHD.EVENT, current_patient$MI.EVENT, 
@@ -339,9 +339,14 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # mortality ----->>>>
       
+      
       # To check:
       # 1. All 4 equations should be mutually exclusive.
       # 2. What equations should be used when blindness or ulcer occur?
+      # 3. Multiple events per year are possible? --> Yes
+      # 4. Currently our model assumes patients live the full last year: better to assume half as a sort of half-cycle? --> See mean_life_expectancy
+      # 5. Random order of events? Does that have any impact? I'd think yes, but only if events influence those happening next in the same year.
+      
       
       #print(paste("current history = ", current_hist))
       
@@ -740,10 +745,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   ########## MAIN PART IV: Calculate aggregated results ##########
   
-  # To be completed: add clinical outcomes - life expectancy and events
-  
   # Life expectancy
-  mean_life_expectancy <- mean(simulation_patients_history[which(simulation_patients_history$dead==1),"SDURATION"])
+  mean_life_expectancy <- mean(simulation_patients_history[which(simulation_patients_history$dead==1),"SDURATION"] - 0.5) # Assumption: -0.5 added to assume patients die halfway the last year
   
   # Event rates: note events calculated differently depending on how were defined: .EVENT or .HIST
   # Total number of events per patient during lifetime and rate per year
