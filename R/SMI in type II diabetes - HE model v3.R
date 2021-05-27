@@ -285,14 +285,14 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                                 current_patient$BLIND.EVENT, current_patient$ULCER.EVENT, 
                                 current_patient$AMP1.EVENT, current_patient$AMP2.EVENT, current_patient$RENAL.EVENT)
       
-      print(paste("current_year_event = ", current_year_event))
+      #print(paste("current_year_event = ", current_year_event))
       
       # If any event except blindness and ulcer happened in the current year, it should be captured with the following variable:
       current_year_event_no_blind_no_ulcer <- sum(current_patient$CHF.EVENT, current_patient$IHD.EVENT, current_patient$MI.EVENT, 
                                                   current_patient$STROKE.EVENT, current_patient$AMP1.EVENT, current_patient$AMP2.EVENT, 
                                                   current_patient$RENAL.EVENT)
       
-      print(paste("current_year_event_no_blind_no_ulcer = ", current_year_event_no_blind_no_ulcer))
+      #print(paste("current_year_event_no_blind_no_ulcer = ", current_year_event_no_blind_no_ulcer))
       # If current_year_event - current_year_event_no_blind_no_ulcer > 0 it means that either blindness or ulcer occurred in the current year.
       
       # Note .HIST variables are not updated for the current year. But the ones from the previous year are captured in this variable:
@@ -339,29 +339,33 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # mortality ----->>>>
       
-      print(paste("current history = ", current_hist))
+      #print(paste("current history = ", current_hist))
       
       if(current_hist == 0){ 
         
         if(current_year_event == 0){
           # 1. If no history of previous events and no events in the current year, then gompertz distribution
           current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, current_patient_mortality,current_patient$AGE.DIAG + current_patient$YEAR)$p       
-          print(paste("P[no history & no event] = ",current_DEATH_prob))}
+          #print(paste("P[no history & no event] = ",current_DEATH_prob))
+          }
         #if(current_year_event_no_blind_no_ulcer == 1){
         if(current_year_event == 1){
           #2. First year of events (so no previous history) excluding blindness or ulcer, then logistic distribution
           current_DEATH_prob <- annual_p_logistic(mortality_risk_equations$DEATH1YEVENT, current_patient_mortality)$p       
-          print(paste("P[first event and no history] = ", current_DEATH_prob))}
+          #print(paste("P[first event and no history] = ", current_DEATH_prob))
+          }
         }else{ #if current_hist >0
           #3. Years with history of previous events but no events in the current year, then gompertz distribution
           if(current_year_event == 0 ){
             current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, current_patient_mortality,current_patient$AGE.DIAG + current_patient$YEAR)$p       
-            print(paste("P[history and no event] = ", current_DEATH_prob))}
+            #print(paste("P[history and no event] = ", current_DEATH_prob))
+            }
           #4. Subsequent years (so there is previous history) of events excluding blindness or ulcer, then logistic distribution
           #if(current_year_event_no_blind_no_ulcer == 1){
           if(current_year_event == 1){
             current_DEATH_prob  <- annual_p_logistic(mortality_risk_equations$DEATHYSEVENT, current_patient_mortality)$p       
-            print(paste("P[history and events] = ", current_DEATH_prob))}
+            #print(paste("P[history and events] = ", current_DEATH_prob))
+            }
           }
       
       # <<<< ------ mortality
@@ -370,9 +374,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # Sampling "dead" status
       current_background_DEATH_prob <- background_DEATH_prob[background_DEATH_prob$Age==current_patient$CURR.AGE,if_else(female_input == 1,"Females", "Males")]
-      if(current_background_DEATH_prob > current_DEATH_prob){print(paste("P[dead] = ",current_DEATH_prob))}
+      if(current_background_DEATH_prob > current_DEATH_prob){print(paste("P[dead] = ",current_background_DEATH_prob))}
       current_DEATH_event <- rbinom(1,1,max(current_DEATH_prob, current_background_DEATH_prob))
-      print(paste("dead = ", current_DEATH_event))
+      #print(paste("dead = ", current_DEATH_event))
       current_patient$dead <- current_DEATH_event
       
       ### INFORMAL CARE AND PRODUCTIVITY COSTS: Added 29/08/2020
