@@ -138,7 +138,6 @@ annual_p_logistic <- function(regression_coefficents_input, risk_factors_input){
 
 
 ### BACKGROUND MORTALITY
-
 background_DEATH_prob <- read.csv("input/UK/nationallifetables3yearuk.csv")
 
 
