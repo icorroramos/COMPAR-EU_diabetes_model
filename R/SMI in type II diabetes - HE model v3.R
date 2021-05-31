@@ -204,6 +204,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
           current_SMI_prob <- annual_p_weibull(macrovascular_risk_equations$SMI,current_patient_macrovascular,current_patient$YEAR)$p
           current_patient$MI.EVENT <- rbinom(1,1,current_SMI_prob)
           if(current_patient$MI.EVENT == 1){current_SMI_event <- 1}
+          #if(current_SMI_event == 1){print("current_SMI_event")}
         }
       }
       
