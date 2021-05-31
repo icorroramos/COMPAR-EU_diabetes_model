@@ -168,7 +168,6 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       current_patient_macrovascular <- current_patient %>% select(risk_factors_macrovascular)
       
       # Heart Failure is Weibull. This can happen only once; that's why the if condition below is used. 
-      #print(current_patient$CHF.HIST)
       if(current_patient$CHF.HIST == 0){
         current_CHF_prob  <- annual_p_weibull(macrovascular_risk_equations$CHF,current_patient_macrovascular,current_patient$YEAR)$p
         current_patient$CHF.EVENT <- rbinom(1,1,current_CHF_prob) 
@@ -204,7 +203,6 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         if(current_SMI_event == 0){
           current_SMI_prob <- annual_p_weibull(macrovascular_risk_equations$SMI,current_patient_macrovascular,current_patient$YEAR)$p
           current_patient$MI.EVENT <- rbinom(1,1,current_SMI_prob)
-          
           if(current_patient$MI.EVENT == 1){current_SMI_event <- 1}
         }
       }
@@ -234,15 +232,13 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       if(current_patient$BLIND.HIST == 0){
         current_BLIND_prob <- annual_p_weibull(microvascular_risk_equations$BLIND,current_patient_microvascular,current_patient$YEAR)$p       
         current_patient$BLIND.EVENT <- rbinom(1,1,current_BLIND_prob) #Update current_patient$BLIND.HIST at the end of the year. 
-        if(current_patient$BLIND.EVENT == 1){print("event blind")}
-      }
+        }
       
       # ULCER is Logistic. This is assumed to happen only once; that's why the if condition below is used. 
       if(current_patient$ULCER.HIST == 0){
         current_ULCER_prob  <- annual_p_logistic(microvascular_risk_equations$ULCER,current_patient_microvascular)$p #typo corrected
         current_patient$ULCER.EVENT <- rbinom(1,1,current_ULCER_prob) # Update current_patient$ULCER.HIST at the end of the year.
-        if(current_patient$ULCER.EVENT == 1){print("event ulcer")}
-      }
+        }
       
       # AMPUTATION could be first or second. First amputation depends on ULCER history. 
       if(current_patient$AMP.HIST == 0){
@@ -283,21 +279,18 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       # Therefore, we need to define variables to determine what equation should be used.  
       
       # If any event happened in the current year, it should be captured with the following variable: 
-      current_year_event <- sum(current_patient$CHF.EVENT, current_patient$IHD.EVENT, 
-                                current_patient$MI.EVENT, # could be 1st or 2nd, no distinction
-                                current_patient$STROKE.EVENT, # could be 1st or 2nd, no distinction
-                                current_patient$BLIND.EVENT, current_patient$ULCER.EVENT, 
-                                current_patient$AMP1.EVENT, current_patient$AMP2.EVENT, current_patient$RENAL.EVENT)
-      
-      if(current_year_event > 1){print(paste("current_year_event = ", current_year_event))}
+      # current_year_event <- sum(current_patient$CHF.EVENT, current_patient$IHD.EVENT, 
+      #                           current_patient$MI.EVENT, # could be 1st or 2nd, no distinction
+      #                           current_patient$STROKE.EVENT, # could be 1st or 2nd, no distinction
+      #                           current_patient$BLIND.EVENT, current_patient$ULCER.EVENT, 
+      #                           current_patient$AMP1.EVENT, current_patient$AMP2.EVENT, current_patient$RENAL.EVENT)
+      # 
+      # if(current_year_event > 1){print(paste("current_year_event = ", current_year_event))}
       
       # If any event except blindness and ulcer happened in the current year, it should be captured with the following variable:
       current_year_event_no_blind_no_ulcer <- sum(current_patient$CHF.EVENT, current_patient$IHD.EVENT, current_patient$MI.EVENT, 
                                                   current_patient$STROKE.EVENT, current_patient$AMP1.EVENT, current_patient$AMP2.EVENT, 
                                                   current_patient$RENAL.EVENT)
-      
-      #print(paste("current_year_event_no_blind_no_ulcer = ", current_year_event_no_blind_no_ulcer))
-      # If current_year_event - current_year_event_no_blind_no_ulcer > 0 it means that either blindness or ulcer occurred in the current year.
       
       # Note .HIST variables are not updated for the current year. But the ones from the previous year are captured in this variable:
       current_hist  <- sum(current_patient$CHF.HIST, current_patient$IHD.HIST, current_patient$MI.HIST, 
@@ -309,58 +302,46 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       current_patient_mortality <- current_patient %>% select(risk_factors_mortality)
       
       
-      # mortality ----->>>>
-      
-      
       # To check:
-      # 1. All 4 equations should be mutually exclusive.
-      # 2. What equations should be used when blindness or ulcer occur? Gompertz
-      # 3. Multiple events per year are possible? 
-      # 4. Currently our model assumes patients live the full last year.
-      #    Is it better to assume half as a sort of half-cycle? --> See mean_life_expectancy
-      # 5. Random order of events? Does that have any impact? I'd think yes, but only if events influence those happening next in the same year.
-      # 6. Delete current_year_event, not needed
-      
-      
-      #print(paste("current history = ", current_hist))
+      # 1. All 4 equations should be mutually exclusive. --> seems ok
+      # 2. What equations should be used when blindness or ulcer occur? Gompertz --> seems ok
+      # 3. Multiple events per year are possible?  --> yes, possible
+      # 4. Our model assumes patients live half of last year (sort of half-cycle) --> See mean_life_expectancy
+      # 5. Random order of events does have impact on results. --> not in our model. Discussion
+      # 6. Delete current_year_event, not needed (only for validation purposes to see whether multiple event occur)
+      # 7. Check occurrence of second events (i.e., not multiple event sbut second MI, stroke, amputation etc.) -- > Yes, possible
       
       if(current_hist == 0){ 
         
         if(current_year_event_no_blind_no_ulcer == 0){
           # 1. If no history of previous events and no events in the current year, then gompertz distribution
           current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, current_patient_mortality,current_patient$AGE.DIAG + current_patient$YEAR)$p       
-          print(paste("P[no history & no event] = ",current_DEATH_prob))
+          #print(paste("P[no history & no event] = ",current_DEATH_prob))
           }
         if(current_year_event_no_blind_no_ulcer >= 1){
           #2. First year of events (so no previous history) excluding blindness or ulcer, then logistic distribution
           current_DEATH_prob <- annual_p_logistic(mortality_risk_equations$DEATH1YEVENT, current_patient_mortality)$p       
-          print(paste("P[first event and no history] = ", current_DEATH_prob))
+          #print(paste("P[first event and no history] = ", current_DEATH_prob))
           }
         }else{ #if current_hist >0
           #3. Years with history of previous events but no events in the current year, then gompertz distribution
           if(current_year_event_no_blind_no_ulcer == 0){
             current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, current_patient_mortality,current_patient$AGE.DIAG + current_patient$YEAR)$p       
-            print(paste("P[history and no event] = ", current_DEATH_prob))
+            #print(paste("P[history and no event] = ", current_DEATH_prob))
             }
           #4. Subsequent years (so there is previous history) of events excluding blindness or ulcer, then logistic distribution
           if(current_year_event_no_blind_no_ulcer >= 1){
             current_DEATH_prob  <- annual_p_logistic(mortality_risk_equations$DEATHYSEVENT, current_patient_mortality)$p       
-            print(paste("P[history and events] = ", current_DEATH_prob))
+            #print(paste("P[history and events] = ", current_DEATH_prob))
             }
           }
-      
-      # <<<< ------ mortality
-      
       
       
       # Sampling "dead" status
       
       # Background mortality included
       current_background_DEATH_prob <- background_DEATH_prob[background_DEATH_prob$Age==current_patient$CURR.AGE,if_else(female_input == 1,"Females", "Males")]
-      #if(current_background_DEATH_prob > current_DEATH_prob){print(paste("P[dead] = ",current_background_DEATH_prob))}
-      
       current_DEATH_event <- rbinom(1,1,max(current_DEATH_prob, current_background_DEATH_prob))
-      #print(paste("dead = ", current_DEATH_event))
       current_patient$dead <- current_DEATH_event
       
       ### INFORMAL CARE AND PRODUCTIVITY COSTS: Added 29/08/2020
@@ -718,7 +699,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   ########## MAIN PART IV: Calculate aggregated results ##########
   
   # Life expectancy
-  mean_life_expectancy <- mean(simulation_patients_history[which(simulation_patients_history$dead==1),"SDURATION"] - 1) # Assumption: -0.5 added to assume patients die halfway the last year
+  mean_life_expectancy <- mean(simulation_patients_history[which(simulation_patients_history$dead==1),"SDURATION"] - 0.5) # Assumption: -0.5 added to assume patients die halfway the last year
   
   # Event rates: note events calculated differently depending on how were defined: .EVENT or .HIST
   # Total number of events per patient during lifetime and rate per year
