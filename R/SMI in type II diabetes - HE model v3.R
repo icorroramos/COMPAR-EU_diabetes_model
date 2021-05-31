@@ -234,14 +234,14 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       if(current_patient$BLIND.HIST == 0){
         current_BLIND_prob <- annual_p_weibull(microvascular_risk_equations$BLIND,current_patient_microvascular,current_patient$YEAR)$p       
         current_patient$BLIND.EVENT <- rbinom(1,1,current_BLIND_prob) #Update current_patient$BLIND.HIST at the end of the year. 
-        print("event blind")
+        if(current_patient$BLIND.EVENT == 1){print("event blind")}
       }
       
       # ULCER is Logistic. This is assumed to happen only once; that's why the if condition below is used. 
       if(current_patient$ULCER.HIST == 0){
         current_ULCER_prob  <- annual_p_logistic(microvascular_risk_equations$ULCER,current_patient_microvascular)$p #typo corrected
         current_patient$ULCER.EVENT <- rbinom(1,1,current_ULCER_prob) # Update current_patient$ULCER.HIST at the end of the year.
-        print("event ulcer")
+        if(current_patient$ULCER.EVENT == 1){print("event ulcer")}
       }
       
       # AMPUTATION could be first or second. First amputation depends on ULCER history. 
