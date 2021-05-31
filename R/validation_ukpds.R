@@ -41,7 +41,7 @@ validation_patient$LDL35more  <- if_else(validation_patient$LDL >= 35, validatio
 
 validation_patient$SBP        <- validation_patient$SBP/10
 
-validation_patient$CHF.HIST <- 1
+validation_patient$CHF.HIST <- 0
 
 validation_patient
 
@@ -102,7 +102,51 @@ annual_p_weibull <- function(regression_coefficents_input, risk_factors_input, d
 }
 
 
-# Validation of the Weibull events 
+
+# The annual probability of experiencing diabetic ulcer, death in first year of event and death in subsequent years of events,
+# is assumed to follow a logistic distribution where t is the current age.
+annual_p_logistic <- function(regression_coefficents_input, risk_factors_input){
+
+  risk_factors_input <- as.numeric(risk_factors_input) # delete if not needed
+
+  # Note: mind the format of the regression coefficients. It should be a list where the first two coefficients are
+  # lambda and ro (with the notation from UKPDS paper - hence the tail(,-2) command) and the rest are the coefficients
+  # for the risk factors associated to each complication. Note for logistic, ro (also called phi in ESM Table 6) == 0.
+
+  linear_predictor <- regression_coefficents_input[1] + sum(tail(regression_coefficents_input,n = -2)*c(risk_factors_input))
+
+  # Then p returns the annual probability
+  p = 1 - (exp(-linear_predictor)/(1+exp(-linear_predictor)))
+
+  return(list(p = p))
+}
+
+
+# For death in years with no history or events and in years with history but no events, H(t|x_j) is assumed to follow a
+# Gompertz distribution where t is the current age. The functional form of H(t|x_j) is the same for both types of death.
+# Only the regression coefficients and the risk factors are different for each type of death.
+# The function used to calculate the annual death probabilities is called "annual_p_gompertz" and it is defined below.
+annual_p_gompertz <- function(regression_coefficents_input, risk_factors_input, current_age_input){
+
+  risk_factors_input <- as.numeric(risk_factors_input) # delete if not needed
+
+  # Note: mind the format of the regression coefficients. It should be a list where the first two coefficients are
+  # lambda and ro (with the notation from UKPDS paper - hence the tail(,-2) command) and the rest are the coefficients
+  # for the risk factors associated to each complication.
+  linear_predictor <- sum(tail(regression_coefficents_input,n = -2)*c(risk_factors_input))
+
+  # Then H returns the value of the cumulative hazard function
+  H_t1 <- ((regression_coefficents_input[2])^-1)*exp(regression_coefficents_input[1] + linear_predictor)*(exp(current_age_input*regression_coefficents_input[2])-1)
+  H_t2 <- ((regression_coefficents_input[2])^-1)*exp(regression_coefficents_input[1] + linear_predictor)*(exp((1+current_age_input)*regression_coefficents_input[2])-1)
+  p = 1 - exp(H_t1 - H_t2)
+
+  return(list(#H_t1 = H_t1, # no need to return the H's, keep them for now just for validation purposes
+    #H_t2 = H_t2,
+    p = p))
+}
+
+
+# Validation of the events 
 
 # CHF females and males is the same equation
 #male_macro <- unlist(validation_patient[1,] %>% select(risk_factors_macrovascular))
@@ -116,7 +160,7 @@ mean(rbinom(1000,1,p_CHF))
 
 # IHD females and males. Is a difference between gender expected? Yes, negative coefficient for females.
 p_IHD_female <- annual_p_weibull(macrovascular_risk_equations$IHD,validation_patient[1,] 
-                       %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+                                 %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
 p_IHD_female
 mean(rbinom(1000,1,p_IHD_female))
 
@@ -185,24 +229,6 @@ p_renal_female
 p_renal_male <- annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
 p_renal_male
 
-# The annual probability of experiencing diabetic ulcer, death in first year of event and death in subsequent years of events,
-# is assumed to follow a logistic distribution where t is the current age.
-annual_p_logistic <- function(regression_coefficents_input, risk_factors_input){
-
-  risk_factors_input <- as.numeric(risk_factors_input) # delete if not needed
-
-  # Note: mind the format of the regression coefficients. It should be a list where the first two coefficients are
-  # lambda and ro (with the notation from UKPDS paper - hence the tail(,-2) command) and the rest are the coefficients
-  # for the risk factors associated to each complication. Note for logistic, ro (also called phi in ESM Table 6) == 0.
-
-  linear_predictor <- regression_coefficents_input[1] + sum(tail(regression_coefficents_input,n = -2)*c(risk_factors_input))
-
-  # Then p returns the annual probability
-  p = 1 - (exp(-linear_predictor)/(1+exp(-linear_predictor)))
-
-  return(list(p = p))
-}
-
 
 # Ulcer females
 p_ulcer_female <- annual_p_logistic(microvascular_risk_equations$ULCER,validation_patient[1,] %>% select(risk_factors_microvascular))$p
@@ -222,29 +248,6 @@ annual_p_logistic(mortality_risk_equations$DEATH1YEVENT,validation_patient[2,] %
 annual_p_logistic(mortality_risk_equations$DEATHYSEVENT,validation_patient[1,] %>% select(risk_factors_mortality))$p
 annual_p_logistic(mortality_risk_equations$DEATHYSEVENT,validation_patient[2,] %>% select(risk_factors_mortality))$p
 # [1] 0.6601135
-
-# For death in years with no history or events and in years with history but no events, H(t|x_j) is assumed to follow a
-# Gompertz distribution where t is the current age. The functional form of H(t|x_j) is the same for both types of death.
-# Only the regression coefficients and the risk factors are different for each type of death.
-# The function used to calculate the annual death probabilities is called "annual_p_gompertz" and it is defined below.
-annual_p_gompertz <- function(regression_coefficents_input, risk_factors_input, current_age_input){
-
-  risk_factors_input <- as.numeric(risk_factors_input) # delete if not needed
-
-  # Note: mind the format of the regression coefficients. It should be a list where the first two coefficients are
-  # lambda and ro (with the notation from UKPDS paper - hence the tail(,-2) command) and the rest are the coefficients
-  # for the risk factors associated to each complication.
-  linear_predictor <- sum(tail(regression_coefficents_input,n = -2)*c(risk_factors_input))
-
-  # Then H returns the value of the cumulative hazard function
-  H_t1 <- ((regression_coefficents_input[2])^-1)*exp(regression_coefficents_input[1] + linear_predictor)*(exp(current_age_input*regression_coefficents_input[2])-1)
-  H_t2 <- ((regression_coefficents_input[2])^-1)*exp(regression_coefficents_input[1] + linear_predictor)*(exp((1+current_age_input)*regression_coefficents_input[2])-1)
-  p = 1 - exp(H_t1 - H_t2)
-
-  return(list(#H_t1 = H_t1, # no need to return the H's, keep them for now just for validation purposes
-    #H_t2 = H_t2,
-    p = p))
-}
 
 
 # Death in year with no history or events females
@@ -266,3 +269,141 @@ annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[
 annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
 annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating
 # [1] 0.006813194
+
+
+
+
+### Include order as in UKPDS model
+
+# Validation of the events 
+
+validation_patient <- validation_patient[1,]
+
+CHF_event_function <- function(){
+  
+  if(validation_patient$CHF.HIST == 0){
+    current_CHF_prob  <- 0.5#annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient%>% select(risk_factors_macrovascular),validation_patient[,"YEAR"])$p
+    validation_patient$CHF.EVENT <<- rbinom(1,1,current_CHF_prob)
+    if(validation_patient$CHF.EVENT == 1){validation_patient$CHF.HIST <<- 1}
+  } 
+  
+  print(current_CHF_prob)
+  
+  }
+
+
+IHD_event_function <- function(){
+  
+  if(validation_patient$IHD.HIST == 0){
+    current_IHD_prob  <- annual_p_weibull(macrovascular_risk_equations$IHD,validation_patient%>% select(risk_factors_macrovascular),validation_patient[,"YEAR"])$p
+    validation_patient$IHD.EVENT <<- rbinom(1,1,current_IHD_prob) 
+    if(validation_patient$IHD.EVENT == 1){validation_patient$IHD.HIST <<- 1}
+  } 
+  
+  print(current_IHD_prob)
+}
+
+
+
+
+# First MI males
+p_MI_male <- annual_p_weibull(macrovascular_risk_equations$FMIMALE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_MI_male
+# [1] 0.002285789
+
+# First MI females
+p_MI_female <- annual_p_weibull(macrovascular_risk_equations$FMIFEMALE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+p_MI_female
+# [1] 0.004844228
+
+# Second MI females and males
+p_SMI <- annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+#annual_p_weibull(macrovascular_risk_equations$SMI,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_SMI
+mean(rbinom(1000,1,p_SMI))
+# [1] 0.01946934
+
+# First stroke females
+p_stroke_female <- annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[1,]%>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+p_stroke_female
+
+# First stroke males
+p_stroke_male <- annual_p_weibull(macrovascular_risk_equations$FSTROKE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_stroke_male
+
+
+# Second stroke females and males
+p_sstroke <- annual_p_weibull(macrovascular_risk_equations$SSTROKE,validation_patient[1,] %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
+p_sstroke
+
+
+# Blindness females
+p_blind <- annual_p_weibull(microvascular_risk_equations$BLIND,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+p_blind
+
+# First amputation no ulcer females
+p_amp_no_ulcer_female <- annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+p_amp_no_ulcer_female
+# [1] 0.0002014471
+
+# First amputation no ulcer males
+p_amp_no_ulcer_male <- annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
+p_amp_no_ulcer_male
+
+# First amputation ulcer females and males
+p_amp_ulcer <- annual_p_weibull(microvascular_risk_equations$FAMPULCER,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+p_amp_ulcer
+
+# Second amputation 
+p_sec_amp <- annual_p_weibull(microvascular_risk_equations$SAMP,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+p_sec_amp
+
+# Renal failure females
+p_renal_female <- annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[1,] %>% select(risk_factors_microvascular),validation_patient[1,"YEAR"])$p
+p_renal_female
+
+# Renal failure males
+p_renal_male <- annual_p_weibull(microvascular_risk_equations$RENALF,validation_patient[2,] %>% select(risk_factors_microvascular),validation_patient[2,"YEAR"])$p
+p_renal_male
+
+
+# Ulcer females
+p_ulcer_female <- annual_p_logistic(microvascular_risk_equations$ULCER,validation_patient[1,] %>% select(risk_factors_microvascular))$p
+p_ulcer_female
+
+# Ulcer males
+p_ulcer_male <- annual_p_logistic(microvascular_risk_equations$ULCER,validation_patient[2,] %>% select(risk_factors_microvascular))$p
+p_ulcer_male
+
+
+# Death in 1st year of events females
+annual_p_logistic(mortality_risk_equations$DEATH1YEVENT,validation_patient[1,] %>% select(risk_factors_mortality))$p
+annual_p_logistic(mortality_risk_equations$DEATH1YEVENT,validation_patient[2,] %>% select(risk_factors_mortality))$p
+# [1] 0.09313699
+
+# Death in subsequent year of events females
+annual_p_logistic(mortality_risk_equations$DEATHYSEVENT,validation_patient[1,] %>% select(risk_factors_mortality))$p
+annual_p_logistic(mortality_risk_equations$DEATHYSEVENT,validation_patient[2,] %>% select(risk_factors_mortality))$p
+# [1] 0.6601135
+
+
+# Death in year with no history or events females
+annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
+annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating
+# [1] 0.004071926
+
+# Death in year with no history or events males
+annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
+annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating
+# [1] 0.005117118
+
+# Death in year with history but no events females
+annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
+annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[1,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating
+# [1] 0.006813194
+
+# Death in year with history but no events males
+annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$AGE.DIAG + validation_patient[1,]$YEAR)$p
+annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, validation_patient[2,] %>% select(risk_factors_mortality),validation_patient[1,]$CURR.AGE)$p # not sure why in the simulation code we used the line above, it might give problems when updating and it's slower? updating seems fine because YEAR is updating
+# [1] 0.006813194
+

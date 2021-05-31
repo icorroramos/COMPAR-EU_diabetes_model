@@ -280,23 +280,36 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       # Therefore, we need to define variables to determine what equation should be used.  
       
       # If any event happened in the current year, it should be captured with the following variable: 
-      # current_year_event <- sum(current_patient$CHF.EVENT, current_patient$IHD.EVENT, 
+      # current_year_event <- sum(current_patient$CHF.EVENT, 
+      #                           current_patient$IHD.EVENT, 
       #                           current_patient$MI.EVENT, # could be 1st or 2nd, no distinction
       #                           current_patient$STROKE.EVENT, # could be 1st or 2nd, no distinction
-      #                           current_patient$BLIND.EVENT, current_patient$ULCER.EVENT, 
-      #                           current_patient$AMP1.EVENT, current_patient$AMP2.EVENT, current_patient$RENAL.EVENT)
+      #                           current_patient$BLIND.EVENT, 
+      #                           current_patient$ULCER.EVENT, 
+      #                           current_patient$AMP1.EVENT, 
+      #                           current_patient$AMP2.EVENT, 
+      #                           current_patient$RENAL.EVENT)
       # 
       # if(current_year_event > 1){print(paste("current_year_event = ", current_year_event))}
       
       # If any event except blindness and ulcer happened in the current year, it should be captured with the following variable:
-      current_year_event_no_blind_no_ulcer <- sum(current_patient$CHF.EVENT, current_patient$IHD.EVENT, current_patient$MI.EVENT, 
-                                                  current_patient$STROKE.EVENT, current_patient$AMP1.EVENT, current_patient$AMP2.EVENT, 
+      current_year_event_no_blind_no_ulcer <- sum(current_patient$CHF.EVENT, 
+                                                  current_patient$IHD.EVENT, 
+                                                  current_patient$MI.EVENT, 
+                                                  current_patient$STROKE.EVENT, 
+                                                  current_patient$AMP1.EVENT, 
+                                                  current_patient$AMP2.EVENT, 
                                                   current_patient$RENAL.EVENT)
       
       # Note .HIST variables are not updated for the current year. But the ones from the previous year are captured in this variable:
-      current_hist  <- sum(current_patient$CHF.HIST, current_patient$IHD.HIST, current_patient$MI.HIST, 
-                           current_patient$STROKE.HIST, current_patient$BLIND.HIST, current_patient$ULCER.HIST,
-                           current_patient$AMP.HIST, current_patient$RENAL.HIST)
+      current_hist  <- sum(current_patient$CHF.HIST, 
+                           current_patient$IHD.HIST, 
+                           current_patient$MI.HIST, 
+                           current_patient$STROKE.HIST, 
+                           current_patient$BLIND.HIST, 
+                           current_patient$ULCER.HIST,
+                           current_patient$AMP.HIST, 
+                           current_patient$RENAL.HIST)
       
       # The four equations for death are then the following: 
       

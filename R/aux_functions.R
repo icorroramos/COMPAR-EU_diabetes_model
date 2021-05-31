@@ -150,6 +150,9 @@ background_DEATH_prob <- read.csv("input/UK/nationallifetables3yearuk.csv")
 event_vars <- c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVENT", "AMP1.EVENT", "AMP2.EVENT", 
                 "MI.EVENT", "IHD.EVENT", "RENAL.EVENT", "STROKE.EVENT")
 
+
+event_list <- c("CHF", "MI", "IHD", "STROKE", "BLIND", "ULCER", "AMP", "RENAL")
+
 # Indicate the patient characteristics that we will save during the simulation. 
 # Besides the risk factors, we have a simulation ID, duration of diabetes 
 # and an indicator variable for dead. risk_factors_simulation is defined above.
