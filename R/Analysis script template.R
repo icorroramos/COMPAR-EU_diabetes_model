@@ -5,7 +5,7 @@ source("R/SMI in type II diabetes - HE model v3.R")
 init <- Sys.time()
 
 # Control variables of simulation
-npats_input   <- 100  # Number of patients in simulation
+npats_input   <- 10  # Number of patients in simulation
 tx_cost_input <- 0     # Total treatment cost
 
 treateff_start_input   <- 1 # Cycle in which treatment effect starts
@@ -35,7 +35,7 @@ baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK.csv",
 
 # Validation
 female_input <- 1 #1 = female, 0 = male
-baseline_characteristics$CHF.HIST <- 1
+#baseline_characteristics$CHF.HIST <- 1
 
 results_dir <- ("validation/female_CHF_hist_")
 #dir.create(results_dir)

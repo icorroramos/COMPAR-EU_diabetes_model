@@ -351,13 +351,14 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       # 4. Currently our model assumes patients live the full last year.
       #    Is it better to assume half as a sort of half-cycle? --> See mean_life_expectancy
       # 5. Random order of events? Does that have any impact? I'd think yes, but only if events influence those happening next in the same year.
+      # 6. Delete current_year_event, not needed
       
       
       #print(paste("current history = ", current_hist))
       
       if(current_hist == 0){ 
         
-        if(current_year_event == 0){
+        if(current_year_event_no_blind_no_ulcer == 0){
           # 1. If no history of previous events and no events in the current year, then gompertz distribution
           current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHNOHIST, current_patient_mortality,current_patient$AGE.DIAG + current_patient$YEAR)$p       
           print(paste("P[no history & no event] = ",current_DEATH_prob))
@@ -369,7 +370,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
           }
         }else{ #if current_hist >0
           #3. Years with history of previous events but no events in the current year, then gompertz distribution
-          if(current_year_event == 0 ){
+          if(current_year_event_no_blind_no_ulcer == 0 ){
             current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, current_patient_mortality,current_patient$AGE.DIAG + current_patient$YEAR)$p       
             print(paste("P[history and no event] = ", current_DEATH_prob))
             }
