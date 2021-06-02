@@ -61,114 +61,67 @@ qol_inputs <- read.csv("input/UK/qol_inputs_UK.csv", sep=",")
 # Utility decrements associated to diabetes-related events
 qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
 
+
 # TODO: also extract output processing scripts to here.
 
-# ##### Females #####
-# 
-# # Intervention
-# 
-# sim_results_female <- SMDMII_model_simulation(npats_input,  #patient_size_input: 
-#                                               1,  #female_input, 1 = female
-#                                               tx_cost_input, #tx_cost_input
-#                                               c(treateff_hba1c_input,treateff_start_input,treateff_end_input,treateff_decline_input), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
-#                                               c(treateff_hdl_input,treateff_start_input,treateff_end_input,treateff_decline_input),  #treatment_effect_HDL_input 
-#                                               c(treateff_ldl_input, treateff_start_input,treateff_end_input,treateff_decline_input),  #treatment_effect_LDL_input --> from COMPAR + Assumption
-#                                               0, #treatment_effect_BMI_input from MH2020
-#                                               0.035, #cost_disc_rate_input
-#                                               0.035, #qol_disc_rate_input
-#                                               65, #retirement_age_input
-#                                               0, #run_PSA_input, 0 == no PSA
-#                                               77 #seed_input
-# )
-# 
-# # Results tables
-# sim_CE_results_female_table <- matrix(c(sim_results_female$mean_complication_costs,sim_results_female$mean_nocomp_costs, sim_results_female$mean_tx_costs,
-#                                         sim_results_female$mean_inf_care_costs, sim_results_female$mean_prod_loss_costs,
-#                                         sim_results_female$mean_future_medical_costs, sim_results_female$mean_future_nonmedical_costs,
-#                                         sim_results_female$mean_total_costs, sim_results_female$mean_total_qalys), nrow = 1)
-# 
-# colnames(sim_CE_results_female_table) <- c("Complication costs", "No complication costs", "Tx costs","Informal care costs", "Productivity costs",
-#                                            "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
-# rownames(sim_CE_results_female_table) <- "Intervention"
-# View(sim_CE_results_female_table)
-# 
-# 
-# 
-# sim_clinical_results_female_table <- matrix(c(sim_results_female$mean_life_expectancy,
-#                                               sim_results_female$mean_CHF_rate,
-#                                               sim_results_female$mean_MI_rate, 
-#                                               sim_results_female$mean_BLIND_rate,
-#                                               sim_results_female$mean_ULCER_rate, 
-#                                               sim_results_female$mean_AMP1_rate,
-#                                               sim_results_female$mean_AMP2_rate, 
-#                                               sim_results_female$mean_RENAL_rate,
-#                                               sim_results_female$mean_STROKE_rate), nrow = 1)
-# 
-# colnames(sim_clinical_results_female_table) <- c("Life expectancy", "CHF rate", "MI rate", "Blindness rate", "Ulcer rate", 
-#                                                  "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
-# rownames(sim_clinical_results_female_table) <- "Intervention"
-# 
-# View(sim_clinical_results_female_table)
+# Results 
 
- 
-#Comparator
-
-sim_results_female_comp <- SMDMII_model_simulation(npats_input,  #patient_size_input: run 500 for LOLA
-                                                   female_input,  #female_input, 1 = female
-                                                   tx_cost_input, #tx_cost_input --> Gimon
-                                                   rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
-                                                   rep(0,4),  #treatment_effect_HDL_input
-                                                   rep(0,4),  #treatment_effect_LDL_input --> from COMPAR + Assumption
-                                                   0, #treatment_effect_BMI_input from MH2020
-                                                   0.035, #cost_disc_rate_input
-                                                   0.035, #qol_disc_rate_input
-                                                   65, #retirement_age_input
-                                                   0, #run_PSA_input, 0 == no PSA
-                                                   77 #seed_input
-)
+sim_results <- SMDMII_model_simulation(npats_input,  #patient_size_input: run 500 for LOLA
+                                       female_input,  #female_input, 1 = female
+                                       tx_cost_input, #tx_cost_input --> Gimon
+                                       rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
+                                       rep(0,4),  #treatment_effect_HDL_input
+                                       rep(0,4),  #treatment_effect_LDL_input --> from COMPAR + Assumption
+                                       0, #treatment_effect_BMI_input from MH2020
+                                       0.035, #cost_disc_rate_input
+                                       0.035, #qol_disc_rate_input
+                                       65, #retirement_age_input
+                                       0, #run_PSA_input, 0 == no PSA
+                                       77 #seed_input
+                                       )
 
 # Results tables
-sim_CE_results_female_table_comp <- matrix(c(sim_results_female_comp$mean_complication_costs,
-                                             sim_results_female_comp$mean_nocomp_costs,
-                                             sim_results_female_comp$mean_tx_costs,
-                                             sim_results_female_comp$mean_inf_care_costs,
-                                             sim_results_female_comp$mean_prod_loss_costs,
-                                             sim_results_female_comp$mean_future_medical_costs,
-                                             sim_results_female_comp$mean_future_nonmedical_costs,
-                                             sim_results_female_comp$mean_total_costs,
-                                             sim_results_female_comp$mean_total_qalys), nrow = 1)
+sim_CE_results_table <- matrix(c(sim_results$mean_complication_costs,
+                                 sim_results$mean_nocomp_costs,
+                                 sim_results$mean_tx_costs,
+                                 sim_results$mean_inf_care_costs,
+                                 sim_results$mean_prod_loss_costs,
+                                 sim_results$mean_future_medical_costs,
+                                 sim_results$mean_future_nonmedical_costs,
+                                 sim_results$mean_total_costs,
+                                 sim_results$mean_total_qalys), nrow = 1)
 
-colnames(sim_CE_results_female_table_comp) <- c("Complication costs", "No complication costs", "Tx costs","Informal care costs", "Productivity costs",
-                                                "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
-rownames(sim_CE_results_female_table_comp) <- "Comparator"
-# View(sim_CE_results_female_table_comp)
+colnames(sim_CE_results_table) <- c("Complication costs", "No complication costs", 
+                                    "Tx costs","Informal care costs", "Productivity costs",
+                                    "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
+rownames(sim_CE_results_table) <- "Comparator"
+# View(sim_CE_results_table)
 
-sim_clinical_results_female_table_comp <- matrix(c(sim_results_female_comp$mean_life_expectancy,
-                                                   sim_results_female_comp$mean_CHF_rate,
-                                                   sim_results_female_comp$mean_MI_rate,
-                                                   sim_results_female_comp$mean_BLIND_rate,
-                                                   sim_results_female_comp$mean_ULCER_rate,
-                                                   sim_results_female_comp$mean_AMP1_rate,
-                                                   sim_results_female_comp$mean_AMP2_rate,
-                                                   sim_results_female_comp$mean_RENAL_rate,
-                                                   sim_results_female_comp$mean_STROKE_rate), nrow = 1)
+sim_clinical_results_table <- matrix(c(sim_results$mean_life_expectancy,
+                                       sim_results$mean_CHF_rate,
+                                       sim_results$mean_MI_rate,
+                                       sim_results$mean_BLIND_rate,
+                                       sim_results$mean_ULCER_rate,
+                                       sim_results$mean_AMP1_rate,
+                                       sim_results$mean_AMP2_rate,
+                                       sim_results$mean_RENAL_rate,
+                                       sim_results$mean_STROKE_rate), nrow = 1)
 
-colnames(sim_clinical_results_female_table_comp) <- c("Life expectancy", "CHF rate", "MI rate", "Blindness rate", "Ulcer rate",
-                                                      "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
-rownames(sim_clinical_results_female_table_comp) <- "Comparator"
+colnames(sim_clinical_results_table) <- c("Life expectancy", "CHF rate", "MI rate", "Blindness rate", "Ulcer rate",
+                                          "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
 
-# View(sim_clinical_results_female_table_comp)
+rownames(sim_clinical_results_table) <- "Name" # define above auto?
+
+# View(sim_clinical_results_table)
 
 
-# Results per year
-
-# Check these KM data:
-n_years <- 1:max(sim_results_female_comp$simulation_patients_history$SDURATION)
+# KM data (to be compraed with UKPDS - validation):
+n_years <- 1:max(sim_results$simulation_patients_history$SDURATION)
 current_survival <- rep(1,length(event_vars)+1)
-KM_data <- sim_results_female_comp$simulation_patients_history[,c(event_vars,"dead")]
+KM_data <- sim_results$simulation_patients_history[,c(event_vars,"dead")]
 KM_data <- KM_data[FALSE,]
 for(i in n_years){
-current_survival <- current_survival*(1-colMeans(sim_results_female_comp$simulation_patients_history[which(sim_results_female_comp$simulation_patients_history$SDURATION == i),c(event_vars,"dead")]))
+current_survival <- current_survival*(1-colMeans(sim_results$simulation_patients_history[which(sim_results$simulation_patients_history$SDURATION == i),c(event_vars,"dead")]))
 KM_data[i,] <- current_survival
 }
 
@@ -181,7 +134,7 @@ export_csv <- function(object_input){
 }
 
 
-clinical_results_table <- sim_clinical_results_female_table_comp # Validation, delete afterwards
+clinical_results_table <- sim_clinical_results_table # Validation, delete afterwards
   
 export_csv(KM_data)
 export_csv(clinical_results_table)
@@ -202,8 +155,8 @@ end - init
 # save(sim.vars,
 #      sim_CE_results_female_table,
 #      sim_clinical_results_female_table,
-#      sim_CE_results_female_table_comp,
-#      sim_clinical_results_female_table_comp,
+#      sim_CE_results_table,
+#      sim_clinical_results_table,
 #      sim_CE_results_male_table,
 #      sim_clinical_results_male_table,
 #      sim_CE_results_male_table_comp,
@@ -213,8 +166,8 @@ end - init
 # Optional - save to csv's
 # write.csv(sim_CE_results_female_table, 'sim_CE_female_int.csv', quote = FALSE)
 # write.csv(sim_clinical_results_female_table, 'sim_clin_female_int.csv', quote = FALSE)
-# write.csv(sim_CE_results_female_table_comp, 'sim_CE_female_comp.csv', quote = FALSE)
-# write.csv(sim_clinical_results_female_table_comp, 'sim_clin_female_comp.csv', quote = FALSE)
+# write.csv(sim_CE_results_table, 'sim_CE_female_comp.csv', quote = FALSE)
+# write.csv(sim_clinical_results_table, 'sim_clin_female_comp.csv', quote = FALSE)
 # 
 # write.csv(sim_CE_results_male_table,'sim_CE_male_int.csv', quote = FALSE)
 # write.csv(sim_clinical_results_male_table, 'sim_clin_male_int.csv', quote = FALSE)
