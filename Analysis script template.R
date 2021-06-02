@@ -160,6 +160,7 @@ export_csv <- function(object_input){
   write.csv(object_input, paste(results_dir, substitute(object_input),"_", tx_label,"_", format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), ".csv", sep = ""))
 }
 
+# Decide what to save
 export_csv(KM_data)
 export_csv(sim_clinical_results_table)
 
@@ -187,13 +188,8 @@ end - init
 #      sim_clinical_results_male_table_comp,
 #      file = 'Sim_results.Rdata')
 
-# Optional - save to csv's
+# Optional - save to csv's --> Probably delete - see above export_csv
 # write.csv(sim_CE_results_female_table, 'sim_CE_female_int.csv', quote = FALSE)
 # write.csv(sim_clinical_results_female_table, 'sim_clin_female_int.csv', quote = FALSE)
 # write.csv(sim_CE_results_table, 'sim_CE_female_comp.csv', quote = FALSE)
 # write.csv(sim_clinical_results_table, 'sim_clin_female_comp.csv', quote = FALSE)
-# 
-# write.csv(sim_CE_results_male_table,'sim_CE_male_int.csv', quote = FALSE)
-# write.csv(sim_clinical_results_male_table, 'sim_clin_male_int.csv', quote = FALSE)
-# write.csv(sim_CE_results_male_table_comp, 'sim_CE_male_comp.csv', quote = FALSE)
-# write.csv(sim_clinical_results_male_table_comp, 'sim_clin_male_comp.csv', quote = FALSE)
