@@ -29,8 +29,6 @@ source("R/aux_functions.R")
 # Variable defined to keep track of simulation time (delete afterwards)
 init <- Sys.time()
 
-# Options below are divided into user adjustable and nonadjustable. The latter should NOT be changed by the user.
-
 ############################
 # User adjustable settings #
 ############################
