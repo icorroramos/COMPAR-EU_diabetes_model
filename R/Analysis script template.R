@@ -4,11 +4,6 @@ source("R/SMI in type II diabetes - HE model v3.R")
 # Variable defined to keep track of simulation time (delete afterwards)
 init <- Sys.time()
 
-
-# ----------->
-
-
-
 ############################
 # User adjustable settings #
 ############################
@@ -22,6 +17,26 @@ psa_input <- 0
  
 # Please select number of PSA runs. Default: 500 --> NOTE: not yet implemented
 n_psa_input <- 500
+
+# Please select the number of patients in simulation (default 1000 in deterministic run)
+npats_input   <- 10  
+
+# Treatment effect inputs
+treateff_start_input   <- 1 # Cycle in which treatment effect starts
+treateff_end_input     <- 4 # Cycle in which treatment effect ends
+treateff_decline_input <- 2 # Cycle in which treatment effect starts to decline linearly
+
+treateff_hba1c_input <- 0 # Treatment effect on HbA1c (in absolute %-points HbA1c)
+treateff_hdl_input   <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
+treateff_ldl_input   <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
+
+# Cost inputs
+
+# Total treatment cost --> Not sure if here or in Excel.
+tx_cost_input <- 0     
+
+
+# Quality of life inputs
 
  
 # NOTE: Input parameters (probabilities, costs and utilities) can be changed in the corresponding 
@@ -40,33 +55,10 @@ n_psa_input <- 500
 
 
 
-
-
-# Control variables of simulation
-npats_input   <- 10  # Number of patients in simulation
-tx_cost_input <- 0     # Total treatment cost
-
-treateff_start_input   <- 1 # Cycle in which treatment effect starts
-treateff_end_input     <- 4 # Cycle in which treatment effect ends
-treateff_decline_input <- 2 # Cycle in which treatment effect starts to decline linearly
-
-treateff_hba1c_input <- 0 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff_hdl_input   <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
-treateff_ldl_input   <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
-
 # The sim.vars object collects all parameters that define the simulation into one object
 # Then, it is saved with the output of the simulation. This way, if we  have multiple output files, we always have the information 
 # on the relevant input parameters that were used to produce the output.
 sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
-
-# A patient-level model make use of patient characteristics. 
-baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
-# baseline_characteristics <- read.csv("/input/UK/baseline_characteristics_UK_rank_1_study_pop.csv", sep=",")
-
-
-
-
-
 
 
 ###########################################################
