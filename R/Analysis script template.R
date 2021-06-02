@@ -50,47 +50,13 @@ female_input <- 0 #1 = female, 0 = male
 results_dir <- ("output/TEST/")
 dir.create(results_dir)
 
-graphics_dir <- ("graphics/TEST/")
+graphics_dir <- ("graphics/TEST/") # not used at this moment
 dir.create(graphics_dir)
 
 # The sim.vars object collects all parameters that define the simulation into one object
 # Then, it is saved with the output of the simulation. This way, if we  have multiple output files, we always have the information 
 # on the relevant input parameters that were used to produce the output.
 sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
-
-# <----------
-
-
-
-
-
-###########################################################
-
-
-
-###########################################################
-
-
-
-
-
-
-# Direct costs of diabetes-related complications for UK are age-gender dependent.
-male_cost_inputs   <- read.csv("input/UK/Event cost male 2020.csv", sep=",")
-female_cost_inputs <- read.csv("input/UK/Event cost female 2020.csv", sep=",")
-
-# When a societal perspective is adopted, we also have future costs. This are obtained from the PAID online tool.
-future_medical_cost_inputs    <- read.csv("input/UK/UKPAID__AllORUnrelated_Costs_2020.csv", sep=",") # Ingelin: 15/12/2020
-future_nonmedical_cost_inputs <- read.csv("input/UK/UK_nonmedical_futurecosts_data.csv", sep=",") # UK costs updated 11/12/2020 - corrected version from Hamraz
-
-# Utilities are UK-based and age/gender dependent
-qol_inputs <- read.csv("input/UK/qol_inputs_UK.csv", sep=",")
-
-# Utility decrements associated to diabetes-related events
-qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
-
-
-# TODO: also extract output processing scripts to here.
 
 # Results 
 
