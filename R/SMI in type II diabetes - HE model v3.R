@@ -325,7 +325,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       # 4. Our model assumes patients live half of last year (sort of half-cycle) --> See mean_life_expectancy
       # 5. Random order of events does have impact on results. --> not in our model. Discussion
       # 6. Delete current_year_event, not needed (only for validation purposes to see whether multiple event occur)
-      # 7. Check occurrence of second events (i.e., not multiple event sbut second MI, stroke, amputation etc.) -- > Yes, possible
+      # 7. Check occurrence of second events (i.e., not multiple events but second MI, stroke, amputation etc.) -- > Yes, possible
       
       if(current_hist == 0){ 
         
