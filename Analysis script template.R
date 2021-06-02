@@ -23,6 +23,9 @@ inst <- lapply(pkgs, library, character.only = TRUE) # load them
 # Load model function: 
 source("R/SMI in type II diabetes - HE model v3.R")
 
+# Load aux. functions, input parameters (from Excel), global lists, etc. 
+source("R/aux_functions.R")
+
 # Variable defined to keep track of simulation time (delete afterwards)
 init <- Sys.time()
 
