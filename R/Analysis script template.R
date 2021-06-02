@@ -4,6 +4,44 @@ source("R/SMI in type II diabetes - HE model v3.R")
 # Variable defined to keep track of simulation time (delete afterwards)
 init <- Sys.time()
 
+
+# ----------->
+
+
+
+############################
+# User adjustable settings #
+############################
+
+# Discount rates: please indicate the desired discount rates for costs and effects. Default: 0.035
+discount_cost_input <- 0.035
+discount_util_input <- 0.035	
+
+# Please select running mode: 0 = deterministic, 1 = PSA. Default: 0
+psa_input <- 0
+ 
+# Please select number of PSA runs. Default: 500 --> NOTE: not yet implemented
+n_psa_input <- 500
+
+ 
+# NOTE: Input parameters (probabilities, costs and utilities) can be changed in the corresponding 
+# csv files included in the folder "input". These can be changed to run for example scenario analyses
+# without modifying the R code.
+ 
+# # Directories to save results and plots (TEST folder created for users)
+# results_dir <- ("output/population 1/TEST/")
+# dir.create(results_dir)
+# 
+# graphics_dir <- ("graphics/population 1/TEST/")
+# dir.create(graphics_dir)
+
+
+# <----------
+
+
+
+
+
 # Control variables of simulation
 npats_input   <- 10  # Number of patients in simulation
 tx_cost_input <- 0     # Total treatment cost
@@ -73,10 +111,10 @@ sim_results <- SMDMII_model_simulation(npats_input,  #patient_size_input: run 50
                                        rep(0,4),  #treatment_effect_HDL_input
                                        rep(0,4),  #treatment_effect_LDL_input --> from COMPAR + Assumption
                                        0, #treatment_effect_BMI_input from MH2020
-                                       0.035, #cost_disc_rate_input
-                                       0.035, #qol_disc_rate_input
+                                       discount_cost_input, 
+                                       discount_util_input, 
                                        65, #retirement_age_input
-                                       0, #run_PSA_input, 0 == no PSA
+                                       psa_input, 
                                        77 #seed_input
                                        )
 
