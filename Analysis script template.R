@@ -76,7 +76,6 @@ female_input <- 0 #1 = female, 0 = male
 # Set random seed for replication purposes
 seed_input <- 77 # A random seed that it is used to ensure consistency in the model results. 
 
-
 # NOTE: Input parameters (probabilities, costs and utilities) can be changed in the corresponding 
 # csv files included in the folder "input". These can be changed to run for example scenario analyses
 # without modifying the R code.
