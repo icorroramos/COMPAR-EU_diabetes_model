@@ -46,6 +46,9 @@ n_psa_input <- 500
 # Please select the number of patients in simulation (default 1000 in deterministic run)
 npats_input   <- 10  
 
+# Please indicate the name of the treatment to be identified
+tx_label <- "Comparator"
+
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
 treateff_end     <- 4 # Cycle in which treatment effect ends
@@ -92,8 +95,11 @@ dir.create(graphics_dir)
 # on the relevant input parameters that were used to produce the output.
 sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
 
-# Results 
+###########
+# Results #
+###########
 
+# Get model results
 sim_results <- SMDMII_model_simulation(npats_input,
                                        female_input,
                                        tx_cost_input,
@@ -107,7 +113,7 @@ sim_results <- SMDMII_model_simulation(npats_input,
                                        psa_input, 
                                        seed_input)
 
-# Results tables
+# Results tables: cost effectivennes and clinical results
 sim_CE_results_table <- matrix(c(sim_results$mean_complication_costs,
                                  sim_results$mean_nocomp_costs,
                                  sim_results$mean_tx_costs,
@@ -121,8 +127,8 @@ sim_CE_results_table <- matrix(c(sim_results$mean_complication_costs,
 colnames(sim_CE_results_table) <- c("Complication costs", "No complication costs", 
                                     "Tx costs","Informal care costs", "Productivity costs",
                                     "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
-rownames(sim_CE_results_table) <- "Comparator"
-# View(sim_CE_results_table)
+rownames(sim_CE_results_table) <- tx_label
+
 
 sim_clinical_results_table <- matrix(c(sim_results$mean_life_expectancy,
                                        sim_results$mean_CHF_rate,
@@ -136,13 +142,10 @@ sim_clinical_results_table <- matrix(c(sim_results$mean_life_expectancy,
 
 colnames(sim_clinical_results_table) <- c("Life expectancy", "CHF rate", "MI rate", "Blindness rate", "Ulcer rate",
                                           "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
-
-rownames(sim_clinical_results_table) <- "Name" # define above auto?
-
-# View(sim_clinical_results_table)
+rownames(sim_clinical_results_table) <- tx_label
 
 
-# KM data (to be compraed with UKPDS - validation):
+# KM curves from simulated data (to be compared with UKPDS - validation):
 n_years <- 1:max(sim_results$simulation_patients_history$SDURATION)
 current_survival <- rep(1,length(event_vars)+1)
 KM_data <- sim_results$simulation_patients_history[,c(event_vars,"dead")]
@@ -152,19 +155,13 @@ current_survival <- current_survival*(1-colMeans(sim_results$simulation_patients
 KM_data[i,] <- current_survival
 }
 
-# View(tail(KM_data))
-
-
 # Export tables into Excel using this function:
 export_csv <- function(object_input){
-  write.csv(object_input, paste(results_dir, substitute(object_input),"_", format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), ".csv", sep = ""))
+  write.csv(object_input, paste(results_dir, substitute(object_input),"_", tx_label,"_", format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), ".csv", sep = ""))
 }
 
-
-clinical_results_table <- sim_clinical_results_table # Validation, delete afterwards
-  
 export_csv(KM_data)
-export_csv(clinical_results_table)
+export_csv(sim_clinical_results_table)
 
 
 # Variable defined to keep track of simulation time (delete afterwards)
