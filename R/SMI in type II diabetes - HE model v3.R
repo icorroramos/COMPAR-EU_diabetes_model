@@ -546,8 +546,10 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   if(unique(simulation_patients_history$FEMALE) == 0){complication_cost_inputs <- male_cost_inputs}else{complication_cost_inputs <- female_cost_inputs}
   
   complication_cost_matrix <- inner_join(simulation_patients_history[c("CURR.AGE","FEMALE","dead", 
-                                                                       "IHD.EVENT", "IHD.HIST", "MI.EVENT", "MI.HIST", "CHF.EVENT", "CHF.HIST",
-                                                                       "STROKE.EVENT", "STROKE.HIST", "AMP1.EVENT", "AMP2.EVENT", "AMP.HIST",
+                                                                       "IHD.EVENT", "IHD.HIST", "MI.EVENT", 
+                                                                       "MI.HIST", "CHF.EVENT", "CHF.HIST",
+                                                                       "STROKE.EVENT", "STROKE.HIST", "AMP1.EVENT", 
+                                                                       "AMP2.EVENT", "AMP.HIST",
                                                                        "BLIND.EVENT","BLIND.HIST", "ULCER.EVENT", "ULCER.HIST")], 
                                          complication_cost_inputs, by = 'CURR.AGE')
   
