@@ -24,7 +24,7 @@ npats_input   <- 10
 # Treatment effect inputs
 treateff_start_input   <- 1 # Cycle in which treatment effect starts
 treateff_end_input     <- 4 # Cycle in which treatment effect ends
-treateff_decline_input <- 2 # Cycle in which treatment effect starts to decline linearly
+treateff_decline_input <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
 treateff_hba1c_input <- 0 # Treatment effect on HbA1c (in absolute %-points HbA1c)
 treateff_hdl_input   <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
@@ -38,37 +38,35 @@ tx_cost_input <- 0
 
 # Quality of life inputs
 
- 
+
+# Gender: note at this moment the model distinguishes between males and females, This must be chosen here
+female_input <- 0 #1 = female, 0 = male
+
 # NOTE: Input parameters (probabilities, costs and utilities) can be changed in the corresponding 
 # csv files included in the folder "input". These can be changed to run for example scenario analyses
 # without modifying the R code.
  
 # # Directories to save results and plots (TEST folder created for users)
-# results_dir <- ("output/population 1/TEST/")
-# dir.create(results_dir)
-# 
-# graphics_dir <- ("graphics/population 1/TEST/")
-# dir.create(graphics_dir)
+results_dir <- ("output/TEST/")
+dir.create(results_dir)
 
-
-# <----------
-
-
+graphics_dir <- ("graphics/TEST/")
+dir.create(graphics_dir)
 
 # The sim.vars object collects all parameters that define the simulation into one object
 # Then, it is saved with the output of the simulation. This way, if we  have multiple output files, we always have the information 
 # on the relevant input parameters that were used to produce the output.
 sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
 
+# <----------
+
+
+
+
 
 ###########################################################
 
-# Validation
-female_input <- 0 #1 = female, 0 = male
-#baseline_characteristics$STROKE.HIST <- 1
 
-results_dir <- ("validation/male_stroke_hist_")
-#dir.create(results_dir)
 
 ###########################################################
 
