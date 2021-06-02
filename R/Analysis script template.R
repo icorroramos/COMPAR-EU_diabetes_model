@@ -20,15 +20,13 @@ pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr") # package
 #install.packages(pkgs)
 inst <- lapply(pkgs, library, character.only = TRUE) # load them
 
+# Load model function: 
+source("R/SMI in type II diabetes - HE model v3.R")
+
 # Variable defined to keep track of simulation time (delete afterwards)
 init <- Sys.time()
 
 # Options below are divided into user adjustable and nonadjustable. The latter should NOT be changed by the user.
-
-# Model function: 
-source("R/SMI in type II diabetes - HE model v3.R")
-
-
 
 ############################
 # User adjustable settings #
