@@ -55,7 +55,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # Note: the object "history_characteristics is defined in"the file "aux_functions.R".
   
 
-  ########## MAIN PART I: simulate events ##########
+  ### Variable transformations ###
 
   # Regression coefficients for PSA -- once per PSA --> To be done
   # if(run_PSA_input == 1){} # end if regression coef. PSA
@@ -126,6 +126,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   # Create now the simulation patient history table (for now is just empty) to save all simulation results 
   simulation_patients_history <- simulation_baseline_patients[FALSE,c(history_characteristics)]
+  
+  ########## MAIN PART I: simulate events ##########
   
   # Initialize the index for the patients entering the for loop 
   patient_index <- 1
