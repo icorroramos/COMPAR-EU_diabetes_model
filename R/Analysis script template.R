@@ -31,9 +31,8 @@ treateff_hdl_input   <- 0 # Treatment effect on HDL-cholesterol (absolute effect
 treateff_ldl_input   <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
 
 # Cost inputs
-
-# Total treatment cost --> Not sure if here or in Excel.
-tx_cost_input <- 0     
+tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.     
+retirement_age_input <- 65
 
 
 # Quality of life inputs
@@ -69,7 +68,7 @@ sim_results <- SMDMII_model_simulation(npats_input,  #patient_size_input: run 50
                                        0, #treatment_effect_BMI_input from MH2020
                                        discount_cost_input, 
                                        discount_util_input, 
-                                       65, #retirement_age_input
+                                       retirement_age_input, 
                                        psa_input, 
                                        77 #seed_input
                                        )
