@@ -145,6 +145,10 @@ background_DEATH_prob <- read.csv("input/UK/nationallifetables3yearuk.csv")
 # PART II - Define global lists #
 #################################
 
+# Patient characteristics. 
+baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
+
+
 # .EVENT variable names
 
 event_vars <- c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVENT", "AMP1.EVENT", "AMP2.EVENT", 
