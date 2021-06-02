@@ -30,7 +30,7 @@ source("R/aux_functions.R")
 # qol_inputs
 # qol_events_inputs
 
-# TODO: annotate the objects above on their requirements of format/ content
+# TODO: annotate the objects above on their requirements of format/content --> They should be part of the input parameters of the function, especially if we want to run a PSA.
 
 # PART II - SIMULATION ----------------------------------------------------
 
