@@ -47,13 +47,20 @@ n_psa_input <- 500
 npats_input   <- 10  
 
 # Treatment effect inputs
-treateff_start_input   <- 1 # Cycle in which treatment effect starts
-treateff_end_input     <- 4 # Cycle in which treatment effect ends
-treateff_decline_input <- 2 # Cycle in which treatment effect starts to decline (linearly)
+treateff_start   <- 1 # Cycle in which treatment effect starts
+treateff_end     <- 4 # Cycle in which treatment effect ends
+treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
-treateff_hba1c_input <- 0 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff_hdl_input   <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
-treateff_ldl_input   <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
+treateff_hba1c <- 0 # Treatment effect on HbA1c (in absolute %-points HbA1c)
+treateff_hdl   <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
+treateff_ldl   <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
+
+# Tx effects are vectors: the current assumption is that the same start, end and decline is assumed for all effect modifiers
+treatment_effect_HbA1c_input <- c(treateff_hba1c, treateff_start, treateff_end, treateff_decline)
+treatment_effect_HDL_input   <- c(treateff_hdl, treateff_start, treateff_end, treateff_decline)
+treatment_effect_LDL_input   <- c(treateff_ldl, treateff_start, treateff_end, treateff_decline)
+
+treatment_effect_BMI_input <- 0 # This was taken from MH2020 but it si currently removed from the model function. Left here in case we want to include it again
 
 # Cost inputs
 tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.     
@@ -84,12 +91,12 @@ sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
 
 # Results 
 
-sim_results <- SMDMII_model_simulation(npats_input,  #patient_size_input: run 500 for LOLA
-                                       female_input,  #female_input, 1 = female
-                                       tx_cost_input, #tx_cost_input --> Gimon
-                                       rep(0,4), #treatment_effect_HbA1c_input --> from COMPAR + Assumption
-                                       rep(0,4),  #treatment_effect_HDL_input
-                                       rep(0,4),  #treatment_effect_LDL_input --> from COMPAR + Assumption
+sim_results <- SMDMII_model_simulation(npats_input,
+                                       female_input,
+                                       tx_cost_input,
+                                       treatment_effect_HbA1c_input, 
+                                       treatment_effect_HDL_input,
+                                       treatment_effect_LDL_input, 
                                        0, #treatment_effect_BMI_input from MH2020
                                        discount_cost_input, 
                                        discount_util_input, 
