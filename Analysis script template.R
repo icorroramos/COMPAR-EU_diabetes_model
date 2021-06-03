@@ -113,7 +113,7 @@ sim_results <- SMDMII_model_simulation(npats_input,
                                        psa_input, 
                                        seed_input)
 
-# Results tables: cost effectivennes and clinical results
+# Results tables: cost effectiveness and clinical results
 sim_CE_results_table <- matrix(c(sim_results$mean_complication_costs,
                                  sim_results$mean_nocomp_costs,
                                  sim_results$mean_tx_costs,
