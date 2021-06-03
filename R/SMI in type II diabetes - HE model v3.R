@@ -161,7 +161,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       ### MACROVASCULAR COMPLICATIONS ###
       
-      current_patient_macrovascular <- current_patient %>% select(risk_factors_macrovascular)
+      #current_patient_macrovascular <- current_patient %>% select(risk_factors_macrovascular)
+      current_patient_macrovascular <- current_patient[,risk_factors_macrovascular]
       
       # Heart Failure is Weibull. This can happen only once; that's why the if condition below is used. 
       if(current_patient$CHF.HIST == 0){
