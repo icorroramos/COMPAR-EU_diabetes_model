@@ -38,10 +38,10 @@ discount_cost_input <- 0.035
 discount_util_input <- 0.035	
 
 # Please select running mode: 0 = deterministic, 1 = PSA. Default: 0
-psa_input <- 0
+psa_input <- 1
  
 # Please select number of PSA runs. Default: 500 --> NOTE: not yet implemented
-n_psa_input <- 500
+n_psa_input <- 5
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
 npats_input   <- 10  
@@ -100,18 +100,45 @@ sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
 ###########
 
 # Get model results
-sim_results <- SMDMII_model_simulation(npats_input,
-                                       female_input,
-                                       tx_cost_input,
-                                       treatment_effect_HbA1c_input, 
-                                       treatment_effect_HDL_input,
-                                       treatment_effect_LDL_input, 
-                                       treatment_effect_BMI_input,
-                                       discount_cost_input, 
-                                       discount_util_input, 
-                                       retirement_age_input, 
-                                       psa_input, 
-                                       seed_input)
+# sim_results <- SMDMII_model_simulation(npats_input,
+#                                        female_input,
+#                                        tx_cost_input,
+#                                        treatment_effect_HbA1c_input, 
+#                                        treatment_effect_HDL_input,
+#                                        treatment_effect_LDL_input, 
+#                                        treatment_effect_BMI_input,
+#                                        discount_cost_input, 
+#                                        discount_util_input, 
+#                                        retirement_age_input, 
+#                                        psa_input, 
+#                                        seed_input)
+
+# Define sim_results as a function. This allows calling it multiple times for the PSA.
+# We need to indicate which parameters change in the PSA by adding e.g. [x] to the input parameters.
+# We need first to have a vector of inputs defined in advance (probably in aux file).
+
+sim_results <- function(x){
+  SMDMII_model_simulation(npats_input,
+                          female_input,
+                          tx_cost_input,
+                          treatment_effect_HbA1c_input, 
+                          treatment_effect_HDL_input,
+                          treatment_effect_LDL_input, 
+                          treatment_effect_BMI_input,
+                          discount_cost_input, 
+                          discount_util_input, 
+                          retirement_age_input, 
+                          psa_input, #might not be needed inside the function
+                          seed_input)
+}
+
+
+if(psa_input == 0){
+  sim_results <- sim_results()
+  }else{
+    sim_results <- lapply(1:n_psa_input, sim_results)
+    }
+
 
 # Results tables: cost effectiveness and clinical results
 sim_CE_results_table <- matrix(c(sim_results$mean_complication_costs,
