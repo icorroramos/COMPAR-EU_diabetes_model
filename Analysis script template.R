@@ -38,7 +38,7 @@ discount_cost_input <- 0.035
 discount_util_input <- 0.035	
 
 # Please select running mode: 0 = deterministic, 1 = PSA. Default: 0
-psa_input <- 0
+psa_input <- 1
  
 # Please select number of PSA runs. Default: 500 --> NOTE: not yet implemented
 n_psa_input <- 5
@@ -189,7 +189,7 @@ if(psa_input == 0){
     
     # Results tables: cost effectiveness and clinical results
     
-    complication_costs <- unlist(lapply(1:n, function(z) sim_results[[z]]$mean_complication_costs))
+    complication_costs <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_complication_costs))
     print(complication_costs)
     # This is a summary but we also need results per PSA for the plots
     sim_CE_results_table <- matrix(c(mean(complication_costs), 
