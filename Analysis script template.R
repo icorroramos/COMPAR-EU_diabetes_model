@@ -188,7 +188,11 @@ if(psa_input == 0){
     
     
     # Results tables: cost effectiveness and clinical results
-    sim_CE_results_table <- matrix(c(sim_results$mean_complication_costs,
+    
+    complication_costs <- unlist(lapply(1:n, function(z) sim_results[[z]]$mean_complication_costs))
+    print(complication_costs)
+    # This is a summary but we also need results per PSA for the plots
+    sim_CE_results_table <- matrix(c(mean(complication_costs), 
                                      sim_results$mean_nocomp_costs,
                                      sim_results$mean_tx_costs,
                                      sim_results$mean_inf_care_costs,
