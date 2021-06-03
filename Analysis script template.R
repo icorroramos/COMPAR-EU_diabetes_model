@@ -99,20 +99,7 @@ sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
 # Results #
 ###########
 
-# Get model results
-# sim_results <- SMDMII_model_simulation(npats_input,
-#                                        female_input,
-#                                        tx_cost_input,
-#                                        treatment_effect_HbA1c_input, 
-#                                        treatment_effect_HDL_input,
-#                                        treatment_effect_LDL_input, 
-#                                        treatment_effect_BMI_input,
-#                                        discount_cost_input, 
-#                                        discount_util_input, 
-#                                        retirement_age_input, 
-#                                        psa_input, 
-#                                        seed_input)
-
+# Get model results.
 # Define sim_results as a function. This allows calling it multiple times for the PSA.
 # We need to indicate which parameters change in the PSA by adding e.g. [x] to the input parameters.
 # We need first to have a vector of inputs defined in advance (probably in aux file).
