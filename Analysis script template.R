@@ -189,18 +189,26 @@ if(psa_input == 0){
     
     # Results tables: cost effectiveness and clinical results
     
-    complication_costs <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_complication_costs))
-    print(complication_costs)
+    complication_costs      <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_complication_costs))
+    nocomp_costs            <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_nocomp_costs))
+    tx_costs                <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_tx_costs))
+    inf_care_costs          <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_inf_care_costs))
+    prod_loss_costs         <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_prod_loss_costs))
+    future_medical_costs    <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_future_medical_costs))
+    future_nonmedical_costs <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_future_nonmedical_costs))
+    total_costs             <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_total_costs))
+    total_qalys             <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_total_qalys))
+    
     # This is a summary but we also need results per PSA for the plots
     sim_CE_results_table <- matrix(c(mean(complication_costs), 
-                                     sim_results$mean_nocomp_costs,
-                                     sim_results$mean_tx_costs,
-                                     sim_results$mean_inf_care_costs,
-                                     sim_results$mean_prod_loss_costs,
-                                     sim_results$mean_future_medical_costs,
-                                     sim_results$mean_future_nonmedical_costs,
-                                     sim_results$mean_total_costs,
-                                     sim_results$mean_total_qalys), nrow = 1)
+                                     mean(nocomp_costs),
+                                     mean(tx_costs),
+                                     mean(inf_care_costs),
+                                     mean(prod_loss_costs),
+                                     mean(future_medical_costs),
+                                     mean(future_nonmedical_costs),
+                                     mean(total_costs),
+                                     mean(total_qalys)), nrow = 1)
     
     colnames(sim_CE_results_table) <- c("Complication costs", "No complication costs", 
                                         "Tx costs","Informal care costs", "Productivity costs",
@@ -208,19 +216,19 @@ if(psa_input == 0){
     rownames(sim_CE_results_table) <- tx_label
     
     
-    sim_clinical_results_table <- matrix(c(sim_results$mean_life_expectancy,
-                                           sim_results$mean_CHF_rate,
-                                           sim_results$mean_MI_rate,
-                                           sim_results$mean_BLIND_rate,
-                                           sim_results$mean_ULCER_rate,
-                                           sim_results$mean_AMP1_rate,
-                                           sim_results$mean_AMP2_rate,
-                                           sim_results$mean_RENAL_rate,
-                                           sim_results$mean_STROKE_rate), nrow = 1)
-    
-    colnames(sim_clinical_results_table) <- c("Life expectancy", "CHF rate", "MI rate", "Blindness rate", "Ulcer rate",
-                                              "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
-    rownames(sim_clinical_results_table) <- tx_label
+    # sim_clinical_results_table <- matrix(c(sim_results$mean_life_expectancy,
+    #                                        sim_results$mean_CHF_rate,
+    #                                        sim_results$mean_MI_rate,
+    #                                        sim_results$mean_BLIND_rate,
+    #                                        sim_results$mean_ULCER_rate,
+    #                                        sim_results$mean_AMP1_rate,
+    #                                        sim_results$mean_AMP2_rate,
+    #                                        sim_results$mean_RENAL_rate,
+    #                                        sim_results$mean_STROKE_rate), nrow = 1)
+    # 
+    # colnames(sim_clinical_results_table) <- c("Life expectancy", "CHF rate", "MI rate", "Blindness rate", "Ulcer rate",
+    #                                           "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
+    # rownames(sim_clinical_results_table) <- tx_label
     
     # Add CE-plane and CEAC
     
