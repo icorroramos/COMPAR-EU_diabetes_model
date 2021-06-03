@@ -79,7 +79,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # Otherwise, age at baseline < retirement age, we calculate the probability of being employed (at baseline)
   ifelse(simulation_baseline_patients$CURR.AGE >= retirement_age_input, simulation_baseline_patients$EMPLOYED <- 0,
          {
-           baseline_risk_factors_employment <- simulation_baseline_patients %>% select(risk_factors_employment)
+           #baseline_risk_factors_employment <- simulation_baseline_patients %>% select(risk_factors_employment)
+           baseline_risk_factors_employment <- simulation_baseline_patients[,risk_factors_employment]
            baseline_employed_prob <- apply(baseline_risk_factors_employment, 1, function(x) annual_p_bernoulli(employment_equations$employment_coef,x)$p)
            simulation_baseline_patients$EMPLOYED <- unlist(lapply(baseline_employed_prob, function(x) rbinom(1,1,x))) #EMPLOYED = yes/no
          })
@@ -224,7 +225,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       ### MICROVASCULAR COMPLICATIONS ###
       
-      current_patient_microvascular <- current_patient %>% select(risk_factors_microvascular)
+      #current_patient_microvascular <- current_patient %>% select(risk_factors_microvascular)
+      current_patient_microvascular <- current_patient[,risk_factors_microvascular]
       
       # BLINDNESS is Exponential. This is assumed to happen only once; that's why the if condition below is used. 
       if(current_patient$BLIND.HIST == 0){
@@ -310,7 +312,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # The four equations for death are then the following: 
       
-      current_patient_mortality <- current_patient %>% select(risk_factors_mortality)
+      #current_patient_mortality <- current_patient %>% select(risk_factors_mortality)
+      current_patient_mortality <- current_patient[,risk_factors_mortality]
       
       
       # To check:
@@ -359,7 +362,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # INFORMAL CARE
       # Probability of receiving at least weekly informal care for a whole year is calculated using a Bernoulli distribution.
-      current_inf_care_prob <- annual_p_bernoulli(informal_care_equations$informal_care_coef, current_patient %>% select(risk_factors_informal))$p
+      # current_inf_care_prob <- annual_p_bernoulli(informal_care_equations$informal_care_coef, current_patient %>% select(risk_factors_informal))$p
+      current_inf_care_prob <- annual_p_bernoulli(informal_care_equations$informal_care_coef, current_patient[,risk_factors_informal])$p
       current_patient$INF.CARE <- rbinom(1,1,current_inf_care_prob) #INF.CARE = yes/no
       
       # If INF.CARE = yes, then calculate hours per day, and then total per year: Gamma distribution for now but other options are possible.
@@ -407,7 +411,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         
         # Permanent (one-off) prod. loss costs
         # Calculate first the probability of losing job (Bernoulli distribution).
-        current_jobless_prob <- annual_p_bernoulli(informal_care_equations$prod_costs_coef, current_patient %>% select(risk_factors_prod))$p
+        #current_jobless_prob <- annual_p_bernoulli(informal_care_equations$prod_costs_coef, current_patient %>% select(risk_factors_prod))$p
+        current_jobless_prob <- annual_p_bernoulli(informal_care_equations$prod_costs_coef, current_patient[,risk_factors_prod])$p
         current_jobless <- rbinom(1,1,current_jobless_prob) 
         
         # If jobless, then apply permanent cost (one-off) cost: friction method as proportion of a maximum of 2.7 months (re-calculated as days).
