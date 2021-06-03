@@ -249,12 +249,14 @@ if(psa_input == 0){
     rownames(sim_clinical_results_table) <- tx_label
     
     
-    # Add CE-plane and CEAC
-    
-    
     # Decide what to save
     export_csv(sim_clinical_results_table)
     export_csv(sim_CE_results_table)
+    export_csv(total_costs)
+    export_csv(total_qalys)
+    
+    # CE-plane and CEAC not produced here because this is a single arm simulation. 
+    # PSA results will be saved and plots can be done in another script.
     
     }
 
