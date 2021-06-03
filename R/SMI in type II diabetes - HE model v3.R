@@ -121,6 +121,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   # Create now the simulation patient history table (for now is just empty) to save all simulation results 
   simulation_patients_history <- simulation_baseline_patients[FALSE,c(history_characteristics)]
+  sim_rows <- 1
   
   ########## MAIN PART I: simulate events ##########
   
@@ -144,8 +145,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
     current_AMP2_event <- 0
     
     # Save the characteristics to be used in the simulation history 
-    simulation_patients_history <- bind_rows(simulation_patients_history,current_patient[history_characteristics])
-    current_patient_list <- list()
+    simulation_patients_history[sim_rows,] <- current_patient[history_characteristics] 
+    #simulation_patients_history <- bind_rows(simulation_patients_history,current_patient[history_characteristics])
     
     # Start the "timed" simulation (while loop = clock)
     # Set random seed large enough. Will be used for drawing event probabilities below.
@@ -519,9 +520,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       }
       
       # When all characteristics are updated, we add these to the patient history
-      simulation_patients_history <- bind_rows(simulation_patients_history,current_patient_update[history_characteristics])
-      current_patient_list <- append(current_patient_list, current_patient_update[history_characteristics])
-      View(current_patient_list)
+      sim_rows <- sim_rows + 1
+      #simulation_patients_history <- bind_rows(simulation_patients_history,current_patient_update[history_characteristics])
+      simulation_patients_history[sim_rows,] <- current_patient_update[history_characteristics]
       
       # And update current patient and go up to while loop
       current_patient <- current_patient_update
@@ -533,11 +534,12 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
     } #end while loop and move to another patient
     
-    
     # Update patient index
     patient_index <- patient_index + 1
+    sim_rows <- sim_rows + 1
   } #end for loop in number of patients
   
+  #View(simulation_patients_history)
   
   ########## MAIN PART II: Calculate Costs ##########
   

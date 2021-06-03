@@ -8,7 +8,8 @@ MI  <- 1
 CHF <- 0
 IHD <- 0
 
-current_patient <- data.frame(MI,CHF,IHD)
+current_patient     <- data.frame(MI,CHF,IHD)
+current_patient_new <- data.frame(MI,CHF,IHD)
 risk_factors_macrovascular <- c("MI","CHF","IHD")
 
 select1 <- function() {current_patient_macrovascular <- current_patient %>% select(risk_factors_macrovascular)}
@@ -27,18 +28,21 @@ microbenchmark(select1(),select2())
 # Binding rows
 
 bind1 <- function(){
-  current_patient <- bind_rows(current_patient, current_patient[risk_factors_macrovascular])
-  current_patient
+  for(i in 1:500){
+  current_patient_new <- bind_rows(current_patient_new, current_patient[risk_factors_macrovascular])
+  }
+  #print(current_patient_new)
   
 }
 
 bind2 <- function(){
-  current_patient <- rbindlist(current_patient, current_patient[risk_factors_macrovascular])
-  current_patient
+  for(i in 2:501){
+  current_patient_new[i,] <- current_patient[risk_factors_macrovascular]
+  }
+  #print(current_patient_new)
   
 }
 
 microbenchmark(bind1(),bind2())
-
 
 

@@ -44,7 +44,7 @@ psa_input <- 0
 n_psa_input <- 5
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 10  
+npats_input   <- 5  
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "Comparator"
