@@ -223,19 +223,31 @@ if(psa_input == 0){
     rownames(sim_CE_results_table) <- tx_label
     
     
-    # sim_clinical_results_table <- matrix(c(sim_results$mean_life_expectancy,
-    #                                        sim_results$mean_CHF_rate,
-    #                                        sim_results$mean_MI_rate,
-    #                                        sim_results$mean_BLIND_rate,
-    #                                        sim_results$mean_ULCER_rate,
-    #                                        sim_results$mean_AMP1_rate,
-    #                                        sim_results$mean_AMP2_rate,
-    #                                        sim_results$mean_RENAL_rate,
-    #                                        sim_results$mean_STROKE_rate), nrow = 1)
-    # 
-    # colnames(sim_clinical_results_table) <- c("Life expectancy", "CHF rate", "MI rate", "Blindness rate", "Ulcer rate",
-    #                                           "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
-    # rownames(sim_clinical_results_table) <- tx_label
+    # Clinical results 
+    life_expectancy <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_life_expectancy))
+    CHF_rate        <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_CHF_rate))
+    MI_rate         <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_MI_rate))
+    BLIND_rate      <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_BLIND_rate))
+    ULCER_rate      <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_ULCER_rate))
+    AMP1_rate       <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_AMP1_rate))
+    AMP2_rate       <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_AMP2_rate))
+    RENAL_rate      <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_RENAL_rate))
+    STROKE_rate     <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_STROKE_rate))
+    
+    sim_clinical_results_table <- matrix(c(mean(life_expectancy),
+                                           mean(CHF_rate),
+                                           mean(MI_rate),
+                                           mean(BLIND_rate),
+                                           mean(ULCER_rate),
+                                           mean(AMP1_rate),
+                                           mean(AMP2_rate),
+                                           mean(RENAL_rate),
+                                           mean(STROKE_rate)), nrow = 1)
+
+    colnames(sim_clinical_results_table) <- c("Life expectancy", "CHF rate", "MI rate", "Blindness rate", "Ulcer rate",
+                                              "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
+    rownames(sim_clinical_results_table) <- tx_label
+    
     
     # Add CE-plane and CEAC
     
