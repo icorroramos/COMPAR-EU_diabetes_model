@@ -181,6 +181,13 @@ if(psa_input == 0){
     KM_data[i,] <- current_survival
   }
   
+  
+  # Decide what to save
+  export_csv(KM_data)
+  export_csv(sim_clinical_results_table)
+  export_csv(sim_CE_results_table)
+  
+  
   }else{ #PSA
     
     # run simulation
@@ -232,12 +239,12 @@ if(psa_input == 0){
     
     # Add CE-plane and CEAC
     
+    
+    # Decide what to save
+    export_csv(sim_clinical_results_table)
+    export_csv(sim_CE_results_table)
+    
     }
-
-
-# Decide what to save
-export_csv(KM_data)
-export_csv(sim_clinical_results_table)
 
 
 # Variable defined to keep track of simulation time (delete afterwards)
