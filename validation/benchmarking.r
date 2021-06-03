@@ -1,3 +1,8 @@
+library(microbenchmark)
+library(dplyr)
+
+# Selection
+
 MI  <- 1
 CHF <- 0
 IHD <- 0
@@ -9,3 +14,9 @@ select1 <- function() {current_patient_macrovascular <- current_patient %>% sele
 select2 <- function() {current_patient_macrovascular <- current_patient[,risk_factors_macrovascular]}
 
 microbenchmark(select1(),select2())
+# Unit: microseconds
+# expr    min      lq     mean  median      uq    max neval cld
+# select1() 1364.3 1424.05 1557.868 1479.05 1642.10 2718.7   100   b
+# select2()   10.1   11.65   26.306   13.25   18.55 1065.7   100  a 
+
+# conclusion: avoid using %>%
