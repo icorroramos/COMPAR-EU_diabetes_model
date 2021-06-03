@@ -190,7 +190,10 @@ history_characteristics <- c("SIMID",
                              "dead")
 
 
-
+# Export tables into Excel using this function:
+export_csv <- function(object_input){
+  write.csv(object_input, paste(results_dir, substitute(object_input),"_", tx_label,"_", format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), ".csv", sep = ""))
+}
 
 
 #############################################################################

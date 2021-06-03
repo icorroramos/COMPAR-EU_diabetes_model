@@ -235,12 +235,6 @@ if(psa_input == 0){
     }
 
 
-
-# Export tables into Excel using this function:
-export_csv <- function(object_input){
-  write.csv(object_input, paste(results_dir, substitute(object_input),"_", tx_label,"_", format(Sys.time(), "%Y_%m_%d_%H_%M_%S"), ".csv", sep = ""))
-}
-
 # Decide what to save
 export_csv(KM_data)
 export_csv(sim_clinical_results_table)
