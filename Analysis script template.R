@@ -38,7 +38,7 @@ discount_cost_input <- 0.035
 discount_util_input <- 0.035	
 
 # Please select running mode: 0 = deterministic, 1 = PSA. Default: 0
-psa_input <- 1
+psa_input <- 0
  
 # Please select number of PSA runs. Default: 500 --> NOTE: not yet implemented
 n_psa_input <- 5
