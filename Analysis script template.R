@@ -188,7 +188,7 @@ if(psa_input == 0){
   export_csv(sim_CE_results_table)
   
   
-  }else{ #PSA
+  }else{ # PSA functionality (loops) seems to work - a bit slow in any case. Need to implement with proper inputs
     
     # run simulation
     sim_results <- lapply(1:n_psa_input, sim_results)
