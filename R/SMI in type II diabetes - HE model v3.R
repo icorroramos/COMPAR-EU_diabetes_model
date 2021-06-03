@@ -145,6 +145,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
     
     # Save the characteristics to be used in the simulation history 
     simulation_patients_history <- bind_rows(simulation_patients_history,current_patient[history_characteristics])
+    current_patient_list <- list()
     
     # Start the "timed" simulation (while loop = clock)
     # Set random seed large enough. Will be used for drawing event probabilities below.
@@ -519,6 +520,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # When all characteristics are updated, we add these to the patient history
       simulation_patients_history <- bind_rows(simulation_patients_history,current_patient_update[history_characteristics])
+      current_patient_list <- append(current_patient_list, current_patient_update[history_characteristics])
+      View(current_patient_list)
       
       # And update current patient and go up to while loop
       current_patient <- current_patient_update
@@ -529,6 +532,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       if(current_patient$EMPLOYED == 0){current_patient$PROD.LOSS <- 0} # needed here or somewhere else? It seems to work though
       
     } #end while loop and move to another patient
+    
     
     # Update patient index
     patient_index <- patient_index + 1
