@@ -132,6 +132,7 @@ sim_results <- function(x){
                           seed_input)
 }
 
+# Collect results depending on whether the simulation is deterministic or probabilistic 
 
 if(psa_input == 0){
   sim_results <- sim_results()
