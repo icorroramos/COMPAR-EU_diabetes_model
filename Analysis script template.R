@@ -136,52 +136,54 @@ sim_results <- function(x){
 
 if(psa_input == 0){
   sim_results <- sim_results()
-  }else{
+  
+  # Results tables: cost effectiveness and clinical results
+  sim_CE_results_table <- matrix(c(sim_results$mean_complication_costs,
+                                   sim_results$mean_nocomp_costs,
+                                   sim_results$mean_tx_costs,
+                                   sim_results$mean_inf_care_costs,
+                                   sim_results$mean_prod_loss_costs,
+                                   sim_results$mean_future_medical_costs,
+                                   sim_results$mean_future_nonmedical_costs,
+                                   sim_results$mean_total_costs,
+                                   sim_results$mean_total_qalys), nrow = 1)
+  
+  colnames(sim_CE_results_table) <- c("Complication costs", "No complication costs", 
+                                      "Tx costs","Informal care costs", "Productivity costs",
+                                      "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
+  rownames(sim_CE_results_table) <- tx_label
+  
+  
+  sim_clinical_results_table <- matrix(c(sim_results$mean_life_expectancy,
+                                         sim_results$mean_CHF_rate,
+                                         sim_results$mean_MI_rate,
+                                         sim_results$mean_BLIND_rate,
+                                         sim_results$mean_ULCER_rate,
+                                         sim_results$mean_AMP1_rate,
+                                         sim_results$mean_AMP2_rate,
+                                         sim_results$mean_RENAL_rate,
+                                         sim_results$mean_STROKE_rate), nrow = 1)
+  
+  colnames(sim_clinical_results_table) <- c("Life expectancy", "CHF rate", "MI rate", "Blindness rate", "Ulcer rate",
+                                            "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
+  rownames(sim_clinical_results_table) <- tx_label
+  
+  
+  # KM curves from simulated data (to be compared with UKPDS - validation):
+  n_years <- 1:max(sim_results$simulation_patients_history$SDURATION)
+  current_survival <- rep(1,length(event_vars)+1)
+  KM_data <- sim_results$simulation_patients_history[,c(event_vars,"dead")]
+  KM_data <- KM_data[FALSE,]
+  for(i in n_years){
+    current_survival <- current_survival*(1-colMeans(sim_results$simulation_patients_history[which(sim_results$simulation_patients_history$SDURATION == i),c(event_vars,"dead")]))
+    KM_data[i,] <- current_survival
+  }
+  
+  }else{ #PSA
     sim_results <- lapply(1:n_psa_input, sim_results)
     }
 
 
-# Results tables: cost effectiveness and clinical results
-sim_CE_results_table <- matrix(c(sim_results$mean_complication_costs,
-                                 sim_results$mean_nocomp_costs,
-                                 sim_results$mean_tx_costs,
-                                 sim_results$mean_inf_care_costs,
-                                 sim_results$mean_prod_loss_costs,
-                                 sim_results$mean_future_medical_costs,
-                                 sim_results$mean_future_nonmedical_costs,
-                                 sim_results$mean_total_costs,
-                                 sim_results$mean_total_qalys), nrow = 1)
-
-colnames(sim_CE_results_table) <- c("Complication costs", "No complication costs", 
-                                    "Tx costs","Informal care costs", "Productivity costs",
-                                    "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
-rownames(sim_CE_results_table) <- tx_label
-
-
-sim_clinical_results_table <- matrix(c(sim_results$mean_life_expectancy,
-                                       sim_results$mean_CHF_rate,
-                                       sim_results$mean_MI_rate,
-                                       sim_results$mean_BLIND_rate,
-                                       sim_results$mean_ULCER_rate,
-                                       sim_results$mean_AMP1_rate,
-                                       sim_results$mean_AMP2_rate,
-                                       sim_results$mean_RENAL_rate,
-                                       sim_results$mean_STROKE_rate), nrow = 1)
-
-colnames(sim_clinical_results_table) <- c("Life expectancy", "CHF rate", "MI rate", "Blindness rate", "Ulcer rate",
-                                          "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
-rownames(sim_clinical_results_table) <- tx_label
-
-
-# KM curves from simulated data (to be compared with UKPDS - validation):
-n_years <- 1:max(sim_results$simulation_patients_history$SDURATION)
-current_survival <- rep(1,length(event_vars)+1)
-KM_data <- sim_results$simulation_patients_history[,c(event_vars,"dead")]
-KM_data <- KM_data[FALSE,]
-for(i in n_years){
-current_survival <- current_survival*(1-colMeans(sim_results$simulation_patients_history[which(sim_results$simulation_patients_history$SDURATION == i),c(event_vars,"dead")]))
-KM_data[i,] <- current_survival
-}
 
 # Export tables into Excel using this function:
 export_csv <- function(object_input){
