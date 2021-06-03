@@ -135,6 +135,8 @@ sim_results <- function(x){
 # Collect results depending on whether the simulation is deterministic or probabilistic 
 
 if(psa_input == 0){
+  
+  # Run simulation
   sim_results <- sim_results()
   
   # Results tables: cost effectiveness and clinical results
@@ -180,7 +182,44 @@ if(psa_input == 0){
   }
   
   }else{ #PSA
+    
+    # run simulation
     sim_results <- lapply(1:n_psa_input, sim_results)
+    
+    
+    # Results tables: cost effectiveness and clinical results
+    sim_CE_results_table <- matrix(c(sim_results$mean_complication_costs,
+                                     sim_results$mean_nocomp_costs,
+                                     sim_results$mean_tx_costs,
+                                     sim_results$mean_inf_care_costs,
+                                     sim_results$mean_prod_loss_costs,
+                                     sim_results$mean_future_medical_costs,
+                                     sim_results$mean_future_nonmedical_costs,
+                                     sim_results$mean_total_costs,
+                                     sim_results$mean_total_qalys), nrow = 1)
+    
+    colnames(sim_CE_results_table) <- c("Complication costs", "No complication costs", 
+                                        "Tx costs","Informal care costs", "Productivity costs",
+                                        "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
+    rownames(sim_CE_results_table) <- tx_label
+    
+    
+    sim_clinical_results_table <- matrix(c(sim_results$mean_life_expectancy,
+                                           sim_results$mean_CHF_rate,
+                                           sim_results$mean_MI_rate,
+                                           sim_results$mean_BLIND_rate,
+                                           sim_results$mean_ULCER_rate,
+                                           sim_results$mean_AMP1_rate,
+                                           sim_results$mean_AMP2_rate,
+                                           sim_results$mean_RENAL_rate,
+                                           sim_results$mean_STROKE_rate), nrow = 1)
+    
+    colnames(sim_clinical_results_table) <- c("Life expectancy", "CHF rate", "MI rate", "Blindness rate", "Ulcer rate",
+                                              "1st amputation rate", "2nd amputation rate", "Renal failure rate", "Stroke rate")
+    rownames(sim_clinical_results_table) <- tx_label
+    
+    # Add CE-plane and CEAC
+    
     }
 
 
