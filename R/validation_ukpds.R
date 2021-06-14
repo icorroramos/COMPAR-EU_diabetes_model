@@ -2,7 +2,7 @@
 ########## VALIDATION UKPDS RISK EQUATIONS ##############
 #########################################################
 
-source("setup.R")
+#source("setup.R")
 
 # Patient characteristics
 validation_patient <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
@@ -22,6 +22,8 @@ validation_patient$INF.CARE   <- 0
 validation_patient$BMI1 <- if_else(validation_patient$BMI < 18.5, 1, 0)
 validation_patient$BMI3 <- if_else(validation_patient$BMI >= 25, 1, 0)
 
+#validation_patient$FEMALE <- 0
+
 
 # .EVENT variable names
 
@@ -30,14 +32,14 @@ event_vars <- c("CHF.EVENT", "BLIND.EVENT", "ULCER.EVENT", "AMP1.EVENT", "AMP2.E
 validation_patient[event_vars] <- 0 
 
 validation_patient$eGFR       <- validation_patient$eGFR/10 
-validation_patient$eGFR60more <- if_else(validation_patient$eGFR > 6,  validation_patient$eGFR,0)
-validation_patient$eGFR60less <- if_else(validation_patient$eGFR <= 6, validation_patient$eGFR,0) #defining it like this makes the equation for MI females unrealistically high
+validation_patient$eGFR60more <- if_else(validation_patient$eGFR > 6,  validation_patient$eGFR - 6,0)
+validation_patient$eGFR60less <- if_else(validation_patient$eGFR <= 6, validation_patient$eGFR,6) #defining it like this makes the equation for MI females unrealistically high
 
 validation_patient$HDL        <- validation_patient$HDL*10
 validation_patient$HEART.R    <- validation_patient$HEART.R/10 
 
-validation_patient$LDL        <- validation_patient$LDL*10
-validation_patient$LDL35more  <- if_else(validation_patient$LDL >= 35, validation_patient$LDL, 0) # not sure either, but I think it does not make sense to cut at 35
+validation_patient$LDL        <- 40 #validation_patient$LDL*10
+validation_patient$LDL35more  <- if_else(validation_patient$LDL >= 35, validation_patient$LDL-35, 0) # not sure either, but I think it does not make sense to cut at 35
 
 validation_patient$SBP        <- validation_patient$SBP/10
 
@@ -152,8 +154,8 @@ annual_p_gompertz <- function(regression_coefficents_input, risk_factors_input, 
 #male_macro <- unlist(validation_patient[1,] %>% select(risk_factors_macrovascular))
 #annual_p_weibull(macrovascular_risk_equations$CHF,male_macro,validation_patient[1,"YEAR"])$p
 
-p_CHF <- annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[2,] 
-                          %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_CHF <- annual_p_weibull(macrovascular_risk_equations$CHF,validation_patient[1,] 
+                          %>% select(risk_factors_macrovascular),validation_patient[1,"YEAR"])$p
 p_CHF
 mean(rbinom(1000,1,p_CHF))
 
@@ -170,7 +172,8 @@ mean(rbinom(1000,1,p_IHD_male))
 
 
 # First MI males
-p_MI_male <- annual_p_weibull(macrovascular_risk_equations$FMIMALE,validation_patient[2,] %>% select(risk_factors_macrovascular),validation_patient[2,"YEAR"])$p
+p_MI_male <- annual_p_weibull(macrovascular_risk_equations$FMIMALE,validation_patient[1,] %>% select(risk_factors_macrovascular),
+                              validation_patient[1,"YEAR"])$p
 p_MI_male
 # [1] 0.002285789
 

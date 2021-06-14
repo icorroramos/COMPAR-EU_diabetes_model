@@ -99,12 +99,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   # eGFR
   simulation_baseline_patients$eGFR       <- simulation_baseline_patients$eGFR/10 
-  #simulation_baseline_patients$eGFR60more <- if_else(simulation_baseline_patients$eGFR >= 6, simulation_baseline_patients$eGFR, 0)
-  simulation_baseline_patients$eGFR60more <- if_else(simulation_baseline_patients$eGFR >= 6, simulation_baseline_patients$eGFR - 6, 0)
-  #simulation_baseline_patients$eGFR60more <- max(simulation_baseline_patients$eGFR, 6) # to be confirmed
-  #simulation_baseline_patients$eGFR60less <- if_else(simulation_baseline_patients$eGFR <  6, simulation_baseline_patients$eGFR, 0)
+  simulation_baseline_patients$eGFR60more <- if_else(simulation_baseline_patients$eGFR >= 6, simulation_baseline_patients$eGFR-6, 0)
   simulation_baseline_patients$eGFR60less <- if_else(simulation_baseline_patients$eGFR <  6, simulation_baseline_patients$eGFR, 6)
-  #simulation_baseline_patients$eGFR60less <- min(simulation_baseline_patients$eGFR, 6) # to be confirmed
   
   # HDL
   simulation_baseline_patients$HDL <- simulation_baseline_patients$HDL*10
@@ -114,7 +110,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   # LDL 
   simulation_baseline_patients$LDL       <- simulation_baseline_patients$LDL*10
-  simulation_baseline_patients$LDL35more <- if_else(simulation_baseline_patients$LDL >= 35, simulation_baseline_patients$LDL, 0) # to be confirmed
+  simulation_baseline_patients$LDL35more <- if_else(simulation_baseline_patients$LDL >= 35, simulation_baseline_patients$LDL-35, 0)
   
   # SBP
   simulation_baseline_patients$SBP <- simulation_baseline_patients$SBP/10
