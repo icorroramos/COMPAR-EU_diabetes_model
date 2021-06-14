@@ -44,7 +44,7 @@ psa_input <- 0
 n_psa_input <- 5
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 5  
+npats_input   <- 1000  
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "Comparator"
@@ -74,7 +74,7 @@ retirement_age_input <- 65
 
 
 # Gender: note at this moment the model distinguishes between males and females, This must be chosen here
-female_input <- 0 #1 = female, 0 = male
+female_input <- 1 #1 = female, 0 = male
 
 # Set random seed for replication purposes
 seed_input <- 77 # A random seed that it is used to ensure consistency in the model results. 
