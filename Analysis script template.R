@@ -47,14 +47,14 @@ n_psa_input <- 5
 npats_input   <- 1000  
 
 # Please indicate the name of the treatment to be identified
-tx_label <- "Comparator"
+tx_label <- "Rank_1_10y"
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
-treateff_end     <- 4 # Cycle in which treatment effect ends
+treateff_end     <- 10 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
-treateff_hba1c <- 0 # -0.8232 # Treatment effect on HbA1c (in absolute %-points HbA1c)
+treateff_hba1c <- -0.8232 # Treatment effect on HbA1c (in absolute %-points HbA1c)
 treateff_hdl   <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
 treateff_ldl   <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
 
@@ -74,7 +74,7 @@ retirement_age_input <- 65
 
 
 # Gender: note at this moment the model distinguishes between males and females, This must be chosen here
-female_input <- 0 #1 = female, 0 = male
+female_input <- 1 #1 = female, 0 = male
 
 # Set random seed for replication purposes
 seed_input <- 77 # A random seed that it is used to ensure consistency in the model results. 
