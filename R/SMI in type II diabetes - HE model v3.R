@@ -524,10 +524,14 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         # try to find a general solution, maybe using absolute value
       }
       
+      # SBP: same approach as for the other effects -- added 14/07/2021
+      if(current_patient_update$SDURATION == treatment_effect_SBP_input[2]){
+        current_patient_update$SBP <- current_patient$SBP + treatment_effect_SBP_input[1] # Think of adding min, max values
+      }
       
-      
-      
-      
+      if(current_patient_update$SDURATION %in% treatment_effect_SBP_input[4]:treatment_effect_SBP_input[3]){
+        current_patient_update$SBP <- min(current_patient$SBP-(treatment_effect_SBP_input[1])/(treatment_effect_SBP_input[3]-treatment_effect_SBP_input[4]),unique(simulation_baseline_patients$SBP))
+      }
       
       # When all characteristics are updated, we add these to the patient history
       sim_rows <- sim_rows + 1

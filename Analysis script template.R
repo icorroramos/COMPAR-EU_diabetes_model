@@ -47,7 +47,7 @@ n_psa_input <- 5
 npats_input   <- 1000  
 
 # Please indicate the name of the treatment to be identified
-tx_label <- "BMI_test"
+tx_label <- "SBP_test"
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
