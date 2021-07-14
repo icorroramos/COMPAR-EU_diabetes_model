@@ -63,7 +63,7 @@ treatment_effect_HbA1c_input <- c(treateff_hba1c, treateff_start, treateff_end, 
 treatment_effect_HDL_input   <- c(treateff_hdl, treateff_start, treateff_end, treateff_decline)
 treatment_effect_LDL_input   <- c(treateff_ldl, treateff_start, treateff_end, treateff_decline)
 
-treatment_effect_BMI_input <- 0 # This was taken from MH2020 but it si currently removed from the model function. Left here in case we want to include it again
+treatment_effect_BMI_input <- 0 # This was taken from MH2020 but it is currently removed from the model function. Left here in case we want to include it again
 
 # Cost inputs
 tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.     
