@@ -95,7 +95,10 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # Initialize all .EVENT variables. The object "event_vars" is defined in the file "aux_functions.R".
   simulation_baseline_patients[event_vars] <- 0 
   
-  # Note: mind the units for all continuous variables since some of them were re-scaled in the UKPDS equations. Double-check the more/less variables!
+  
+  # VARIABLE TRANSOFRMATIONS 
+  
+  # Note: mind the units for all continuous variables since some of them were re-scaled in the UKPDS equations. 
   # See description in the file "aux_functions.R".
   
   # eGFR

@@ -55,10 +55,10 @@ treateff_end     <- 4 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
 treateff_hba1c <- 0 #-0.8232 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff_hdl   <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
-treateff_ldl   <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
+treateff_hdl   <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??) -> TRANSFORMED IN CODE *10
+treateff_ldl   <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??) -> TRANSFORMED IN CODE *10
 treateff_bmi   <- 0 # Treatment effect on BMI (absolute effect in BMI units)
-treateff_sbp   <- -10 # Treatment effect on SBP (absolute effect)
+treateff_sbp   <- -10 # Treatment effect on SBP (absolute effect) -> TRANSFORMED IN CODE /10
 
 # Tx effects are vectors: the current assumption is that the same start, end and decline is assumed for all effect modifiers
 treatment_effect_HbA1c_input <- c(treateff_hba1c, treateff_start, treateff_end, treateff_decline)
