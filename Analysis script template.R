@@ -44,7 +44,7 @@ psa_input <- 0
 n_psa_input <- 5
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 1000  
+npats_input   <- 1000  # Try 5000 for testing purposes
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "SBP_test"
@@ -78,7 +78,7 @@ retirement_age_input <- 65
 female_input <- 1 #1 = female, 0 = male
 
 # Set random seed for replication purposes
-seed_input <- 77 # A random seed that it is used to ensure consistency in the model results. 
+seed_input <- 77 # A random seed that it is used to ensure consistency in the model results. Run with another see for testing purposes. 
 
 # NOTE: Input parameters (probabilities, costs and utilities) can be changed in the corresponding 
 # csv files included in the folder "input". These can be changed to run for example scenario analyses
