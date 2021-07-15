@@ -47,16 +47,16 @@ n_psa_input <- 5
 npats_input   <- 1000  # Try 5000 for testing purposes
 
 # Please indicate the name of the treatment to be identified
-tx_label <- "female_ldl_effect"
+tx_label <- "female_all_smi_vs_uc_effect"
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
 treateff_end     <- 4 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
-treateff_hba1c <- -0      #-0.8232 # Treatment effect on HbA1c (in absolute %-points HbA1c - baseline value HbA1c = 8.8)
-treateff_hdl   <-  0*10 # 0.268 Treatment effect on HDL-cholesterol (absolute effect, which unit?? - baseline value HDL = 3.08)-> TRANSFORMED IN CODE *10
-treateff_ldl   <- -1.78*10   # -1.78 Treatment effect on LDL-cholesterol (absolute effect, which unit?? - baseline value LDL = 1.19)-> TRANSFORMED IN CODE *10
+treateff_hba1c <- -0.391      #-0.8232 rank 1/ -0.391 UC # Treatment effect on HbA1c (in absolute %-points HbA1c - baseline value HbA1c = 8.8)
+treateff_hdl   <-  0.286*10 # 0.268 UC Treatment effect on HDL-cholesterol (absolute effect, which unit?? - baseline value HDL = 3.08)-> TRANSFORMED IN CODE *10
+treateff_ldl   <- -1.78*10   # -1.78 UC Treatment effect on LDL-cholesterol (absolute effect, which unit?? - baseline value LDL = 1.19)-> TRANSFORMED IN CODE *10
 treateff_bmi   <- -0      # Treatment effect on BMI (absolute effect in BMI units - baseline value BMI = 32.3)
 treateff_sbp   <- -0/10   # Treatment effect on SBP (absolute effect - baseline value SBP = 139) -> TRANSFORMED IN CODE /10
 
