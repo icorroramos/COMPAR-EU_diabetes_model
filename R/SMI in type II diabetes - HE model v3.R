@@ -38,6 +38,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                                     treatment_effect_HDL_input, 
                                     treatment_effect_LDL_input,
                                     treatment_effect_BMI_input, 
+                                    treatment_effect_SBP_input, # Added 14/07/2021
                                     cost_disc_rate_input, # discount rates for costs and effects 
                                     qol_disc_rate_input, 
                                     retirement_age_input, # retirement age
@@ -94,7 +95,10 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # Initialize all .EVENT variables. The object "event_vars" is defined in the file "aux_functions.R".
   simulation_baseline_patients[event_vars] <- 0 
   
-  # Note: mind the units for all continuous variables since some of them were re-scaled in the UKPDS equations. Double-check the more/less variables!
+  
+  # VARIABLE TRANSOFRMATIONS 
+  
+  # Note: mind the units for all continuous variables since some of them were re-scaled in the UKPDS equations. 
   # See description in the file "aux_functions.R".
   
   # eGFR
@@ -136,9 +140,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
     
     # Initialize tracking variables for second events. If a patient has a second MI, a second stroke or a second amputation, it is not  possible to have a 3rd. 
     # These variables keep track of this.
-    current_SMI_event <- 0
+    current_SMI_event     <- 0
     current_SSTROKE_event <- 0
-    current_AMP2_event <- 0
+    current_AMP2_event    <- 0
     
     # Save the characteristics to be used in the simulation history 
     simulation_patients_history[sim_rows,] <- current_patient[history_characteristics] 
@@ -485,8 +489,15 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         }
       
       
-      # BMI
-      current_patient_update$BMI <- current_patient$BMI #- treatment_effect_BMI_input # treatment effect currently removed  
+      # BMI: same approach as for the other effects 14/07/21
+      if(current_patient_update$SDURATION == treatment_effect_BMI_input[2]){
+        current_patient_update$BMI <- current_patient$BMI + treatment_effect_BMI_input[1] # Think about adding max, min values as done for the other effects
+      }
+      
+      if(current_patient_update$SDURATION %in% treatment_effect_BMI_input[4]:treatment_effect_BMI_input[3]){
+        current_patient_update$BMI <- min(current_patient$BMI - (treatment_effect_BMI_input[1])/(treatment_effect_BMI_input[3]-treatment_effect_BMI_input[4]),unique(simulation_baseline_patients$BMI))
+      }
+      
       # Based on the above BMI, we should update BMI1 and BMI3
       current_patient_update$BMI1 <- if_else(current_patient_update$BMI < 18.5, 1, 0)
       current_patient_update$BMI3 <- if_else(current_patient_update$BMI >= 25, 1, 0)
@@ -501,7 +512,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         current_patient_update$LDL <- min(current_patient$LDL - (treatment_effect_LDL_input[1])/(treatment_effect_LDL_input[3]-treatment_effect_LDL_input[4]),unique(simulation_baseline_patients$LDL)) 
       }
       
-      # HDL: same approach as for HbA1c14/12/2020
+      # HDL: same approach as for HbA1c 14/12/2020
       # QUESTION: natural bounds for HDL???
       
       if(current_patient_update$SDURATION == treatment_effect_HDL_input[2]){
@@ -509,10 +520,17 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       }
       if(current_patient_update$SDURATION %in% treatment_effect_HDL_input[4]:treatment_effect_HDL_input[3]){
         current_patient_update$HDL <- max(current_patient$HDL-(treatment_effect_HDL_input[1])/(treatment_effect_HDL_input[3]-treatment_effect_HDL_input[4]),unique(simulation_baseline_patients$HDL)) 
-        
         # CAREFUL HERE: I put max instead of min above because the treatment effect is positive and not negative.
         # try to find a general solution, maybe using absolute value
-        
+      }
+      
+      # SBP: same approach as for the other effects -- added 14/07/2021
+      if(current_patient_update$SDURATION == treatment_effect_SBP_input[2]){
+        current_patient_update$SBP <- current_patient$SBP + treatment_effect_SBP_input[1] # Think of adding min, max values
+      }
+      
+      if(current_patient_update$SDURATION %in% treatment_effect_SBP_input[4]:treatment_effect_SBP_input[3]){
+        current_patient_update$SBP <- min(current_patient$SBP-(treatment_effect_SBP_input[1])/(treatment_effect_SBP_input[3]-treatment_effect_SBP_input[4]),unique(simulation_baseline_patients$SBP))
       }
       
       # When all characteristics are updated, we add these to the patient history

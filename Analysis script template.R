@@ -47,28 +47,29 @@ n_psa_input <- 5
 npats_input   <- 1000  
 
 # Please indicate the name of the treatment to be identified
-tx_label <- "Comparator"
+tx_label <- "SBP_test"
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
 treateff_end     <- 4 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
-treateff_hba1c <- 0 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff_hdl   <- 0 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
-treateff_ldl   <- 0 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
+treateff_hba1c <- -0      #-0.8232 # Treatment effect on HbA1c (in absolute %-points HbA1c - baseline value HbA1c = 8.8)
+treateff_hdl   <-  0*10   # Treatment effect on HDL-cholesterol (absolute effect, which unit?? - baseline value HDL = 3.08)-> TRANSFORMED IN CODE *10
+treateff_ldl   <- -0*10   # Treatment effect on LDL-cholesterol (absolute effect, which unit?? - baseline value LDL = 1.19)-> TRANSFORMED IN CODE *10
+treateff_bmi   <- -0      # Treatment effect on BMI (absolute effect in BMI units - baseline value BMI = 32.3)
+treateff_sbp   <- -10/10  # Treatment effect on SBP (absolute effect - baseline value SBP = 139) -> TRANSFORMED IN CODE /10
 
 # Tx effects are vectors: the current assumption is that the same start, end and decline is assumed for all effect modifiers
 treatment_effect_HbA1c_input <- c(treateff_hba1c, treateff_start, treateff_end, treateff_decline)
 treatment_effect_HDL_input   <- c(treateff_hdl, treateff_start, treateff_end, treateff_decline)
 treatment_effect_LDL_input   <- c(treateff_ldl, treateff_start, treateff_end, treateff_decline)
-
-treatment_effect_BMI_input <- 0 # This was taken from MH2020 but it si currently removed from the model function. Left here in case we want to include it again
+treatment_effect_BMI_input   <- c(treateff_bmi, treateff_start, treateff_end, treateff_decline)
+treatment_effect_SBP_input   <- c(treateff_sbp, treateff_start, treateff_end, treateff_decline)
 
 # Cost inputs
 tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.     
 retirement_age_input <- 65
-
 
 # Quality of life inputs
 
@@ -112,6 +113,7 @@ sim_results <- function(x){
                           treatment_effect_HDL_input,
                           treatment_effect_LDL_input, 
                           treatment_effect_BMI_input,
+                          treatment_effect_SBP_input,
                           discount_cost_input, 
                           discount_util_input, 
                           retirement_age_input, 
@@ -208,7 +210,6 @@ if(psa_input == 0){
                                         "Tx costs","Informal care costs", "Productivity costs",
                                         "Future medical costs", "Future non-medical costs", "Total costs", "Total QALYs")
     rownames(sim_CE_results_table) <- tx_label
-    
     
     # Clinical results 
     life_expectancy <- unlist(lapply(1:n_psa_input, function(z) sim_results[[z]]$mean_life_expectancy))
