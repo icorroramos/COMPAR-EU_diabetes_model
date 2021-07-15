@@ -58,7 +58,7 @@ treateff_hba1c <- -0      #-0.8232 # Treatment effect on HbA1c (in absolute %-po
 treateff_hdl   <-  0*10   # Treatment effect on HDL-cholesterol (absolute effect, which unit?? - baseline value HDL = 3.08)-> TRANSFORMED IN CODE *10
 treateff_ldl   <- -0*10   # Treatment effect on LDL-cholesterol (absolute effect, which unit?? - baseline value LDL = 1.19)-> TRANSFORMED IN CODE *10
 treateff_bmi   <- -0      # Treatment effect on BMI (absolute effect in BMI units - baseline value BMI = 32.3)
-treateff_sbp   <- -10/10  # Treatment effect on SBP (absolute effect - baseline value SBP = 139) -> TRANSFORMED IN CODE /10
+treateff_sbp   <- -0/10   # Treatment effect on SBP (absolute effect - baseline value SBP = 139) -> TRANSFORMED IN CODE /10
 
 # Tx effects are vectors: the current assumption is that the same start, end and decline is assumed for all effect modifiers
 treatment_effect_HbA1c_input <- c(treateff_hba1c, treateff_start, treateff_end, treateff_decline)
