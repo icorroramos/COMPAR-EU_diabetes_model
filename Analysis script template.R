@@ -47,7 +47,7 @@ n_psa_input <- 5
 npats_input   <- 1000  # Try 5000 for testing purposes
 
 # Please indicate the name of the treatment to be identified
-tx_label <- "female_bmi_effect"
+tx_label <- "female_sbp_effect"
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
@@ -57,8 +57,8 @@ treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linea
 treateff_hba1c <- -0      #-0.8232 rank 1/ -0.391 UC # Treatment effect on HbA1c (in absolute %-points HbA1c - baseline value HbA1c = 8.8)
 treateff_hdl   <-  0*10 # 0.268 UC Treatment effect on HDL-cholesterol (absolute effect, which unit?? - baseline value HDL = 3.08)-> TRANSFORMED IN CODE *10
 treateff_ldl   <- -0*10   # -1.78 UC Treatment effect on LDL-cholesterol (absolute effect, which unit?? - baseline value LDL = 1.19)-> TRANSFORMED IN CODE *10
-treateff_bmi   <- -5      # -5 assumption Treatment effect on BMI (absolute effect in BMI units - baseline value BMI = 32.3)
-treateff_sbp   <- -0/10   # -20 assumption Treatment effect on SBP (absolute effect - baseline value SBP = 139) -> TRANSFORMED IN CODE /10
+treateff_bmi   <- -0      # -5 assumption Treatment effect on BMI (absolute effect in BMI units - baseline value BMI = 32.3)
+treateff_sbp   <- -20/10   # -20 assumption Treatment effect on SBP (absolute effect - baseline value SBP = 139) -> TRANSFORMED IN CODE /10
 
 # Tx effects are vectors: the current assumption is that the same start, end and decline is assumed for all effect modifiers
 treatment_effect_HbA1c_input <- c(treateff_hba1c, treateff_start, treateff_end, treateff_decline)
