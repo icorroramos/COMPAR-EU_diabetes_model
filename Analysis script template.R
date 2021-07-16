@@ -44,10 +44,10 @@ psa_input <- 0
 n_psa_input <- 5
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 5000  # Try 5000 for testing purposes
+npats_input   <- 1000  # Try 5000 for testing purposes
 
 # Please indicate the name of the treatment to be identified
-tx_label <- "female_hba1c_5k_effect"
+tx_label <- "female_hba1c_effect_no_seed_r2"
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
@@ -72,7 +72,6 @@ tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.
 retirement_age_input <- 65
 
 # Quality of life inputs
-
 
 # Gender: note at this moment the model distinguishes between males and females, This must be chosen here
 female_input <- 1 #1 = female, 0 = male
