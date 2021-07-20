@@ -13,6 +13,11 @@
 # load('output/Rank8_shorter_treateff.RData', verbose = TRUE)
 # load('output/Rank8_longer_treateff.RData', verbose = TRUE)
 
+load('output/All_SMI_vs_UC_seed77.RData', verbose = TRUE)
+load('output/All_SMI_vs_UC_seed1984.RData', verbose = TRUE)
+load('output/All_SMI_vs_UC_seed15.RData', verbose = TRUE)
+load('output/All_SMI_vs_UC_seed265979.RData', verbose = TRUE)
+
 
 # ADDITIONAL PARAMETERS ---------------------------------------------------
 
@@ -58,8 +63,10 @@ diff.male <- data.frame(
   Incr = t(m.int.means) - t(m.uc.means)
 )
 
+print(relevant.out)
 print(diff.fem)
 print(diff.male)
+
 
 write.csv(diff.fem, 'output/Deltas_female.csv')
 write.csv(diff.male, 'output/Deltas_male.csv')

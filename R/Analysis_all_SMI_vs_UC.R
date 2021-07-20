@@ -2,12 +2,6 @@
 # Set-up options #
 ##################
 
-# Check and install the latest R version
-# installr::updateR()
-# update.packages() 
-
-
-
 # Setting option for decimals
 options(scipen = 3)
 
@@ -15,7 +9,7 @@ options(scipen = 3)
 # Sys.getenv() # check this for the Home path where packages are saved
 .libPaths(Sys.getenv()[["R_LIBS_USER"]])
 
-pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr", "beepr") # package names
+pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr") # package names
 #install.packages(pkgs)
 inst <- lapply(pkgs, library, character.only = TRUE) # load them
 
@@ -54,34 +48,32 @@ treateff_end     <- 4 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
 treateff_hba1c <- -0.391 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff_hdl   <- 0.268 # Treatment effect on HDL-cholesterol (absolute effect, which unit??)
-treateff_ldl   <- -1.78 # Treatment effect on LDL-cholesterol (absolute effect, which unit??)
+treateff_hdl   <- 0.268 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
+treateff_ldl   <- -1.78 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
+treateff_bmi <- -0.283 # Treatment effect on BMI (in absolute points)
+treateff_sbp <- -2.04 / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
 
 # # Treatment effects currently not in use
-# treateff_bmi <- -0.283 # Treatment effect on BMI (in absolute points)
-# treateff_sbp <- -2.04 # Treatment effect on SBP (in absolute mmHg)
 # treateff_QoL
 
 # Tx effects are vectors: the current assumption is that the same start, end and decline is assumed for all effect modifiers
 treatment_effect_HbA1c_input <- c(treateff_hba1c, treateff_start, treateff_end, treateff_decline)
-treatment_effect_HDL_input   <- c(treateff_hdl, treateff_start, treateff_end, treateff_decline)
-treatment_effect_LDL_input   <- c(treateff_ldl, treateff_start, treateff_end, treateff_decline)
+treatment_effect_HDL_input <- c(treateff_hdl, treateff_start, treateff_end, treateff_decline)
+treatment_effect_LDL_input <- c(treateff_ldl, treateff_start, treateff_end, treateff_decline)
+treatment_effect_BMI_input <- c(treateff_bmi, treateff_start, treateff_end, treateff_decline)
+treatment_effect_SBP_input <- c(treateff_sbp, treateff_start, treateff_end, treateff_decline)
 
-treatment_effect_BMI_input <- 0 # This was taken from MH2020 but it si currently removed from the model function. Left here in case we want to include it again
 
 # Cost inputs
 tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.     
-retirement_age_input <- 67
-
-
-# Quality of life inputs
+retirement_age_input <- 66
 
 
 # Gender: note at this moment the model distinguishes between males and females, This must be chosen here
 female_input <- 1 #1 = female, 0 = male
 
 # Set random seed for replication purposes
-seed_input <- 77 # A random seed that it is used to ensure consistency in the model results. 
+#seed_input <- 77 # A random seed that it is used to ensure consistency in the model results. 
 
 # NOTE: Input parameters (probabilities, costs and utilities) can be changed in the corresponding 
 # csv files included in the folder "input". These can be changed to run for example scenario analyses
@@ -97,7 +89,7 @@ seed_input <- 77 # A random seed that it is used to ensure consistency in the mo
 # The sim.vars object collects all parameters that define the simulation into one object
 # Then, it is saved with the output of the simulation. This way, if we  have multiple output files, we always have the information 
 # on the relevant input parameters that were used to produce the output.
-sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
+sim.vars <- list(seed_input, npats_input, tx_cost_input, mget(apropos('treateff.')))
 
 
 
@@ -109,6 +101,7 @@ sim.results.female <- SMDMII_model_simulation(npats_input,
                                               treatment_effect_HDL_input,
                                               treatment_effect_LDL_input, 
                                               treatment_effect_BMI_input,
+                                              treatment_effect_SBP_input,
                                               discount_cost_input, 
                                               discount_util_input, 
                                               retirement_age_input, 
@@ -122,6 +115,7 @@ sim.results.female.comp <- SMDMII_model_simulation(npats_input,
                                                    treatment_effect_HDL_input = rep(0,4),
                                                    treatment_effect_LDL_input = rep(0,4), 
                                                    treatment_effect_BMI_input = rep(0,4),
+                                                   treatment_effect_SBP_input = rep(0,4),
                                                    discount_cost_input, 
                                                    discount_util_input, 
                                                    retirement_age_input, 
@@ -135,6 +129,7 @@ sim.results.male <- SMDMII_model_simulation(npats_input,
                                             treatment_effect_HDL_input,
                                             treatment_effect_LDL_input, 
                                             treatment_effect_BMI_input,
+                                            treatment_effect_SBP_input,
                                             discount_cost_input, 
                                             discount_util_input, 
                                             retirement_age_input, 
@@ -148,6 +143,7 @@ sim.results.male.comp <- SMDMII_model_simulation(npats_input,
                                                  treatment_effect_HDL_input = rep(0,4),
                                                  treatment_effect_LDL_input = rep(0,4), 
                                                  treatment_effect_BMI_input = rep(0,4),
+                                                 treatment_effect_SBP_input = rep(0,4),
                                                  discount_cost_input, 
                                                  discount_util_input, 
                                                  retirement_age_input, 
@@ -157,7 +153,7 @@ sim.results.male.comp <- SMDMII_model_simulation(npats_input,
 # Print simulation duration
 end <- Sys.time()
 print(end - init)
-beep('mario')
+
 
 # Save simulation results
 save(sim.vars,
@@ -165,4 +161,7 @@ save(sim.vars,
      sim.results.female.comp,
      sim.results.male,
      sim.results.male.comp,
-     file = 'output/All_SMI_vs_UC_basecase.RData')
+     file = paste0('output/All_SMI_vs_UC_seed', seed_input, '.RData'))
+
+
+     #file = 'output/All_SMI_vs_UC_basecase.RData')

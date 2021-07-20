@@ -55,8 +55,8 @@ treateff_end     <- 4 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
 treateff_hba1c <- -0.8232      #-0.8232 rank 1/ -0.391 UC # Treatment effect on HbA1c (in absolute %-points HbA1c - baseline value HbA1c = 8.8)
-treateff_hdl   <-  0*10 # 0.268 UC Treatment effect on HDL-cholesterol (absolute effect, which unit?? - baseline value HDL = 3.08)-> TRANSFORMED IN CODE *10
-treateff_ldl   <- -0*10   # -1.78 UC Treatment effect on LDL-cholesterol (absolute effect, which unit?? - baseline value LDL = 1.19)-> TRANSFORMED IN CODE *10
+treateff_hdl   <-  0*10 # 0.268 UC Treatment effect on HDL-cholesterol (absolute effect in mmol/l - baseline value HDL = 3.08)-> TRANSFORMED IN CODE *10
+treateff_ldl   <- -0*10   # -1.78 UC Treatment effect on LDL-cholesterol (absolute effect in mmol/l - baseline value LDL = 1.19)-> TRANSFORMED IN CODE *10
 treateff_bmi   <- -0      # -5 assumption Treatment effect on BMI (absolute effect in BMI units - baseline value BMI = 32.3)
 treateff_sbp   <- -0/10   # -20 assumption Treatment effect on SBP (absolute effect - baseline value SBP = 139) -> TRANSFORMED IN CODE /10
 
@@ -93,7 +93,7 @@ dir.create(graphics_dir)
 # The sim.vars object collects all parameters that define the simulation into one object
 # Then, it is saved with the output of the simulation. This way, if we  have multiple output files, we always have the information 
 # on the relevant input parameters that were used to produce the output.
-sim.vars <- list(npats_input, tx_cost_input, mget(apropos('treateff.')))
+sim.vars <- list(seed.input, npats_input, tx_cost_input, mget(apropos('treateff.')))
 
 ###########
 # Results #

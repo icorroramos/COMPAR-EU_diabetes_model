@@ -1,0 +1,57 @@
+  life_expecanty total_costs total_qalys headroom
+1          0.081         486       0.061   726.01
+
+> print(diff.fem)
+                               Usual_care          SMI          Incr
+mean_life_expectancy             23.34800     23.37700    0.02900000
+mean_CHF_rate                     0.09000      0.08900   -0.00100000
+mean_BLIND_rate                   0.06400      0.06400    0.00000000
+mean_ULCER_rate                   0.01700      0.01700    0.00000000
+mean_STROKE_rate                  0.09200      0.09100   -0.00100000
+mean_AMP1_rate                    0.04900      0.04900    0.00000000
+mean_AMP2_rate                    0.01700      0.01700    0.00000000
+mean_MI_rate                      0.21300      0.21000   -0.00300000
+mean_RENAL_rate                   0.00600      0.00600    0.00000000
+mean_total_costs             414682.38087 414433.53682 -248.84404148
+mean_total_qalys                 17.59264     17.61393    0.02129254
+mean_inf_care_costs           39640.18958  39582.95586  -57.23372204
+mean_prod_loss_costs           3984.28090   3981.30635   -2.97454180
+mean_ihd_costs                 4096.20201   3799.63486 -296.56715558
+mean_mi_costs                  3366.09231   3364.51219   -1.58011856
+mean_chf_costs                 1905.92415   1782.80829 -123.11586194
+mean_stroke_costs              2085.50749   1945.04144 -140.46604786
+mean_amp_costs                 1067.60347   1067.60347    0.00000000
+mean_blind_costs               1557.82343   1557.82343    0.00000000
+mean_ulcer_costs                  0.00000      0.00000    0.00000000
+mean_complication_costs       14079.15286  13517.42368 -561.72918394
+mean_nocomp_costs             60879.07969  60972.47837   93.39867917
+mean_tx_costs                     0.00000      0.00000    0.00000000
+mean_future_medical_costs     51024.96834  51081.40338   56.43504144
+mean_future_nonmedical_costs 245074.70951 245297.96919  223.25968569
+> print(diff.male)
+                              Usual_care          SMI          Incr
+mean_life_expectancy             20.5490     20.67000    0.12100000
+mean_CHF_rate                     0.0810      0.08000   -0.00100000
+mean_BLIND_rate                   0.0520      0.05200    0.00000000
+mean_ULCER_rate                   0.0470      0.04700    0.00000000
+mean_STROKE_rate                  0.1410      0.14100    0.00000000
+mean_AMP1_rate                    0.0650      0.06600    0.00100000
+mean_AMP2_rate                    0.0210      0.02200    0.00100000
+mean_MI_rate                      0.2580      0.24800   -0.01000000
+mean_RENAL_rate                   0.0110      0.01100    0.00000000
+mean_total_costs             373977.2227 375024.23115 1047.00841733
+mean_total_qalys                 16.1433     16.23391    0.09061251
+mean_inf_care_costs           23211.1888  23220.23430    9.04554042
+mean_prod_loss_costs           5136.3037   5140.19979    3.89612773
+mean_ihd_costs                 6275.6182   6042.03708 -233.58114741
+mean_mi_costs                  4167.3472   3959.95612 -207.39110714
+mean_chf_costs                 1590.4732   1472.45529 -118.01795697
+mean_stroke_costs              3322.0218   3278.78237  -43.23941668
+mean_amp_costs                 1422.0696   1516.08743   94.01787404
+mean_blind_costs               1088.4762   1089.16978    0.69356411
+mean_ulcer_costs                  0.0000      0.00000    0.00000000
+mean_complication_costs       17866.0063  17358.48808 -507.51819004
+mean_nocomp_costs             51335.8548  51635.47420  299.61944044
+mean_tx_costs                     0.0000      0.00000    0.00000000
+mean_future_medical_costs     47920.3813  48183.08028  262.69899020
+mean_future_nonmedical_costs 228507.4880 229486.75450  979.26650859

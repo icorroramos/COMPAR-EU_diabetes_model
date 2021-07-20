@@ -14,7 +14,7 @@ options(scipen = 3)
 # Sys.getenv() # check this for the Home path where packages are saved
 .libPaths(Sys.getenv()[["R_LIBS_USER"]])
 
-pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr", "beepr") # package names
+pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr") # package names
 #install.packages(pkgs)
 inst <- lapply(pkgs, library, character.only = TRUE) # load them
 
@@ -147,7 +147,7 @@ sim.results.female.comp <- SMDMII_model_simulation(npats_input,
 # Print simulation duration
 end <- Sys.time()
 print(end - init)
-beep('mario')
+
 
 # Save simulation results
 save(sim.vars,
