@@ -21,10 +21,10 @@ pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr") # package
 inst <- lapply(pkgs, library, character.only = TRUE) # load them
 
 # Load model function: 
-source("SMI in type II diabetes - HE model v3.R")
+source("R/SMI in type II diabetes - HE model v3.R")
 
 # Load aux. functions, input parameters (from Excel), global lists, etc. 
-source("aux_functions.R")
+source("R/aux_functions.R")
 
 # Variable defined to keep track of simulation time (delete afterwards)
 init <- Sys.time()
@@ -93,7 +93,7 @@ dir.create(graphics_dir)
 # The sim.vars object collects all parameters that define the simulation into one object
 # Then, it is saved with the output of the simulation. This way, if we  have multiple output files, we always have the information 
 # on the relevant input parameters that were used to produce the output.
-sim.vars <- list(seed.input, npats_input, tx_cost_input, mget(apropos('treateff.')))
+#sim.vars <- list(seed.input, npats_input, tx_cost_input, mget(apropos('treateff.')))
 
 ###########
 # Results #
