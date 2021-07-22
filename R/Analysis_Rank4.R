@@ -14,7 +14,7 @@ options(scipen = 3)
 # Sys.getenv() # check this for the Home path where packages are saved
 .libPaths(Sys.getenv()[["R_LIBS_USER"]])
 
-pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr", "beepr") # package names
+pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr") # package names
 #install.packages(pkgs)
 inst <- lapply(pkgs, library, character.only = TRUE) # load them
 
@@ -51,11 +51,11 @@ treateff_start   <- 1 # Cycle in which treatment effect starts
 treateff_end     <- 4 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
-treateff_hba1c <- -1.4248 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff_hdl <- 5.4857 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
-treateff_ldl <- -11.9313 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
-treateff_bmi <- 0 # Treatment effect on BMI (in absolute points)
-treateff_sbp <- 0  / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
+treateff_hba1c <- -0.5436 # Treatment effect on HbA1c (in absolute %-points HbA1c)
+treateff_hdl   <- 8  * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
+treateff_ldl   <- 0  * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
+treateff_bmi <- -0 # Treatment effect on BMI (in absolute points)
+treateff_sbp <- -4.8379 / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
 
 # # Treatment effects currently not in use
 # treateff_QoL
@@ -113,7 +113,6 @@ sim.results.male <- SMDMII_model_simulation(npats_input,
                                             seed_input)
 
 
-
 # Print simulation duration
 end <- Sys.time()
 print(end - init)
@@ -123,5 +122,7 @@ print(end - init)
 save(sim.vars,
      sim.results.female,
      sim.results.male,
-     file = 'output/Rank8_basecase.RData')
+     file = 'output/Rank4_basecase.RData')  #file = 'output/Rank1_basecase.RData') # file = 'output/Rank1_spec_tartetpop.RData') #
+
+
 

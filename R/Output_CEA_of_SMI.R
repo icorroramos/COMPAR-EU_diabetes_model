@@ -3,6 +3,7 @@
 
 # LOAD SIMULATION DATA ----------------------------------------------------
 # load('output/All_SMI_vs_UC_basecase.RData', verbose = TRUE)
+# load('output/Usual_care_outcomes.RData', verbose = TRUE)
 # load('output/Rank1_basecase.RData', verbose = TRUE)
 # load('output/Rank2_basecase.RData', verbose = TRUE)
 # load('output/Rank3_basecase.RData', verbose = TRUE)
@@ -14,9 +15,9 @@
 # load('output/Rank8_longer_treateff.RData', verbose = TRUE)
 
 load('output/All_SMI_vs_UC_seed77.RData', verbose = TRUE)
-load('output/All_SMI_vs_UC_seed1984.RData', verbose = TRUE)
-load('output/All_SMI_vs_UC_seed15.RData', verbose = TRUE)
-load('output/All_SMI_vs_UC_seed265979.RData', verbose = TRUE)
+# load('output/All_SMI_vs_UC_seed1984.RData', verbose = TRUE)
+# load('output/All_SMI_vs_UC_seed15.RData', verbose = TRUE)
+# load('output/All_SMI_vs_UC_seed265979.RData', verbose = TRUE)
 
 
 # ADDITIONAL PARAMETERS ---------------------------------------------------

@@ -73,7 +73,7 @@ retirement_age_input <- 66
 female_input <- 1 #1 = female, 0 = male
 
 # Set random seed for replication purposes
-#seed_input <- 77 # A random seed that it is used to ensure consistency in the model results. 
+seed_input <- 77 # A random seed that it is used to ensure consistency in the model results. 
 
 # NOTE: Input parameters (probabilities, costs and utilities) can be changed in the corresponding 
 # csv files included in the folder "input". These can be changed to run for example scenario analyses
@@ -161,7 +161,4 @@ save(sim.vars,
      sim.results.female.comp,
      sim.results.male,
      sim.results.male.comp,
-     file = paste0('output/All_SMI_vs_UC_seed', seed_input, '.RData'))
-
-
-     #file = 'output/All_SMI_vs_UC_basecase.RData')
+     file = 'output/All_SMI_vs_UC_basecase.RData')

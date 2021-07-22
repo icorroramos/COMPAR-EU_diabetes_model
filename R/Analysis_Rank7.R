@@ -51,11 +51,12 @@ treateff_start   <- 1 # Cycle in which treatment effect starts
 treateff_end     <- 4 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
-treateff_hba1c <- -1.4248 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff_hdl <- 5.4857 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
-treateff_ldl <- -11.9313 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
-treateff_bmi <- 0 # Treatment effect on BMI (in absolute points)
-treateff_sbp <- 0  / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
+treateff_hba1c <- -0.168 # Treatment effect on HbA1c (in absolute %-points HbA1c)
+treateff_hdl   <- -0.2707 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
+treateff_ldl   <- -2.9532 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
+treateff_bmi <- -0.8234 # Treatment effect on BMI (in absolute points)
+treateff_sbp <- -4.2854 / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
+
 
 # # Treatment effects currently not in use
 # treateff_QoL
@@ -97,7 +98,6 @@ sim.results.female <- SMDMII_model_simulation(npats_input,
                                               psa_input,
                                               seed_input)
 
-
 sim.results.male <- SMDMII_model_simulation(npats_input,
                                             female_input = 0,
                                             tx_cost_input,
@@ -113,15 +113,13 @@ sim.results.male <- SMDMII_model_simulation(npats_input,
                                             seed_input)
 
 
-
 # Print simulation duration
 end <- Sys.time()
 print(end - init)
-
 
 # Save simulation results
 save(sim.vars,
      sim.results.female,
      sim.results.male,
-     file = 'output/Rank8_basecase.RData')
+     file = 'output/Rank7_basecase.RData')
 
