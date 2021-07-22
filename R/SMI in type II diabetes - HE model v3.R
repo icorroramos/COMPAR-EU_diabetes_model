@@ -489,6 +489,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         current_patient_update$HbA1c <- min(current_patient$HbA1c - (treatment_effect_HbA1c_input[1])/((treatment_effect_HbA1c_input[3]+1)-treatment_effect_HbA1c_input[4]),unique(simulation_baseline_patients$HbA1c)) #23/11/2020
         }
       
+      print(current_patient_update$HbA1c)
       
       # BMI: same approach as for the other effects 14/07/21
       if(current_patient_update$SDURATION == treatment_effect_BMI_input[2]){
