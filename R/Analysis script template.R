@@ -93,7 +93,7 @@ dir.create(graphics_dir)
 # The sim.vars object collects all parameters that define the simulation into one object
 # Then, it is saved with the output of the simulation. This way, if we  have multiple output files, we always have the information 
 # on the relevant input parameters that were used to produce the output.
-sim.vars <- list(seed.input, npats_input, tx_cost_input, mget(apropos('treateff.')))
+#sim.vars <- list(seed.input, npats_input, tx_cost_input, mget(apropos('treateff.')))
 
 ###########
 # Results #

@@ -479,15 +479,17 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       # Note: unique(simulation_baseline_patients$HbA1c) has the HbA1c baseline value. Note we have at baseline only 2 patients
       # with the same characteristics except one is male and the other female. 
       # We need "unique" because simulation_baseline_patients is already a matrix with the size of the simulation 
+      # We need to add +1 to element [3] in order to include the last year of treatment effect
       
       if(current_patient_update$SDURATION == treatment_effect_HbA1c_input[2]){
         current_patient_update$HbA1c <- min(max(5, current_patient$HbA1c + treatment_effect_HbA1c_input[1]),18) #23/11/2020
         }
       
       if(current_patient_update$SDURATION %in% treatment_effect_HbA1c_input[4]:treatment_effect_HbA1c_input[3]){
-        current_patient_update$HbA1c <- min(current_patient$HbA1c - (treatment_effect_HbA1c_input[1])/(treatment_effect_HbA1c_input[3]-treatment_effect_HbA1c_input[4]),unique(simulation_baseline_patients$HbA1c)) #23/11/2020
+        current_patient_update$HbA1c <- min(current_patient$HbA1c - (treatment_effect_HbA1c_input[1])/((treatment_effect_HbA1c_input[3]+1)-treatment_effect_HbA1c_input[4]),unique(simulation_baseline_patients$HbA1c)) #23/11/2020
         }
       
+      print(current_patient_update$HbA1c)
       
       # BMI: same approach as for the other effects 14/07/21
       if(current_patient_update$SDURATION == treatment_effect_BMI_input[2]){
@@ -495,7 +497,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       }
       
       if(current_patient_update$SDURATION %in% treatment_effect_BMI_input[4]:treatment_effect_BMI_input[3]){
-        current_patient_update$BMI <- min(current_patient$BMI - (treatment_effect_BMI_input[1])/(treatment_effect_BMI_input[3]-treatment_effect_BMI_input[4]),unique(simulation_baseline_patients$BMI))
+        current_patient_update$BMI <- min(current_patient$BMI - (treatment_effect_BMI_input[1])/((treatment_effect_BMI_input[3]+1)-treatment_effect_BMI_input[4]),unique(simulation_baseline_patients$BMI))
       }
       
       # Based on the above BMI, we should update BMI1 and BMI3
@@ -509,7 +511,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         current_patient_update$LDL <- min(max(0, current_patient$LDL + treatment_effect_LDL_input[1]),50)
       }
       if(current_patient_update$SDURATION %in% treatment_effect_LDL_input[4]:treatment_effect_LDL_input[3]){
-        current_patient_update$LDL <- min(current_patient$LDL - (treatment_effect_LDL_input[1])/(treatment_effect_LDL_input[3]-treatment_effect_LDL_input[4]),unique(simulation_baseline_patients$LDL)) 
+        current_patient_update$LDL <- min(current_patient$LDL - (treatment_effect_LDL_input[1])/((treatment_effect_LDL_input[3]+1)-treatment_effect_LDL_input[4]),unique(simulation_baseline_patients$LDL)) 
       }
       
       # HDL: same approach as for HbA1c 14/12/2020
@@ -519,7 +521,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         current_patient_update$HDL <- min(max(0, current_patient$HDL + treatment_effect_HDL_input[1]),50)
       }
       if(current_patient_update$SDURATION %in% treatment_effect_HDL_input[4]:treatment_effect_HDL_input[3]){
-        current_patient_update$HDL <- max(current_patient$HDL-(treatment_effect_HDL_input[1])/(treatment_effect_HDL_input[3]-treatment_effect_HDL_input[4]),unique(simulation_baseline_patients$HDL)) 
+        current_patient_update$HDL <- max(current_patient$HDL-(treatment_effect_HDL_input[1])/((treatment_effect_HDL_input[3]+1)-treatment_effect_HDL_input[4]),unique(simulation_baseline_patients$HDL)) 
         # CAREFUL HERE: I put max instead of min above because the treatment effect is positive and not negative.
         # try to find a general solution, maybe using absolute value
       }
@@ -530,7 +532,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       }
       
       if(current_patient_update$SDURATION %in% treatment_effect_SBP_input[4]:treatment_effect_SBP_input[3]){
-        current_patient_update$SBP <- min(current_patient$SBP-(treatment_effect_SBP_input[1])/(treatment_effect_SBP_input[3]-treatment_effect_SBP_input[4]),unique(simulation_baseline_patients$SBP))
+        current_patient_update$SBP <- min(current_patient$SBP-(treatment_effect_SBP_input[1])/((treatment_effect_SBP_input[3]+1)-treatment_effect_SBP_input[4]),unique(simulation_baseline_patients$SBP))
       }
       
       # When all characteristics are updated, we add these to the patient history
