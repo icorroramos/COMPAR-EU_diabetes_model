@@ -479,6 +479,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       # Note: unique(simulation_baseline_patients$HbA1c) has the HbA1c baseline value. Note we have at baseline only 2 patients
       # with the same characteristics except one is male and the other female. 
       # We need "unique" because simulation_baseline_patients is already a matrix with the size of the simulation 
+      # We need to add +1 to element [3] in order to include the last year of treatment effect
       
       if(current_patient_update$SDURATION == treatment_effect_HbA1c_input[2]){
         current_patient_update$HbA1c <- min(max(5, current_patient$HbA1c + treatment_effect_HbA1c_input[1]),18) #23/11/2020
