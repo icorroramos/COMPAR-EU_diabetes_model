@@ -29,10 +29,6 @@ init <- Sys.time()
 
 
 # User adjustable settings #
-
-# Adjust target population
-baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK_rank_6_study_pop.csv", sep=",")
-
 # Discount rates: please indicate the desired discount rates for costs and effects. Default: 0.035
 discount_cost_input <- 0.035
 discount_util_input <- 0.035	
@@ -51,7 +47,7 @@ tx_label <- "Usual care"
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
-treateff_end     <- 4 # Cycle in which treatment effect ends
+treateff_end     <- 3 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
 treateff_hba1c <- -0.7037 # Treatment effect on HbA1c (in absolute %-points HbA1c)
@@ -125,6 +121,5 @@ print(end - init)
 save(sim.vars,
      sim.results.female,
      sim.results.male,
-     file = 'output/Rank6_spec_targetpop.RData') # file = 'output/Rank6_basecase.RData') # file = 'output/Rank6_spec_targetpop.RData') #)
-
+     file = 'output/Rank6_basecase.RData')
 

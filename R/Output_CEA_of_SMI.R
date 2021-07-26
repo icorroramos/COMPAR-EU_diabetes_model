@@ -7,14 +7,24 @@
 # load('output/Rank1_basecase.RData', verbose = TRUE)
 # load('output/Rank2_basecase.RData', verbose = TRUE)
 # load('output/Rank3_basecase.RData', verbose = TRUE)
+# load('output/Rank4_basecase.RData', verbose = TRUE)
+# load('output/Rank5_basecase.RData', verbose = TRUE)
 # load('output/Rank6_basecase.RData', verbose = TRUE)
+# load('output/Rank7_basecase.RData', verbose = TRUE)
 # load('output/Rank8_basecase.RData', verbose = TRUE)
+# load('output/Rank9_basecase.RData', verbose = TRUE)
+# load('output/Rank10_basecase.RData', verbose = TRUE)
+# load('output/Rank11_basecase.RData', verbose = TRUE)
+# load('output/Rank12_basecase.RData', verbose = TRUE)
+# load('output/Rank13_basecase.RData', verbose = TRUE)
+
 # load('output/Rank1_spec_tartetpop.RData', verbose = TRUE)
-# load('output/Rank6_spec_targetpop.RData', verbose = TRUE)
+load('output/Rank6_spec_targetpop.RData', verbose = TRUE)
+
 # load('output/Rank8_shorter_treateff.RData', verbose = TRUE)
 # load('output/Rank8_longer_treateff.RData', verbose = TRUE)
 
-load('output/All_SMI_vs_UC_seed77.RData', verbose = TRUE)
+# load('output/All_SMI_vs_UC_seed77.RData', verbose = TRUE)
 # load('output/All_SMI_vs_UC_seed1984.RData', verbose = TRUE)
 # load('output/All_SMI_vs_UC_seed15.RData', verbose = TRUE)
 # load('output/All_SMI_vs_UC_seed265979.RData', verbose = TRUE)
@@ -52,22 +62,22 @@ print(relevant.out)
 
 
 # DETAILED ANALYSIS -------------------------------------------------------
-diff.fem <- data.frame(
-  Usual_care = t(f.uc.means),
-  SMI = t(f.int.means),
-  Incr = t(f.int.means) - t(f.uc.means)
-)
-
-diff.male <- data.frame(
-  Usual_care = t(m.uc.means),
-  SMI = t(m.int.means),
-  Incr = t(m.int.means) - t(m.uc.means)
-)
-
-print(relevant.out)
-print(diff.fem)
-print(diff.male)
-
-
-write.csv(diff.fem, 'output/Deltas_female.csv')
-write.csv(diff.male, 'output/Deltas_male.csv')
+# diff.fem <- data.frame(
+#   Usual_care = t(f.uc.means),
+#   SMI = t(f.int.means),
+#   Incr = t(f.int.means) - t(f.uc.means)
+# )
+# 
+# diff.male <- data.frame(
+#   Usual_care = t(m.uc.means),
+#   SMI = t(m.int.means),
+#   Incr = t(m.int.means) - t(m.uc.means)
+# )
+# 
+# print(relevant.out)
+# print(diff.fem)
+# print(diff.male)
+# 
+# 
+# write.csv(diff.fem, 'output/Deltas_female.csv')
+# write.csv(diff.male, 'output/Deltas_male.csv')

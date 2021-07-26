@@ -132,7 +132,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   for(patient_index in 1:patient_size_input){
     
     # Print the patient index to know how advanced is the simulation. Delete later if not needed
-    if(run_PSA_input == 0){print(paste("patient ",patient_index))}
+    #if(run_PSA_input == 0){print(paste("patient ",patient_index))}
+    # FIXME: printing switched of temporarily
     
     # Pick the current patient from those selected at baseline and set simulation ID ("SIMID"). This is needed to produce aggregated results.
     current_patient <- simulation_baseline_patients[patient_index,]
@@ -488,8 +489,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       if(current_patient_update$SDURATION %in% treatment_effect_HbA1c_input[4]:treatment_effect_HbA1c_input[3]){
         current_patient_update$HbA1c <- min(current_patient$HbA1c - (treatment_effect_HbA1c_input[1])/((treatment_effect_HbA1c_input[3]+1)-treatment_effect_HbA1c_input[4]),unique(simulation_baseline_patients$HbA1c)) #23/11/2020
         }
-      
-      print(current_patient_update$HbA1c)
+
       
       # BMI: same approach as for the other effects 14/07/21
       if(current_patient_update$SDURATION == treatment_effect_BMI_input[2]){

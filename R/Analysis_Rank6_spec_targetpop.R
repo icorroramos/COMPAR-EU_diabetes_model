@@ -30,6 +30,9 @@ init <- Sys.time()
 
 # User adjustable settings #
 
+# Adjust target population
+baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK_rank_6_study_pop.csv", sep=",")
+
 # Discount rates: please indicate the desired discount rates for costs and effects. Default: 0.035
 discount_cost_input <- 0.035
 discount_util_input <- 0.035	
@@ -51,14 +54,14 @@ treateff_start   <- 1 # Cycle in which treatment effect starts
 treateff_end     <- 3 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
-treateff_hba1c <- -0.9084 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff_hdl <- 0 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
-treateff_ldl <- 0 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
-treateff_bmi <- 0 # Treatment effect on BMI (in absolute points)
-treateff_sbp <- 0 / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
-
+treateff_hba1c <- -0.7037 # Treatment effect on HbA1c (in absolute %-points HbA1c)
+treateff_hdl   <- 3.867 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
+treateff_ldl   <- -6.1872 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
+treateff_bmi <- -0.12 # Treatment effect on BMI (in absolute points)
+treateff_sbp <- -1.7 / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
 
 # # Treatment effects currently not in use
+
 # treateff_QoL
 
 # Tx effects are vectors: the current assumption is that the same start, end and decline is assumed for all effect modifiers
@@ -98,6 +101,21 @@ sim.results.female <- SMDMII_model_simulation(npats_input,
                                               psa_input,
                                               seed_input)
 
+sim.results.female.comp <- SMDMII_model_simulation(npats_input,
+                                                   female_input = 1,
+                                                   tx_cost_input,
+                                                   treatment_effect_HbA1c_input = rep(0,4), 
+                                                   treatment_effect_HDL_input = rep(0,4),
+                                                   treatment_effect_LDL_input = rep(0,4), 
+                                                   treatment_effect_BMI_input = rep(0,4),
+                                                   treatment_effect_SBP_input = rep(0,4),
+                                                   discount_cost_input, 
+                                                   discount_util_input, 
+                                                   retirement_age_input, 
+                                                   psa_input,
+                                                   seed_input)
+
+
 sim.results.male <- SMDMII_model_simulation(npats_input,
                                             female_input = 0,
                                             tx_cost_input,
@@ -112,6 +130,19 @@ sim.results.male <- SMDMII_model_simulation(npats_input,
                                             psa_input,
                                             seed_input)
 
+sim.results.male.comp <- SMDMII_model_simulation(npats_input,
+                                                 female_input = 0,
+                                                 tx_cost_input,
+                                                 treatment_effect_HbA1c_input = rep(0,4), 
+                                                 treatment_effect_HDL_input = rep(0,4),
+                                                 treatment_effect_LDL_input = rep(0,4), 
+                                                 treatment_effect_BMI_input = rep(0,4),
+                                                 treatment_effect_SBP_input = rep(0,4),
+                                                 discount_cost_input, 
+                                                 discount_util_input, 
+                                                 retirement_age_input, 
+                                                 psa_input,
+                                                 seed_input)
 
 # Print simulation duration
 end <- Sys.time()
@@ -120,6 +151,9 @@ print(end - init)
 # Save simulation results
 save(sim.vars,
      sim.results.female,
+     sim.results.female.comp,
      sim.results.male,
-     file = 'output/Rank10_basecase.RData')
+     sim.results.male.comp,
+     file = 'output/Rank6_spec_targetpop.RData')
+
 
