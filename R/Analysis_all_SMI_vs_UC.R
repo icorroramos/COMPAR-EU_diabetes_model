@@ -2,45 +2,11 @@
 # Set-up options #
 ##################
 
-# Setting option for decimals
-options(scipen = 3)
-
-# Install and load required packages
-# Sys.getenv() # check this for the Home path where packages are saved
-.libPaths(Sys.getenv()[["R_LIBS_USER"]])
-
-pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr") # package names
-#install.packages(pkgs)
-inst <- lapply(pkgs, library, character.only = TRUE) # load them
-
-# Load model function: 
-source("R/SMI in type II diabetes - HE model v3.R")
-
-# Load aux. functions, input parameters (from Excel), global lists, etc. 
-source("R/aux_functions.R")
+# Clear global environment, flush memory, load packages
+source('R/Analysis_start_chunk.R')
 
 # Variable defined to keep track of simulation time (delete afterwards)
 init <- Sys.time()
-
-############################
-# User adjustable settings #
-############################
-
-# Discount rates: please indicate the desired discount rates for costs and effects. Default: 0.035
-discount_cost_input <- 0.035
-discount_util_input <- 0.035	
-
-# Please select running mode: 0 = deterministic, 1 = PSA. Default: 0
-psa_input <- 0
- 
-# Please select number of PSA runs (only works if psa_input <- 1, otherwise will be ignored ). Default: 500 --> NOTE: not completely implemented
-n_psa_input <- 5
-
-# Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 1000  
-
-# Please indicate the name of the treatment to be identified
-tx_label <- "Usual care"
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
@@ -48,13 +14,10 @@ treateff_end     <- 3 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
 treateff_hba1c <- -0.391 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff_hdl   <- 0.268 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
-treateff_ldl   <- -1.78 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
+treateff_hdl   <- 0.268 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
+treateff_ldl   <- -1.78 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
 treateff_bmi <- -0.283 # Treatment effect on BMI (in absolute points)
 treateff_sbp <- -2.04 / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
-
-# # Treatment effects currently not in use
-# treateff_QoL
 
 # Tx effects are vectors: the current assumption is that the same start, end and decline is assumed for all effect modifiers
 treatment_effect_HbA1c_input <- c(treateff_hba1c, treateff_start, treateff_end, treateff_decline)
@@ -63,17 +26,6 @@ treatment_effect_LDL_input <- c(treateff_ldl, treateff_start, treateff_end, trea
 treatment_effect_BMI_input <- c(treateff_bmi, treateff_start, treateff_end, treateff_decline)
 treatment_effect_SBP_input <- c(treateff_sbp, treateff_start, treateff_end, treateff_decline)
 
-
-# Cost inputs
-tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.     
-retirement_age_input <- 66
-
-
-# Gender: note at this moment the model distinguishes between males and females, This must be chosen here
-female_input <- 1 #1 = female, 0 = male
-
-# Set random seed for replication purposes
-seed_input <- 77 # A random seed that it is used to ensure consistency in the model results. 
 
 # NOTE: Input parameters (probabilities, costs and utilities) can be changed in the corresponding 
 # csv files included in the folder "input". These can be changed to run for example scenario analyses

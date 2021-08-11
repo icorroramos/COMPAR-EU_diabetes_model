@@ -2,49 +2,11 @@
 # Set-up options #
 ##################
 
-# Check and install the latest R version
-# installr::updateR()
-# update.packages() 
-
-
-# Setting option for decimals
-options(scipen = 3)
-
-# Install and load required packages
-# Sys.getenv() # check this for the Home path where packages are saved
-.libPaths(Sys.getenv()[["R_LIBS_USER"]])
-
-pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr", "beepr") # package names
-#install.packages(pkgs)
-inst <- lapply(pkgs, library, character.only = TRUE) # load them
-
-# Load model function: 
-source("R/SMI in type II diabetes - HE model v3.R")
-
-# Load aux. functions, input parameters (from Excel), global lists, etc. 
-source("R/aux_functions.R")
+# Clear global environment, flush memory, load packages
+source('R/Analysis_start_chunk.R')
 
 # Variable defined to keep track of simulation time (delete afterwards)
 init <- Sys.time()
-
-
-# User adjustable settings #
-
-# Discount rates: please indicate the desired discount rates for costs and effects. Default: 0.035
-discount_cost_input <- 0.035
-discount_util_input <- 0.035	
-
-# Please select running mode: 0 = deterministic, 1 = PSA. Default: 0
-psa_input <- 0
- 
-# Please select number of PSA runs (only works if psa_input <- 1, otherwise will be ignored ). Default: 500 --> NOTE: not completely implemented
-n_psa_input <- 5
-
-# Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 1000  
-
-# Please indicate the name of the treatment to be identified
-tx_label <- "Usual care"
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
@@ -52,13 +14,11 @@ treateff_end     <- 3 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
 treateff_hba1c <- -1.4248 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff_hdl <- 5.4857 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
-treateff_ldl <- -11.9313 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
+treateff_hdl <- 5.4857 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
+treateff_ldl <- -11.9313 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
 treateff_bmi <- 0 # Treatment effect on BMI (in absolute points)
 treateff_sbp <- 0  / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
 
-# # Treatment effects currently not in use
-# treateff_QoL
 
 # Tx effects are vectors: the current assumption is that the same start, end and decline is assumed for all effect modifiers
 treatment_effect_HbA1c_input <- c(treateff_hba1c, treateff_start, treateff_end, treateff_decline)
@@ -66,14 +26,6 @@ treatment_effect_HDL_input <- c(treateff_hdl, treateff_start, treateff_end, trea
 treatment_effect_LDL_input <- c(treateff_ldl, treateff_start, treateff_end, treateff_decline)
 treatment_effect_BMI_input <- c(treateff_bmi, treateff_start, treateff_end, treateff_decline)
 treatment_effect_SBP_input <- c(treateff_sbp, treateff_start, treateff_end, treateff_decline)
-
-
-# Cost inputs
-tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.     
-retirement_age_input <- 66
-
-# Set random seed for replication purposes
-seed_input <- 77 # A random seed that it is used to ensure consistency in the model results. 
 
 # The sim.vars object collects all parameters that define the simulation into one object
 # Then, it is saved with the output of the simulation. This way, if we  have multiple output files, we always have the information 

@@ -133,7 +133,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
     
     # Print the patient index to know how advanced is the simulation. Delete later if not needed
     #if(run_PSA_input == 0){print(paste("patient ",patient_index))}
-    # FIXME: printing switched of temporarily
+    # FIXME: printing switched off temporarily
     
     # Pick the current patient from those selected at baseline and set simulation ID ("SIMID"). This is needed to produce aggregated results.
     current_patient <- simulation_baseline_patients[patient_index,]
