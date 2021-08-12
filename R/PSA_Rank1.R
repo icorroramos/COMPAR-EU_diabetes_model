@@ -57,19 +57,6 @@ for (i in 1:n_psa_input){
                                                       psa_input,
                                                       seed_input)
         
-        sim.results.female.comp <- SMDMII_model_simulation(npats_input,
-                                                           female_input = 1,
-                                                           tx_cost_input,
-                                                           treatment_effect_HbA1c_input = rep(0,4), 
-                                                           treatment_effect_HDL_input = rep(0,4),
-                                                           treatment_effect_LDL_input = rep(0,4), 
-                                                           treatment_effect_BMI_input = rep(0,4),
-                                                           treatment_effect_SBP_input = rep(0,4),
-                                                           discount_cost_input, 
-                                                           discount_util_input, 
-                                                           retirement_age_input, 
-                                                           psa_input,
-                                                           seed_input)
         
         sim.results.male <- SMDMII_model_simulation(npats_input,
                                                     female_input = 0,
@@ -84,37 +71,19 @@ for (i in 1:n_psa_input){
                                                     retirement_age_input,
                                                     psa_input,
                                                     seed_input)
-
-        sim.results.male.comp <- SMDMII_model_simulation(npats_input,
-                                                         female_input = 0,
-                                                         tx_cost_input,
-                                                         treatment_effect_HbA1c_input = rep(0,4),
-                                                         treatment_effect_HDL_input = rep(0,4),
-                                                         treatment_effect_LDL_input = rep(0,4),
-                                                         treatment_effect_BMI_input = rep(0,4),
-                                                         treatment_effect_SBP_input = rep(0,4),
-                                                         discount_cost_input,
-                                                         discount_util_input,
-                                                         retirement_age_input,
-                                                         psa_input,
-                                                         seed_input)
+        
         
         # Store iteration results in data objects
-
+        
         
         sim.var.data[i, ] <- c(seed_input, npats_input, tx_cost_input, unlist(mget(apropos('treateff.'))))
         female.int.data[[i]] <- unlist(sim.results.female[-1])
-        female.comp.data[[i]] <- unlist(sim.results.female.comp[-1])
         male.int.data[[i]] <- unlist(sim.results.male[-1])
-        male.comp.data[[i]] <- unlist(sim.results.male.comp[-1])
-        
 }
 
 colnames(sim.var.data) <- c('Seed', 'Npats', 'Tx_Cost', 'BMI', 'Decline', 'End', 'HbA1c', 'HDL', 'LDL', 'SBP', 'Start')
 psa.results.female <- as.data.frame(do.call(rbind, female.int.data))
-psa.results.female.comp <- as.data.frame(do.call(rbind, female.comp.data))
 psa.results.male <- as.data.frame(do.call(rbind, male.int.data))
-psa.results.male.comp <- as.data.frame(do.call(rbind, male.comp.data))
 
 # Print simulation duration
 end <- Sys.time()
@@ -124,7 +93,5 @@ print(end - init)
 # Save simulation results
 save(sim.var.data,
      psa.results.female,
-     psa.results.female.comp,
      psa.results.male,
-     psa.results.male.comp,
-     file = 'output/PSA_Rank1.RData')
+     file = 'output/PSA_Rank1_test.RData')

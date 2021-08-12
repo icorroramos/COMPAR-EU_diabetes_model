@@ -71,7 +71,7 @@ write.csv(output.deltas, 'output/Deltas_all_analyses.csv')
 # LOAD SIMULATION DATA ----------------------------------------------------
 # load('output/All_SMI_vs_UC_basecase.RData', verbose = TRUE)
 # load('output/Usual_care_outcomes.RData', verbose = TRUE)
-# load('output/Rank1_basecase.RData', verbose = TRUE)
+ load('output/Rank1_basecase.RData', verbose = TRUE)
 # load('output/Rank2_basecase.RData', verbose = TRUE)
 # load('output/Rank3_basecase.RData', verbose = TRUE)
 # load('output/Rank4_basecase.RData', verbose = TRUE)
@@ -96,8 +96,6 @@ write.csv(output.deltas, 'output/Deltas_all_analyses.csv')
 # load('output/All_SMI_vs_UC_seed15.RData', verbose = TRUE)
 # load('output/All_SMI_vs_UC_seed265979.RData', verbose = TRUE)
 
-load('output/PSA_Rank6.RData', verbose = TRUE)
-
 # ANALYSIS OF MEANS -------------------------------------------------------
 
 f.int.means <- as.data.frame(sim.results.female[-1])
@@ -118,19 +116,6 @@ relevant.out <- delta.means %>%
 
 
 print(relevant.out)
-
-
-#PSA Analysis
-f.int.means <- psa.results.female
-f.uc.means <- psa.results.female.comp
-m.int.means <- psa.results.male
-m.uc.means <- psa.results.male.comp
-
-w.int.means <- frac.fem * f.int.means + (1 - frac.fem) * m.int.means
-w.uc.means <- frac.fem * f.uc.means + (1 - frac.fem) * m.uc.means
-
-delta.means <- w.int.means - w.uc.means
-
 
 
 # DETAILED ANALYSIS -------------------------------------------------------

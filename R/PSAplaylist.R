@@ -10,26 +10,39 @@ pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr", "mc2d") #
 inst <- lapply(pkgs, library, character.only = TRUE) # load them
 
 
-# source('R/PSA_all_SMI_vs_UC.R')
-# 
-# source('R/PSA_Rank1.R')
-# 
-# source('R/PSA_Rank2.R')
+source('R/PSA_all_SMI_vs_UC.R')
 
-source('R/PSA_Rank3.R')
+source('R/PSA_Usual_care.R')
 
-source('R/PSA_Rank4.R')
-
-source('R/PSA_Rank5.R')
-
-source('R/PSA_Rank6.R')
+source('R/PSA_Rank1.R')
 
 rm(list = ls())
 gc()
 Sys.sleep(120)
 memory.size (max = F)
 
+
+source('R/PSA_Rank2.R')
+
+source('R/PSA_Rank3.R')
+
+source('R/PSA_Rank4.R')
+
+rm(list = ls())
+gc()
+Sys.sleep(120)
+memory.size (max = F)
+
+source('R/PSA_Rank5.R')
+
+source('R/PSA_Rank6.R')
+
 source('R/PSA_Rank7.R')
+
+rm(list = ls())
+gc()
+Sys.sleep(120)
+memory.size (max = F)
 
 source('R/PSA_Rank8.R')
 
