@@ -96,13 +96,13 @@ end <- Sys.time()
 print(end - init)
 
 
-# Save simulation results
-# save(sim.vars,
-#      sim.results.female,
-#      sim.results.female.comp,
-#      sim.results.male,
-#      sim.results.male.comp,
-#      file = 'output/Rank1_basecase.RData') # file = 'output/Rank1_spec_tartetpop.RData') #
-# 
+#Save simulation results
+save(sim.vars,
+     sim.results.female,
+     sim.results.female.comp,
+     sim.results.male,
+     sim.results.male.comp,
+     file = 'output/Rank1_basecase.RData') # file = 'output/Rank1_spec_tartetpop.RData') #
+
 
 

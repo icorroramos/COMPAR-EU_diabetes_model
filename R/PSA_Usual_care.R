@@ -65,4 +65,4 @@ print(end - init)
 # Save simulation results
 save(psa.results.female.comp,
      psa.results.male.comp,
-     file = 'output/PSA_Rank1_test.RData')
+     file = 'output/PSA_Usual_care.RData')

@@ -23,11 +23,6 @@ source('R/Analysis_Rank4.R')
 
 source('R/Analysis_Rank5.R')
 
-rm(list = ls())
-gc()
-Sys.sleep(120)
-memory.size (max = F)
-
 source('R/Analysis_Rank6.R')
 
 source('R/Analysis_Rank7.R')
@@ -41,11 +36,6 @@ source('R/Analysis_Rank10.R')
 source('R/Analysis_Rank11.R')
 
 source('R/Analysis_Rank12.R')
-
-rm(list = ls())
-gc()
-Sys.sleep(120)
-memory.size (max = F)
 
 source('R/Analysis_Rank13.R')
 

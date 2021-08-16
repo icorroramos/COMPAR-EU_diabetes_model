@@ -1,5 +1,8 @@
 ### OUTPUT OF ANALYSES OF 13 RANKED INTERVENTIONS ###
 
+# Select working directory to choose outputs from
+# setwd('output')
+setwd('output/Deterministic_1000_pats')
 
 # INPUT PARAMETERS FOR CALCULATIONS ---------------------------------------
 # Fraction females in target pop
@@ -9,7 +12,9 @@ frac.fem <- 26706/58171
 wtp <- 20000
 
 
-# FUNCTION WITH CALCULATIONS ----------------------------------------------
+
+# FUNCTIONS FOR AUTOMATED OUTPUT CALCULATIONS -----------------------------
+
 calc.deltas <- function(comp.name) {
   f.int.means <- as.data.frame(sim.results.female[-1])
   f.uc.means <- as.data.frame(sim.results.female.comp[-1])
@@ -29,16 +34,70 @@ calc.deltas <- function(comp.name) {
               headroom = round(wtp * mean_total_qalys - mean_total_costs, 2))
 }
 
+calc.convergence <- function() {
+  female.pp.uc <- sim.results.female.comp$simulation_patients_history %>% 
+    group_by(SIMID) %>% 
+    summarise(life_expectancy = max(SDURATION), 
+              total_qaly = sum(QALY),
+              total_cost = sum(TOTAL.COST),
+              .groups = 'drop'
+    )
+  
+  male.pp.uc <- sim.results.male.comp$simulation_patients_history %>% 
+    group_by(SIMID) %>% 
+    summarise(life_expectancy = max(SDURATION), 
+              total_qaly = sum(QALY),
+              total_cost = sum(TOTAL.COST),
+              .groups = 'drop'
+    )
+  
+  female.pp.int <- sim.results.female$simulation_patients_history %>% 
+    group_by(SIMID) %>% 
+    summarise(life_expectancy = max(SDURATION), 
+              total_qaly = sum(QALY),
+              total_cost = sum(TOTAL.COST),
+              .groups = 'drop'
+    )
+  
+  male.pp.int <- sim.results.male$simulation_patients_history %>% 
+    group_by(SIMID) %>% 
+    summarise(life_expectancy = max(SDURATION), 
+              total_qaly = sum(QALY),
+              total_cost = sum(TOTAL.COST),
+              .groups = 'drop'
+    )
+  
+  female.uc.conversion <- matrix(nrow = nrow(female.pp.uc), ncol = 3)
+  male.uc.conversion <- matrix(nrow = nrow(male.pp.int), ncol = 3)
+  female.int.conversion <- matrix(nrow = nrow(female.pp.int), ncol = 3)
+  male.int.conversion <- matrix(nrow = nrow(male.pp.int), ncol = 3)
+  
+  for (i in 1:nrow(female.pp.uc)) {
+    female.uc.conversion[i, ] <- colSums(female.pp.uc[1:i, -1] / i)
+    male.uc.conversion[i, ] <- colSums(male.pp.uc[1:i, -1] / i)
+    female.int.conversion[i, ] <- colSums(female.pp.int[1:i, -1] / i)
+    male.int.conversion[i, ] <- colSums(male.pp.int[1:i, -1] / i)
+  }
+  
+  delta.female.conversion <- female.int.conversion - female.uc.conversion
+  delta.female.conversion <- cbind(delta.female.conversion, delta.female.conversion[, 2] * wtp - delta.female.conversion[, 3])
+  delta.male.conversion <- male.int.conversion - male.uc.conversion
+  delta.male.conversion <- cbind(delta.male.conversion, delta.male.conversion[, 2] * wtp - delta.male.conversion[, 3])
+  
+  delta.weighed.conversion <- frac.fem * delta.female.conversion + (1 - frac.fem) * delta.male.conversion
+  return(delta.weighed.conversion)
+}
+
 
 # AUTOMATED PROCESSING OF SIM OUTPUT --------------------------------------
-load('output/All_SMI_vs_UC_basecase.RData')
+load('All_SMI_vs_UC_basecase.RData')
 
 output.deltas <- calc.deltas('Any SMI')
 
 for (i in 1:13) {
   print(i)
-  load('output/Usual_care_outcomes.RData')
-  load(paste0('output/Rank', i, '_basecase.RData'))
+  load('Usual_care_outcomes.RData')
+  load(paste0('Rank', i, '_basecase.RData'))
   output.rank <- calc.deltas(paste('Rank', i))
   output.deltas <- rbind(output.deltas, output.rank)
 }
@@ -48,53 +107,80 @@ rm(sim.results.female, sim.results.male, sim.results.female.comp, sim.results.ma
 
 for (i in c(1, 2, 6)) {
   print(i)
-  load(paste0('output/Rank', i, '_spec_targetpop.RData'))
+  load(paste0('Rank', i, '_spec_targetpop.RData'))
   output.rank <- calc.deltas(paste('Rank', i, 'alt pop'))
   output.deltas <- rbind(output.deltas, output.rank)
 }
 
 # Add short effect rank 6 analysis
 rm(sim.results.female, sim.results.male, sim.results.female.comp, sim.results.male.comp)
-load('output/Rank6_shorteff.RData')
+load('Rank6_shorteff.RData')
 output.deltas <- rbind(output.deltas, calc.deltas('Rank 6 short eff'))
 
 print(output.deltas)
 
 # Sink out put to CSV
-write.csv(output.deltas, 'output/Deltas_all_analyses.csv')
+write.csv(output.deltas, 'Deltas_all_analyses.csv')
 
 
 
+# AUTOMATED CONVERGENCE CHECK ---------------------------------------------
+load('All_SMI_vs_UC_basecase.RData')
+allvuc.converge <- calc.convergence()
+png(filename = 'All_vs_UC_converge.png', height = 15, width = 20, units = 'cm', res = 150)
+plot(x = 1:nrow(allvuc.converge), y = allvuc.converge[ ,4], type = 'l', xlab = '# Patients (M/F weighed)', ylab = 'Incremental Headroom', main = 'Any SMI vs UC')
+dev.off()
+
+for (i in 1:13) {
+  print(i)
+  load('Usual_care_outcomes.RData')
+  load(paste0('Rank', i, '_basecase.RData'))
+  converge.rank <- calc.convergence()
+  output.deltas <- rbind(output.deltas, output.rank)
+  png(filename = paste0('Rank_', i, '_convergence.png'), height = 15, width = 20, units = 'cm', res = 150)
+  plot(x = 1:nrow(converge.rank), y = converge.rank[ ,4], type = 'l', xlab = '# Patients (M/F weighed)', ylab = 'Incremental Headroom', main = paste('Rank', i))
+  dev.off()
+}
 
 # MANUAL ANALYSIS ---------------------------------------------------------
 
 # LOAD SIMULATION DATA ----------------------------------------------------
-# load('output/All_SMI_vs_UC_basecase.RData', verbose = TRUE)
-# load('output/Usual_care_outcomes.RData', verbose = TRUE)
- load('output/Rank1_basecase.RData', verbose = TRUE)
-# load('output/Rank2_basecase.RData', verbose = TRUE)
-# load('output/Rank3_basecase.RData', verbose = TRUE)
-# load('output/Rank4_basecase.RData', verbose = TRUE)
-# load('output/Rank5_basecase.RData', verbose = TRUE)
-# load('output/Rank6_basecase.RData', verbose = TRUE)
-# load('output/Rank7_basecase.RData', verbose = TRUE)
-# load('output/Rank8_basecase.RData', verbose = TRUE)
-# load('output/Rank9_basecase.RData', verbose = TRUE)
-# load('output/Rank10_basecase.RData', verbose = TRUE)
-# load('output/Rank11_basecase.RData', verbose = TRUE)
-# load('output/Rank12_basecase.RData', verbose = TRUE)
-# load('output/Rank13_basecase.RData', verbose = TRUE)
 
-# load('output/Rank1_spec_targetpop.RData', verbose = TRUE)
-# load('output/Rank6_spec_targetpop.RData', verbose = TRUE)
+# load('All_SMI_vs_UC_basecase.RData', verbose = TRUE)
+load('Usual_care_outcomes.RData', verbose = TRUE)
+# load('Rank1_basecase.RData', verbose = TRUE)
+# load('Rank2_basecase.RData', verbose = TRUE)
+# load('Rank3_basecase.RData', verbose = TRUE)
+# load('Rank4_basecase.RData', verbose = TRUE)
+# load('Rank5_basecase.RData', verbose = TRUE)
+# load('Rank6_basecase.RData', verbose = TRUE)
+# load('Rank7_basecase.RData', verbose = TRUE)
+# load('Rank8_basecase.RData', verbose = TRUE)
+# load('Rank9_basecase.RData', verbose = TRUE)
+# load('Rank10_basecase.RData', verbose = TRUE)
+load('Rank11_basecase.RData', verbose = TRUE)
+# load('Rank12_basecase.RData', verbose = TRUE)
+# load('Rank13_basecase.RData', verbose = TRUE)
 
-# load('output/Rank8_shorter_treateff.RData', verbose = TRUE)
-# load('output/Rank8_longer_treateff.RData', verbose = TRUE)
+# load('Rank1_spec_targetpop.RData', verbose = TRUE)
+# load('Rank6_spec_targetpop.RData', verbose = TRUE)
 
-# load('output/All_SMI_vs_UC_seed77.RData', verbose = TRUE)
-# load('output/All_SMI_vs_UC_seed1984.RData', verbose = TRUE)
-# load('output/All_SMI_vs_UC_seed15.RData', verbose = TRUE)
-# load('output/All_SMI_vs_UC_seed265979.RData', verbose = TRUE)
+# load('Rank6_shorteff.RData', verbose = TRUE)
+# load('Rank8_shorter_treateff.RData', verbose = TRUE)
+# load('Rank8_longer_treateff.RData', verbose = TRUE)
+
+# load('All_SMI_vs_UC_seed77.RData', verbose = TRUE)
+# load('All_SMI_vs_UC_seed1984.RData', verbose = TRUE)
+# load('All_SMI_vs_UC_seed15.RData', verbose = TRUE)
+# load('All_SMI_vs_UC_seed265979.RData', verbose = TRUE)
+
+
+# load('Usual_care_outcomes_5000.RData', verbose = TRUE)
+# load('Usual_care_outcomes_4000_pats.RData', verbose = TRUE)
+# load('Rank3_basecase_4000_pats.RData', verbose = TRUE)
+# 
+# load('Usual_care_outcomes_2000_pats_altseed.RData', verbose = TRUE)
+# load('Rank3_basecase_2000_pats_altseed.RData', verbose = TRUE)
 
 # ANALYSIS OF MEANS -------------------------------------------------------
 
@@ -118,6 +204,61 @@ relevant.out <- delta.means %>%
 print(relevant.out)
 
 
+
+# ANALYSIS OF INNER LOOP --------------------------------------------------
+female.pp.uc <- sim.results.female.comp$simulation_patients_history %>% 
+  group_by(SIMID) %>% 
+  summarise(life_expectancy = max(SDURATION), 
+            total_qaly = sum(QALY),
+            total_cost = sum(TOTAL.COST)
+            )
+
+male.pp.uc <- sim.results.male.comp$simulation_patients_history %>% 
+  group_by(SIMID) %>% 
+  summarise(life_expectancy = max(SDURATION), 
+            total_qaly = sum(QALY),
+            total_cost = sum(TOTAL.COST)
+  )
+
+female.pp.int <- sim.results.female$simulation_patients_history %>% 
+  group_by(SIMID) %>% 
+  summarise(life_expectancy = max(SDURATION), 
+            total_qaly = sum(QALY),
+            total_cost = sum(TOTAL.COST)
+  )
+
+male.pp.int <- sim.results.male$simulation_patients_history %>% 
+  group_by(SIMID) %>% 
+  summarise(life_expectancy = max(SDURATION), 
+            total_qaly = sum(QALY),
+            total_cost = sum(TOTAL.COST)
+  )
+
+female.uc.conversion <- matrix(nrow = nrow(female.pp.uc), ncol = 3)
+male.uc.conversion <- matrix(nrow = nrow(male.pp.int), ncol = 3)
+female.int.conversion <- matrix(nrow = nrow(female.pp.int), ncol = 3)
+male.int.conversion <- matrix(nrow = nrow(male.pp.int), ncol = 3)
+
+for (i in 1:nrow(female.pp.uc)) {
+  female.uc.conversion[i, ] <- colSums(female.pp.uc[1:i, -1] / i)
+  male.uc.conversion[i, ] <- colSums(male.pp.uc[1:i, -1] / i)
+  female.int.conversion[i, ] <- colSums(female.pp.int[1:i, -1] / i)
+  male.int.conversion[i, ] <- colSums(male.pp.int[1:i, -1] / i)
+}
+
+delta.female.conversion <- female.int.conversion - female.uc.conversion
+delta.female.conversion <- cbind(delta.female.conversion, delta.female.conversion[, 2] * wtp - delta.female.conversion[, 3])
+delta.male.conversion <- male.int.conversion - male.uc.conversion
+delta.male.conversion <- cbind(delta.male.conversion, delta.male.conversion[, 2] * wtp - delta.male.conversion[, 3])
+
+delta.weighed.conversion <- frac.fem * delta.female.conversion + (1 - frac.fem) * delta.male.conversion
+  
+plot(x = 1:nrow(delta.female.conversion), y = delta.female.conversion[ ,2], type = 'l', xlab = '# Females', ylab = 'Incremental QALYs')
+plot(x = 1:nrow(delta.female.conversion), y = delta.female.conversion[ ,4], type = 'l', xlab = '# Females', ylab = 'Incremental Headroom')
+
+plot(x = 1:nrow(delta.weighed.conversion), y = delta.weighed.conversion[ ,4], type = 'l', xlab = '# Patients (M/F weighed', ylab = 'Incremental Headroom')
+
+
 # DETAILED ANALYSIS -------------------------------------------------------
 # diff.fem <- data.frame(
 #   Usual_care = t(f.uc.means),
@@ -136,5 +277,5 @@ print(relevant.out)
 # print(diff.male)
 # 
 # 
-# write.csv(diff.fem, 'output/Deltas_female.csv')
-# write.csv(diff.male, 'output/Deltas_male.csv')
+# write.csv(diff.fem, 'Deltas_female.csv')
+# write.csv(diff.male, 'Deltas_male.csv')

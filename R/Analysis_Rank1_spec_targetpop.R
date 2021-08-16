@@ -107,7 +107,7 @@ save(sim.vars,
      sim.results.female.comp,
      sim.results.male,
      sim.results.male.comp,
-     file = 'output/Rank1_spec_targetpop.RData') #
+     file = 'output/Rank1_spec_targetpop.RData')
 
 
 
