@@ -151,13 +151,12 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
     
     # Start the "timed" simulation (while loop = clock)
     # Set random seed large enough. Will be used for drawing event probabilities below.
-    factor_for_seed <- 100 
+    factor_for_seed <- 1 
     
     while(current_patient$dead==0){
       
-      # These seeds will be used to draw the annual event probabilities while the patient is alive 
-      if(run_PSA_input == 0){set.seed(factor_for_seed*current_patient$SIMID + current_patient$SDURATION)}
-      else{set.seed(factor_for_seed*seed_input*current_patient$SIMID + current_patient$SDURATION)}
+      # # These seeds will be used to draw the annual event probabilities while the patient is alive
+      set.seed(factor_for_seed*seed_input*current_patient$SIMID + current_patient$SDURATION)
       
       # Sample annual event probabilities: there is no order.
       # Note that more than one event can happen in one year but the occurrence of one 
