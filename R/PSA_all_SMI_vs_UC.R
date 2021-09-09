@@ -25,6 +25,7 @@ male.int.data <- list()
 male.comp.data <- list()
 
 for (i in 1:n_psa_input){
+
         # Treatment effect inputs
         treateff_start   <- 1 # Cycle in which treatment effect starts
         treateff_end     <- 3 # Cycle in which treatment effect ends
@@ -58,7 +59,7 @@ for (i in 1:n_psa_input){
                                                       discount_util_input, 
                                                       retirement_age_input, 
                                                       psa_input,
-                                                      seed_input)
+                                                      seed_input = psa.seed[i])
         
         sim.results.female.comp <- SMDMII_model_simulation(npats_input,
                                                            female_input = 1,
@@ -72,7 +73,7 @@ for (i in 1:n_psa_input){
                                                            discount_util_input, 
                                                            retirement_age_input, 
                                                            psa_input,
-                                                           seed_input)
+                                                           seed_input = psa.seed[i])
         
         sim.results.male <- SMDMII_model_simulation(npats_input,
                                                     female_input = 0,
@@ -86,7 +87,7 @@ for (i in 1:n_psa_input){
                                                     discount_util_input,
                                                     retirement_age_input,
                                                     psa_input,
-                                                    seed_input)
+                                                    seed_input = psa.seed[i])
 
         sim.results.male.comp <- SMDMII_model_simulation(npats_input,
                                                          female_input = 0,
@@ -100,12 +101,11 @@ for (i in 1:n_psa_input){
                                                          discount_util_input,
                                                          retirement_age_input,
                                                          psa_input,
-                                                         seed_input)
+                                                         seed_input = psa.seed[i])
         
         # Store iteration results in data objects
 
-        
-        sim.var.data[i, ] <- c(seed_input, npats_input, tx_cost_input, unlist(mget(apropos('treateff.'))))
+        sim.var.data[i, ] <- c(psa.seed[i], npats_input, tx_cost_input, unlist(mget(apropos('treateff.'))))
         female.int.data[[i]] <- unlist(sim.results.female[-1])
         female.comp.data[[i]] <- unlist(sim.results.female.comp[-1])
         male.int.data[[i]] <- unlist(sim.results.male[-1])

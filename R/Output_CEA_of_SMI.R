@@ -1,7 +1,7 @@
 ### OUTPUT OF ANALYSES OF 13 RANKED INTERVENTIONS ###
 
 # Select working directory to choose outputs from
-# setwd('output')
+setwd('output')
 setwd('output/Deterministic_1000_pats')
 
 # INPUT PARAMETERS FOR CALCULATIONS ---------------------------------------
@@ -90,14 +90,17 @@ calc.convergence <- function() {
 
 
 # AUTOMATED PROCESSING OF SIM OUTPUT --------------------------------------
-load('All_SMI_vs_UC_basecase.RData')
+# load('All_SMI_vs_UC_basecase.RData')
+stitcher('All_SMI_vs_UC_basecase', '', 'Deterministic_5000_pats/')
 
 output.deltas <- calc.deltas('Any SMI')
 
 for (i in 1:13) {
   print(i)
-  load('Usual_care_outcomes.RData')
-  load(paste0('Rank', i, '_basecase.RData'))
+  # load('Usual_care_outcomes.RData')
+  # load(paste0('Rank', i, '_basecase.RData'))
+  stitcher('Usual_care_outcomes', '', 'Deterministic_5000_pats/')
+  stitcher(paste0('Rank', i, '_basecase'), '', 'Deterministic_5000_pats/')
   output.rank <- calc.deltas(paste('Rank', i))
   output.deltas <- rbind(output.deltas, output.rank)
 }
@@ -125,7 +128,10 @@ write.csv(output.deltas, 'Deltas_all_analyses.csv')
 
 
 # AUTOMATED CONVERGENCE CHECK ---------------------------------------------
-load('All_SMI_vs_UC_basecase.RData')
+# Convergence Headroom - choose between files or use the stitcher
+
+# load('All_SMI_vs_UC_basecase.RData')
+stitcher('All_SMI_vs_UC_basecase', '', 'Deterministic_5000_pats/')
 allvuc.converge <- calc.convergence()
 png(filename = 'All_vs_UC_converge.png', height = 15, width = 20, units = 'cm', res = 150)
 plot(x = 1:nrow(allvuc.converge), y = allvuc.converge[ ,4], type = 'l', xlab = '# Patients (M/F weighed)', ylab = 'Incremental Headroom', main = 'Any SMI vs UC')
@@ -133,16 +139,54 @@ dev.off()
 
 for (i in 1:13) {
   print(i)
-  load('Usual_care_outcomes.RData')
-  load(paste0('Rank', i, '_basecase.RData'))
+  # load('Usual_care_outcomes.RData')
+  # load(paste0('Rank', i, '_basecase.RData'))
+  stitcher('Usual_care_outcomes', '', 'Deterministic_5000_pats/')
+  stitcher(paste0('Rank', i, '_basecase'), '', 'Deterministic_5000_pats/')
   converge.rank <- calc.convergence()
-  output.deltas <- rbind(output.deltas, output.rank)
   png(filename = paste0('Rank_', i, '_convergence.png'), height = 15, width = 20, units = 'cm', res = 150)
   plot(x = 1:nrow(converge.rank), y = converge.rank[ ,4], type = 'l', xlab = '# Patients (M/F weighed)', ylab = 'Incremental Headroom', main = paste('Rank', i))
   dev.off()
 }
 
+# Convergence QALYs
+load('All_SMI_vs_UC_basecase.RData')
+allvuc.converge <- calc.convergence()
+png(filename = 'All_vs_UC_converge_QALY.png', height = 15, width = 20, units = 'cm', res = 150)
+plot(x = 1:nrow(allvuc.converge), y = allvuc.converge[ ,2], type = 'l', xlab = '# Patients (M/F weighed)', ylab = 'Incremental QALY', main = 'Any SMI vs UC')
+dev.off()
+
+for (i in 1:13) {
+  print(i)
+  load('Usual_care_outcomes.RData')
+  load(paste0('Rank', i, '_basecase.RData'))
+  converge.rank <- calc.convergence()
+  png(filename = paste0('Rank_', i, '_convergence_QALY.png'), height = 15, width = 20, units = 'cm', res = 150)
+  plot(x = 1:nrow(converge.rank), y = converge.rank[ ,2], type = 'l', xlab = '# Patients (M/F weighed)', ylab = 'Incremental QALY', main = paste('Rank', i))
+  dev.off()
+}
+
 # MANUAL ANALYSIS ---------------------------------------------------------
+
+# Paste datasets with different seeds together
+load('All_SMI_vs_UC_basecase.RData', verbose = TRUE)
+res.names <- c('female', 'female.comp', 'male', 'male.comp')
+for (i in 1:length(res.names)) {
+  sim.data <- get(paste0('sim.results.', res.names[i]))
+  pat.hist <- sim.data[[1]]
+  pat.hist$SIMID <- pat.hist$SIMID + 5000
+  assign(paste0('sim.results.', res.names[i], '.extended'), pat.hist)
+}
+
+load('All_SMI_vs_UC_basecase_5000.RData', verbose = TRUE)
+for (i in 1:length(res.names)) {
+  sim.data <- get(paste0('sim.results.', res.names[i]))
+  first <- sim.data[[1]]
+  second <- get(paste0('sim.results.', res.names[i], '.extended'))
+  combo <- rbind(first, second)
+  assign(paste0('sim.results.', res.names[i]), combo)
+}
+
 
 # LOAD SIMULATION DATA ----------------------------------------------------
 
@@ -172,7 +216,7 @@ load('Rank11_basecase.RData', verbose = TRUE)
 # load('All_SMI_vs_UC_seed77.RData', verbose = TRUE)
 # load('All_SMI_vs_UC_seed1984.RData', verbose = TRUE)
 # load('All_SMI_vs_UC_seed15.RData', verbose = TRUE)
-# load('All_SMI_vs_UC_seed265979.RData', verbose = TRUE)
+load('All_SMI_vs_UC_seed265979.RData', verbose = TRUE)
 
 
 # load('Usual_care_outcomes_5000.RData', verbose = TRUE)
@@ -206,28 +250,29 @@ print(relevant.out)
 
 
 # ANALYSIS OF INNER LOOP --------------------------------------------------
-female.pp.uc <- sim.results.female.comp$simulation_patients_history %>% 
+# FOR EXTENDED DATASETS
+female.pp.uc <- sim.results.female.comp %>% 
   group_by(SIMID) %>% 
   summarise(life_expectancy = max(SDURATION), 
             total_qaly = sum(QALY),
             total_cost = sum(TOTAL.COST)
             )
 
-male.pp.uc <- sim.results.male.comp$simulation_patients_history %>% 
+male.pp.uc <- sim.results.male.comp %>% 
   group_by(SIMID) %>% 
   summarise(life_expectancy = max(SDURATION), 
             total_qaly = sum(QALY),
             total_cost = sum(TOTAL.COST)
   )
 
-female.pp.int <- sim.results.female$simulation_patients_history %>% 
+female.pp.int <- sim.results.female %>% 
   group_by(SIMID) %>% 
   summarise(life_expectancy = max(SDURATION), 
             total_qaly = sum(QALY),
             total_cost = sum(TOTAL.COST)
   )
 
-male.pp.int <- sim.results.male$simulation_patients_history %>% 
+male.pp.int <- sim.results.male %>% 
   group_by(SIMID) %>% 
   summarise(life_expectancy = max(SDURATION), 
             total_qaly = sum(QALY),
@@ -257,6 +302,40 @@ plot(x = 1:nrow(delta.female.conversion), y = delta.female.conversion[ ,2], type
 plot(x = 1:nrow(delta.female.conversion), y = delta.female.conversion[ ,4], type = 'l', xlab = '# Females', ylab = 'Incremental Headroom')
 
 plot(x = 1:nrow(delta.weighed.conversion), y = delta.weighed.conversion[ ,4], type = 'l', xlab = '# Patients (M/F weighed', ylab = 'Incremental Headroom')
+
+
+# CONVERGENCE CHECKS ON SEED VALUES ---------------------------------------
+
+for (i in 1:5) {
+  print(i)
+  load(paste0('output/UC_vs_any_SMI_seed_', psa.seed[i], '.RData'))
+  seed.converge <- calc.convergence()
+  # Plots of incremental QALY (weighed)
+  png(filename = paste0('output/Converge_Incr_QALY_UCvSMI_seed_', psa.seed[i], '-', i, '.png'), height = 15, width = 20, units = 'cm', res = 150)
+  plot(x = 1:nrow(seed.converge), y = seed.converge[ ,2], type = 'l', xlab = '# Patients (M/F weighed)', ylab = 'Incremental QALY', main = paste('Any SMI vs UC - seed', psa.seed[i]))
+  dev.off()
+  # Plots of headroom
+  png(filename = paste0('output/Converge_Headroom_UCvSMI_seed_', psa.seed[i], '-', i, '.png'), height = 15, width = 20, units = 'cm', res = 150)
+  plot(x = 1:nrow(seed.converge), y = seed.converge[ ,4], type = 'l', xlab = '# Patients (M/F weighed)', ylab = 'Headroom', main = paste('Any SMI vs UC - seed', psa.seed[i]))
+  dev.off()
+}
+
+for (i in 1:5) {
+  print(i)
+  load(paste0('output/Rank 8_seed_', psa.seed[i], '.RData'))
+  seed.converge <- calc.convergence()
+  # Plots of incremental QALY (weighed)
+  png(filename = paste0('output/Converge_Incr_QALY_Rank8_seed_', psa.seed[i], '-', i, '.png'), height = 15, width = 20, units = 'cm', res = 150)
+  plot(x = 1:nrow(seed.converge), y = seed.converge[ ,2], type = 'l', xlab = '# Patients (M/F weighed)', ylab = 'Incremental QALY', main = paste('Rank 8 - seed', psa.seed[i]))
+  dev.off()
+  # Plots of headroom
+  png(filename = paste0('output/Converge_Headroom_Rank8_seed_', psa.seed[i], '-', i, '.png'), height = 15, width = 20, units = 'cm', res = 150)
+  plot(x = 1:nrow(seed.converge), y = seed.converge[ ,4], type = 'l', xlab = '# Patients (M/F weighed)', ylab = 'Headroom', main = paste('Rank 8 - seed', psa.seed[i]))
+  dev.off()
+}
+
+
+
 
 
 # DETAILED ANALYSIS -------------------------------------------------------

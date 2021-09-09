@@ -1,7 +1,7 @@
 # Clear all objects and clear out memory
 rm(list = ls())
 gc()
-Sys.sleep(120)
+Sys.sleep(90)
 memory.size (max = F)
 
 
@@ -37,7 +37,7 @@ psa_input <- 0
 n_psa_input <- 5
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 5000 # 1000  
+npats_input   <- 10000 # 1000  
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "Usual care"
@@ -47,7 +47,7 @@ tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.
 retirement_age_input <- 66
 
 # Set random seed for replication purposes
-seed_input <- 77 # A random seed that it is used to ensure consistency in the model results.
+seed_input <- 958 # A random seed that it is used to ensure consistency in the model results.
 
 # Print time to be able to estimate finishing time
 print(Sys.time())

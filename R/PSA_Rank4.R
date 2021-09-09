@@ -18,9 +18,7 @@ draws.sbp <- rpert(n_psa_input, min = -11.3451, mode = -4.8379, max = 1.6693)
 # Create empty objects to store PSA data in
 sim.var.data <- matrix(nrow = n_psa_input, ncol = 11)
 female.int.data <- list()
-female.comp.data <- list()
 male.int.data <- list()
-male.comp.data <- list()
 
 for (i in 1:n_psa_input){
         # Treatment effect inputs
@@ -56,7 +54,7 @@ for (i in 1:n_psa_input){
                                                       discount_util_input, 
                                                       retirement_age_input, 
                                                       psa_input,
-                                                      seed_input)
+                                                      seed_input = psa.seed[i])
         
         
         sim.results.male <- SMDMII_model_simulation(npats_input,
@@ -71,13 +69,13 @@ for (i in 1:n_psa_input){
                                                     discount_util_input,
                                                     retirement_age_input,
                                                     psa_input,
-                                                    seed_input)
+                                                    seed_input = psa.seed[i])
         
         
         # Store iteration results in data objects
         
         
-        sim.var.data[i, ] <- c(seed_input, npats_input, tx_cost_input, unlist(mget(apropos('treateff.'))))
+        sim.var.data[i, ] <- c(psa.seed[i], npats_input, tx_cost_input, unlist(mget(apropos('treateff.'))))
         female.int.data[[i]] <- unlist(sim.results.female[-1])
         male.int.data[[i]] <- unlist(sim.results.male[-1])
 }

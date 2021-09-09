@@ -1,7 +1,7 @@
 # Clear all objects and clear out memory
 rm(list = ls())
 gc()
-Sys.sleep(60)
+Sys.sleep(120)
 memory.size (max = F)
 
 
@@ -22,7 +22,8 @@ source("R/SMI in type II diabetes - HE model v3.R")
 # Load aux. functions, input parameters (from Excel), global lists, etc. 
 source("R/aux_functions.R")
 
-
+# Load saved vector with 1000 RNG seed values
+load('R/Psa_seed.Rdata')
 
 # ANALYSIS INPUT VARIABLES ------------------------------------------------
 
@@ -37,7 +38,7 @@ psa_input <- 0
 n_psa_input <- 500
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 500
+npats_input   <- 100
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "Usual care"
@@ -45,9 +46,6 @@ tx_label <- "Usual care"
 # Cost inputs
 tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.     
 retirement_age_input <- 66
-
-# Set random seed for replication purposes
-seed_input <- 77 # A random seed that it is used to ensure consistency in the model results.
 
 # Print time to be able to estimate finishing time
 print(Sys.time())

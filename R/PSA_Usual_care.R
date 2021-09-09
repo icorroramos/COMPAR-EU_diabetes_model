@@ -10,7 +10,7 @@ init <- Sys.time()
 
 #
 # Create empty objects to store PSA data in
-sim.var.data <- matrix(nrow = n_psa_input, ncol = 11)
+sim.var.data <- matrix(nrow = n_psa_input, ncol = 2)
 female.comp.data <- list()
 male.comp.data <- list()
 
@@ -29,7 +29,7 @@ for (i in 1:n_psa_input){
                                                            discount_util_input, 
                                                            retirement_age_input, 
                                                            psa_input,
-                                                           seed_input)
+                                                           seed_input = psa.seed[i])
 
         sim.results.male.comp <- SMDMII_model_simulation(npats_input,
                                                          female_input = 0,
@@ -43,16 +43,17 @@ for (i in 1:n_psa_input){
                                                          discount_util_input,
                                                          retirement_age_input,
                                                          psa_input,
-                                                         seed_input)
+                                                         seed_input = psa.seed[i])
         
         # Store iteration results in data objects
 
-        
+       sim.var.data[i, ] <- c(psa.seed[i], npats_input) 
        female.comp.data[[i]] <- unlist(sim.results.female.comp[-1])
        male.comp.data[[i]] <- unlist(sim.results.male.comp[-1])
        
 }
 
+colnames(sim.var.data) <- c('Seed', 'Npats')
 psa.results.female.comp <- as.data.frame(do.call(rbind, female.comp.data))
 psa.results.male.comp <- as.data.frame(do.call(rbind, male.comp.data))
 
@@ -63,6 +64,7 @@ print(end - init)
 
 
 # Save simulation results
-save(psa.results.female.comp,
+save(sim.var.data,
+     psa.results.female.comp,
      psa.results.male.comp,
      file = 'output/PSA_Usual_care.RData')
