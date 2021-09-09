@@ -11,9 +11,8 @@ frac.fem <- 26706/58171
 #Lambda (willingness to pay)
 wtp <- 20000
 
-
-
 # FUNCTIONS FOR AUTOMATED OUTPUT CALCULATIONS -----------------------------
+source('../R/Stitcher.R')
 
 calc.deltas <- function(comp.name) {
   f.int.means <- as.data.frame(sim.results.female[-1])
