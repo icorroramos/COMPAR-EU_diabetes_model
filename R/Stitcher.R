@@ -1,7 +1,9 @@
+### Function to combine the results of two model runs.
+### Maintains names and structure of output objects so that analysis scripts can be used
 
 stitcher <- function(comp.name, location.1, location.2){
   load(paste0(location.2, comp.name, '.RData'))
-  npats.loc2 <- sim.vars[[2]]
+  npats.loc2 <- ifelse(exists('sim.vars'), sim.vars[[2]], sim.vars.uc[[2]])
   
   sim.names <- ls()[startsWith(ls(), 'sim.results')]
   
@@ -11,7 +13,7 @@ stitcher <- function(comp.name, location.1, location.2){
   
   load(paste0(location.1, comp.name, '.RData'))
   
-  npats.loc1 <- sim.vars[[2]]
+  npats.loc1 <- ifelse(exists('sim.vars'), sim.vars[[2]], sim.vars.uc[[2]])
   
   for (i in 1:length(sim.names)) {
     loc2.data <- get(paste0(sim.names[i], '.extend'))
