@@ -1,7 +1,7 @@
 # Clear all objects and clear out memory
 rm(list = ls())
 gc()
-Sys.sleep(120)
+Sys.sleep(90)
 memory.size (max = F)
 
 
@@ -35,10 +35,10 @@ discount_util_input <- 0.035
 psa_input <- 0
 
 # Please select number of PSA runs (only works if psa_input <- 1, otherwise will be ignored ). Default: 500 --> NOTE: not completely implemented
-n_psa_input <- 500
+n_psa_input <- 1000
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 100
+npats_input  <- 150
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "Usual care"

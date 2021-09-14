@@ -94,4 +94,4 @@ print(end - init)
 save(sim.var.data,
      psa.results.female,
      psa.results.male,
-     file = 'output/PSA_Rank1_test.RData')
+     file = 'output/PSA_Rank1.RData')
