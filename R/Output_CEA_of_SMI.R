@@ -2,7 +2,7 @@
 
 # Select working directory to choose outputs from
 setwd('output')
-setwd('output/Deterministic_1000_pats')
+#setwd('output/Deterministic_1000_pats')
 
 # INPUT PARAMETERS FOR CALCULATIONS ---------------------------------------
 # Fraction females in target pop
@@ -27,10 +27,35 @@ calc.deltas <- function(comp.name) {
   
   relevant.out <- delta.means %>% 
     transmute(comp = comp.name,
-              life_expecanty = round(mean_life_expectancy, 3),
-              total_costs = round(mean_total_costs),
-              total_qalys = round(mean_total_qalys, 3),
-              headroom = round(wtp * mean_total_qalys - mean_total_costs, 2))
+              added_days_life_expecanty = round(mean_life_expectancy * 365.25, 1),
+              incremental_total_costs = round(mean_total_costs),
+              incremental_total_qalys = round(mean_total_qalys, 3),
+              headroom = round(wtp * mean_total_qalys - mean_total_costs))
+}
+
+calc.incidences <- function(comp.name, per.popsize) {
+
+  f.int.means <- as.data.frame(sim.results.female[-1])
+  f.uc.means <- as.data.frame(sim.results.female.comp[-1])
+  m.int.means <- as.data.frame(sim.results.male[-1])
+  m.uc.means <- as.data.frame(sim.results.male.comp[-1])
+  
+  w.int.means <- frac.fem * f.int.means + (1 - frac.fem) * m.int.means
+  w.uc.means <- frac.fem * f.uc.means + (1 - frac.fem) * m.uc.means
+  
+  delta.means <- w.int.means - w.uc.means
+  
+  incidences <- delta.means %>% 
+    transmute(intervention = comp.name,
+              diff_CHD = mean_CHF_rate * per.popsize,
+              diff_MI = mean_MI_rate * per.popsize,
+              diff_stroke = mean_STROKE_rate * per.popsize,
+              diff_blindness = mean_BLIND_rate * per.popsize,
+              diff_renal_fail = mean_RENAL_rate * per.popsize,
+              diff_amputation = (mean_AMP1_rate + mean_AMP2_rate) * per.popsize,
+              diff_ulcer = mean_ULCER_rate * per.popsize
+  )
+  return(incidences)
 }
 
 calc.convergence <- function() {
@@ -93,6 +118,7 @@ calc.convergence <- function() {
 stitcher('All_SMI_vs_UC_basecase', '', 'Deterministic_5000_pats/')
 
 output.deltas <- calc.deltas('Any SMI')
+output.incidence <- calc.incidences('Any SMI', 1000)
 
 for (i in 1:13) {
   print(i)
@@ -102,28 +128,34 @@ for (i in 1:13) {
   stitcher(paste0('Rank', i, '_basecase'), '', 'Deterministic_5000_pats/')
   output.rank <- calc.deltas(paste('Rank', i))
   output.deltas <- rbind(output.deltas, output.rank)
+  incidence.rank <- calc.incidences(paste('Rank', i), 1000)
+  output.incidence <- rbind(output.incidence, incidence.rank)
 }
 
 # Remove all sim results to prevent use of base case comparator in alternate analyses
 rm(sim.results.female, sim.results.male, sim.results.female.comp, sim.results.male.comp)
 
-for (i in c(1, 2, 6)) {
+for (i in c(1, 2)) {
   print(i)
-  load(paste0('Rank', i, '_spec_targetpop.RData'))
+  # load(paste0('Rank', i, '_spec_targetpop.RData'))
+  stitcher(paste0('Rank', i, '_spec_targetpop'), '', 'Deterministic_5000_pats/')
   output.rank <- calc.deltas(paste('Rank', i, 'alt pop'))
   output.deltas <- rbind(output.deltas, output.rank)
+  incidence.rank <- calc.incidences(paste('Rank', i, 'alt pop'), 1000)
+  output.incidence <- rbind(output.incidence, incidence.rank)
 }
 
-# Add short effect rank 6 analysis
-rm(sim.results.female, sim.results.male, sim.results.female.comp, sim.results.male.comp)
-load('Rank6_shorteff.RData')
-output.deltas <- rbind(output.deltas, calc.deltas('Rank 6 short eff'))
+# # Add short effect rank 6 analysis
+# rm(sim.results.female, sim.results.male, sim.results.female.comp, sim.results.male.comp)
+# load('Rank6_shorteff.RData')
+# output.deltas <- rbind(output.deltas, calc.deltas('Rank 6 short eff'))
 
 print(output.deltas)
+print(output.incidence)
 
 # Sink out put to CSV
 write.csv(output.deltas, 'Deltas_all_analyses.csv')
-
+write.csv(output.incidence, 'Difference_complication_incidence.csv')
 
 
 # AUTOMATED CONVERGENCE CHECK ---------------------------------------------
@@ -190,10 +222,10 @@ for (i in 1:length(res.names)) {
 # LOAD SIMULATION DATA ----------------------------------------------------
 
 # load('All_SMI_vs_UC_basecase.RData', verbose = TRUE)
-load('Usual_care_outcomes.RData', verbose = TRUE)
-# load('Rank1_basecase.RData', verbose = TRUE)
+# load('output/Usual_care_outcomes.RData', verbose = TRUE)
+load('Rank1_basecase.RData', verbose = TRUE)
 # load('Rank2_basecase.RData', verbose = TRUE)
-# load('Rank3_basecase.RData', verbose = TRUE)
+# load('output/Rank3_basecase.RData', verbose = TRUE)
 # load('Rank4_basecase.RData', verbose = TRUE)
 # load('Rank5_basecase.RData', verbose = TRUE)
 # load('Rank6_basecase.RData', verbose = TRUE)
@@ -201,7 +233,7 @@ load('Usual_care_outcomes.RData', verbose = TRUE)
 # load('Rank8_basecase.RData', verbose = TRUE)
 # load('Rank9_basecase.RData', verbose = TRUE)
 # load('Rank10_basecase.RData', verbose = TRUE)
-load('Rank11_basecase.RData', verbose = TRUE)
+# load('Rank11_basecase.RData', verbose = TRUE)
 # load('Rank12_basecase.RData', verbose = TRUE)
 # load('Rank13_basecase.RData', verbose = TRUE)
 
