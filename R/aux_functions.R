@@ -156,6 +156,17 @@ female_cost_inputs <- read.csv(paste0("input/", country.id, "/Event_cost_female_
 future_medical_cost_inputs    <- read.csv(paste0("input/", country.id, "/Future_medical_costs_2020.csv"), sep=",") # Ingelin: 15/12/2020
 future_nonmedical_cost_inputs <- read.csv(paste0("input/", country.id, "/Nonmedical_futurecosts_data.csv"), sep=",") # UK costs updated 11/12/2020 - corrected version from Hamraz
 
+# Informal care costs
+inf_care_all_countries <- data.frame(
+  UK = 22.79,
+  NL = 13.47,
+  DE = 13,
+  ES = 11.16,
+  GR = 7.36
+)
+
+inf_care_hour_cost <- as.numeric(inf_care_all_countries[country.id])
+
 # Utilities are UK-based and age/gender dependent
 qol_inputs <- read.csv(paste0("input/", country.id, "/qol_inputs.csv"), sep=",")
 

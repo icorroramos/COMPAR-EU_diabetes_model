@@ -632,10 +632,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   # Informal care and productivity loss: We calculated above INF.CARE & PROD.LOSS = 0/1 but costs have to be calculated here: 
   
-  # Informal care cost per hour assumed = ?20.26. Make this an input parameter in the model.
-  # Calculation: From Weatherly et al. 2014 "Valuing Informal Care for Economic Evaluation". Table 1 estimate from Wilson et al. 2009 = ?13.11 (2004/UK)
-  # Inflated to 2020 costs using https://www.officialdata.org/uk/inflation/2004?amount=13.11
-  simulation_patients_history$INF.CARE.COST <- (20.26*simulation_patients_history$INF.CARE*(1-simulation_patients_history$dead) + 20.26/2*simulation_patients_history$INF.CARE*simulation_patients_history$dead)/cost_discount_factor
+  # Informal care cost per hour currently specified within aux_functions script
+  simulation_patients_history$INF.CARE.COST <- (inf_care_hour_cost*simulation_patients_history$INF.CARE*(1-simulation_patients_history$dead) + inf_care_hour_cost/2*simulation_patients_history$INF.CARE*simulation_patients_history$dead)/cost_discount_factor
   
   simulation_patients_history$PROD.LOSS.COST <- (simulation_patients_history$PROD.LOSS*(1-simulation_patients_history$dead) + 1/2*simulation_patients_history$PROD.LOSS*simulation_patients_history$dead)/cost_discount_factor
   

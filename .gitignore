@@ -1,7 +1,8 @@
-.Rproj.user
-.Rhistory
-.RData
-.Ruserdata
+*.Rproj.user
+*.Rhistory
+*.RData
+*.Ruserdata
+*.sh
 Sim_results.Rdata
 COMPAR-EU_diabetes_model.Rproj
 Shopping_list.R
