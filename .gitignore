@@ -3,6 +3,8 @@
 *.RData
 *.Ruserdata
 *.sh
-Sim_results.Rdata
+SURF*.R
+output/
+
 COMPAR-EU_diabetes_model.Rproj
 Shopping_list.R
