@@ -138,7 +138,7 @@ annual_p_logistic <- function(regression_coefficents_input, risk_factors_input){
 
 
 ### BACKGROUND MORTALITY
-background_DEATH_prob <- read.csv("input/UK/nationallifetables3yearuk.csv")
+background_DEATH_prob <- read.csv(paste0("input/", country.id, "/background_mortality.csv"))
 
 
 ######################################################
@@ -146,21 +146,21 @@ background_DEATH_prob <- read.csv("input/UK/nationallifetables3yearuk.csv")
 ######################################################
 
 # Patient characteristics. 
-baseline_characteristics <- read.csv("input/UK/baseline_characteristics_UK.csv", sep=",")
+baseline_characteristics <- read.csv(paste0("input/", country.id, "/baseline_characteristics.csv"), sep=",")
 
 # Direct costs of diabetes-related complications for UK are age-gender dependent.
-male_cost_inputs   <- read.csv("input/UK/Event cost male 2020.csv", sep=",")
-female_cost_inputs <- read.csv("input/UK/Event cost female 2020.csv", sep=",")
+male_cost_inputs   <- read.csv(paste0("input/", country.id, "/Event_cost_male_2020.csv"), sep=",")
+female_cost_inputs <- read.csv(paste0("input/", country.id, "/Event_cost_female_2020.csv"), sep=",")
 
 # When a societal perspective is adopted, we also have future costs. This are obtained from the PAID online tool.
-future_medical_cost_inputs    <- read.csv("input/UK/UKPAID__AllORUnrelated_Costs_2020.csv", sep=",") # Ingelin: 15/12/2020
-future_nonmedical_cost_inputs <- read.csv("input/UK/UK_nonmedical_futurecosts_data.csv", sep=",") # UK costs updated 11/12/2020 - corrected version from Hamraz
+future_medical_cost_inputs    <- read.csv(paste0("input/", country.id, "/Future_medical_costs_2020.csv"), sep=",") # Ingelin: 15/12/2020
+future_nonmedical_cost_inputs <- read.csv(paste0("input/", country.id, "/Nonmedical_futurecosts_data.csv"), sep=",") # UK costs updated 11/12/2020 - corrected version from Hamraz
 
 # Utilities are UK-based and age/gender dependent
-qol_inputs <- read.csv("input/UK/qol_inputs_UK.csv", sep=",")
+qol_inputs <- read.csv(paste0("input/", country.id, "/qol_inputs.csv"), sep=",")
 
 # Utility decrements associated to diabetes-related events
-qol_events_inputs <- read.csv("input/UK/qol_events_inputs_UK.csv", sep=",")
+qol_events_inputs <- read.csv(paste0("input/", country.id, "/qol_events_inputs.csv"), sep=",")
 
 
 # .EVENT variable names
@@ -214,9 +214,9 @@ prod_costs_coef    <- c(-1.4747, 0.01047, 0.5112, 0.08407, 0.1881, 1.3026, 0) # 
 
 # Besides the risk factors, there are two other parameters used in the UKPDS equations called "lambda" and "ro". We added them below.
 # Now we have the names of all the parameters (lambda, ro and risk factors) used to predict informal risks in the model.
-parameters_informal   <- c("lambda", risk_factors_informal, "UK")
-parameters_prod       <- c("lambda", risk_factors_prod, "UK")
-parameters_employment <- c("lambda", risk_factors_employment, "UK")
+parameters_informal   <- c("lambda", risk_factors_informal, country.id)
+parameters_prod       <- c("lambda", risk_factors_prod, country.id)
+parameters_employment <- c("lambda", risk_factors_employment, country.id)
 
 # Below we simply create a table (R data frame) with all the coefficients of the regression equation to predict informal care
 informal_care_equations <- data.frame(informal_care_coef,row.names = parameters_informal)

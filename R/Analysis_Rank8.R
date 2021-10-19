@@ -68,12 +68,14 @@ sim.results.male <- SMDMII_model_simulation(npats_input,
 
 # Print simulation duration
 end <- Sys.time()
-print(end - init)
+print(paste(end, 'End of Rank 8 analysis'))
+print('Duration of Rank 8 analysis')
+print(end-init)
 
 
-# Save simulation results
+#Save simulation results
 save(sim.vars,
      sim.results.female,
      sim.results.male,
-     file = 'output/Rank8_basecase.RData')
+     file = paste0('output/', country.id, '/Rank8_basecase_', npats_input, '-pats_seed-', seed_input, '.RData'))
 

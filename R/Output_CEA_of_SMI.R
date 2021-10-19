@@ -1,8 +1,9 @@
 ### OUTPUT OF ANALYSES OF 13 RANKED INTERVENTIONS ###
 
 # Select working directory to choose outputs from
-setwd('output')
+#setwd('output')
 #setwd('output/Deterministic_1000_pats')
+setwd('output/UK/Lisa_15000')
 
 # INPUT PARAMETERS FOR CALCULATIONS ---------------------------------------
 # Fraction females in target pop

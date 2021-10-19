@@ -46,11 +46,13 @@ sim.results.male.comp <- SMDMII_model_simulation(npats_input,
 
 # Print simulation duration
 end <- Sys.time()
-print(end - init)
+print(paste(end, 'End of Usual care analysis'))
+print('Duration of Usual care analysis')
+print(end-init)
 
 # Save simulation results
 save(sim.vars.uc,
      sim.results.female.comp,
      sim.results.male.comp,
-     file = 'output/Usual_care_outcomes.RData')
+     file = paste0('output/', country.id, '/Usual_care_outcomes_', npats_input, '-pats_seed-', seed_input, '.RData'))
 

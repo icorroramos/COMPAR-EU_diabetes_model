@@ -1,8 +1,8 @@
-# Clear all objects and clear out memory
-rm(list = ls())
-gc()
-Sys.sleep(90)
-memory.size (max = F)
+# # Clear all objects and clear out memory
+# rm(list = ls())
+# gc()
+# Sys.sleep(90)
+# memory.size (max = F)
 
 
 # # Setting option for decimals
@@ -18,20 +18,6 @@ memory.size (max = F)
 
 
 # ANALYSIS INPUT VARIABLES ------------------------------------------------
-### Variables moving to SURF scripts for use on SURF-Sara Lisa
-country.id <- 'DE' # Choose from: 'UK', 'NL', 'DE', 'ES', 'GR'
-
-# Discount rates: please indicate the desired discount rates for costs and effects. Default: 0.035
-discount_cost_input <- 0.030
-discount_util_input <- 0.030	
-
-# Set random seed for replication purposes
-seed_input <- 958 # A random seed that it is used to ensure consistency in the model results.
-
-# # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 5000 # 1000  
-
-#---
 
 # Please select running mode: 0 = deterministic, 1 = PSA. Default: 0
 psa_input <- 0
@@ -39,12 +25,18 @@ psa_input <- 0
 # Please select number of PSA runs (only works if psa_input <- 1, otherwise will be ignored ). Default: 500 --> NOTE: not completely implemented
 n_psa_input <- 5
 
+# Please select the number of patients in simulation (default 1000 in deterministic run)
+npats_input   <- 15000 # 1000  
+
 # Please indicate the name of the treatment to be identified
 tx_label <- "Usual care"
 
 # Cost inputs
 tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.     
-retirement_age_input <- 66 
+retirement_age_input <- 66
+
+# Set random seed for replication purposes
+seed_input <- 958 # A random seed that it is used to ensure consistency in the model results.
 
 
 # LOAD MODEL FUNCTION AND INPUT DATA --------------------------------------

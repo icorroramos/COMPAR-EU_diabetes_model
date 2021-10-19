@@ -47,7 +47,7 @@ n_psa_input <- 5
 npats_input   <- 1000  # Try 5000 for testing purposes
 
 # Please indicate the name of the treatment to be identified
-tx_label <- "female_hba1c_effect_no_seed_r2"
+tx_label <- "male_Rank_3"
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
@@ -125,7 +125,7 @@ sim_results <- function(x){
 if(psa_input == 0){
   
   # Run simulation
-  sim_results <- sim_results()
+  #sim_results <- sim_results()
   
   # Results tables: cost effectiveness and clinical results
   sim_CE_results_table <- matrix(c(sim_results$mean_complication_costs,

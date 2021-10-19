@@ -104,7 +104,9 @@ sim.results.male.comp <- SMDMII_model_simulation(npats_input,
 
 # Print simulation duration
 end <- Sys.time()
-print(end - init)
+print(paste(end, 'End of Any SMI vs UC'))
+print('Duration of Any SMI vs UC')
+print(end-init)
 
 
 # Save simulation results
@@ -113,4 +115,5 @@ save(sim.vars,
      sim.results.female.comp,
      sim.results.male,
      sim.results.male.comp,
-     file = 'output/All_SMI_vs_UC_basecase.RData')
+     file = paste0('output/', country.id, '/All_SMI_vs_UC_basecase_', npats_input, '-pats_seed-', seed_input, '.RData'))
+
