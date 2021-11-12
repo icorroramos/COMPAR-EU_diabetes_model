@@ -371,8 +371,12 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       # If INF.CARE = yes, then calculate hours per day, and then total per year: Gamma distribution for now but other options are possible.
       # Make parameters of the gamma distribution input parameters of the function
       # Gamma distribution updated 10/12/2020: primary analysis central countries
-      if(current_patient$INF.CARE == 1){current_patient$INF.CARE <- rgamma(1, 1.753152, 1/1.022368)*365.25}
-      # Note here: Irene suggested we might better use the mean/median
+      # if(current_patient$INF.CARE == 1){current_patient$INF.CARE <- rgamma(1, 1.753152, 1/1.022368)*365.25}
+      
+      # 12/11/2021: Gamma distribution replaced by the median value as country-specific input parameter "inf_care_hours_input"
+      if(current_patient$INF.CARE == 1){current_patient$INF.CARE <- inf_care_hours_input*365.25}
+      
+      # Asked Gimon where to use inf_care_hours_input if as parameter of the SMDMII_model_simulation function or as a global constant
       
       # PRODUCTIVITY LOSS -- main assumptions: 
       # 1. Short-term productivity loss costs: only for EMPLOYED patients based on sick days --> Assume fix 14 working days based on data. This could be changed.
