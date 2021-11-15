@@ -47,6 +47,11 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                                     working_days_lost_input, # 15/11/21: VECTOR(diabetes, diabetes & CHF/stroke) = (14, 27.5) for UK, NL, DE and (10, 20) for ES, GR
                                     cost_hour_sick_input, # 15/11/21: UK=25.781 GBP, NL = 36.8 EUR, DE = 36.6 EUR, ES = 22.8 EUR, GR = 16.9 EUR
                                     friction_period_input, # 15/11/21: UK = 82.18125 days, NL= 85 days, DE = 69 days, ES = 75 days, GR = 98.6175 days
+                                    informal_care_coef_input, # 15/11/21: regression coefficients -->> two equations informal_care_coef_UK_NL_DE and informal_care_coef_ES_GR -->> see aux_functions
+                                    employment_coef_input, # 15/11/21: regression coefficients -->> two equations employment_coef_UK_NL_DE and  employment_coef_ES_GR -->> see aux_functions
+                                    prod_costs_coef_input, # 15/11/2021: regression coefficients -->> two equations prod_costs_coef_UK_NL_DE and prod_costs_coef_ES_GR   -->> see aux_functions
+                                    inf_care_age_scale_input, # 15/11/2021: VECTOR(mean, sd) = (72.5474088, 10.4626624) for UK, NL, DE and VECTOR(mean, sd) = (76.0286769, 9.6290315) for ES, GR
+                                    prod_loss_age_scale_input, # 15/11/2021: VECTOR(mean, sd) = (60.2737989, 60.2737989) for UK, NL, DE and VECTOR(mean, sd) = (62.5992071, 6.6265962) for ES, GR
                                     run_PSA_input, # run_PSA_input: 1 == runs the model in probabilistic mode, 0 == deterministic. Not implemented at the moment
                                     seed_input){ # A random seed that it is used to ensure consistency in the model results. 
   
@@ -73,9 +78,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   simulation_baseline_patients$AGE.DIAG <- simulation_baseline_patients$CURR.AGE - simulation_baseline_patients$YEAR 
   
   # Added 29/08/2020: age scaled parameters and informal care and productivity loss indicators
-  simulation_baseline_patients$CURR.AGE.SCALE.INF  <- (simulation_baseline_patients$CURR.AGE - 72.5474088)/10.4626624 
+  simulation_baseline_patients$CURR.AGE.SCALE.INF  <- (simulation_baseline_patients$CURR.AGE - inf_care_age_scale_input[1])/inf_care_age_scale_input[2] 
   # Hard-coded values from data: Primary analysis central countries assumed for UK
-  simulation_baseline_patients$CURR.AGE.SCALE.PROD <- (simulation_baseline_patients$CURR.AGE - 60.2737989)/6.1177269 
+  simulation_baseline_patients$CURR.AGE.SCALE.PROD <- (simulation_baseline_patients$CURR.AGE - prod_loss_age_scale_input[1])/prod_loss_age_scale_input[2] 
   # Hard-coded values from data: Primary analysis central countries assumed for UK
   
   simulation_baseline_patients$CURR.AGE.2 <- (simulation_baseline_patients$CURR.AGE)^2
@@ -87,7 +92,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
          {
            #baseline_risk_factors_employment <- simulation_baseline_patients %>% select(risk_factors_employment)
            baseline_risk_factors_employment <- simulation_baseline_patients[,risk_factors_employment]
-           baseline_employed_prob <- apply(baseline_risk_factors_employment, 1, function(x) annual_p_bernoulli(employment_equations$employment_coef,x)$p)
+           # Updated 15/11/2021: employment_coef as input
+           baseline_employed_prob <- apply(baseline_risk_factors_employment, 1, function(x) annual_p_bernoulli(employment_equations$employment_coef_input,x)$p)
            simulation_baseline_patients$EMPLOYED <- unlist(lapply(baseline_employed_prob, function(x) rbinom(1,1,x))) #EMPLOYED = yes/no
          })
   # We set productivity loss to 0 at BASELINE. This will be updated according to employment status as the simulation advances.
@@ -369,18 +375,16 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # INFORMAL CARE
       # Probability of receiving at least weekly informal care for a whole year is calculated using a Bernoulli distribution.
-      # current_inf_care_prob <- annual_p_bernoulli(informal_care_equations$informal_care_coef, current_patient %>% select(risk_factors_informal))$p
-      current_inf_care_prob <- annual_p_bernoulli(informal_care_equations$informal_care_coef, current_patient[,risk_factors_informal])$p
+      # Updated 15/11/2021: informal_care_coef as input and country-specific
+      current_inf_care_prob    <- annual_p_bernoulli(informal_care_equations$informal_care_coef_input, current_patient[,risk_factors_informal])$p
       current_patient$INF.CARE <- rbinom(1,1,current_inf_care_prob) #INF.CARE = yes/no
       
       # If INF.CARE = yes, then calculate hours per day, and then total per year: Gamma distribution for now but other options are possible.
       # Make parameters of the gamma distribution input parameters of the function
       # Gamma distribution updated 10/12/2020: primary analysis central countries
       # if(current_patient$INF.CARE == 1){current_patient$INF.CARE <- rgamma(1, 1.753152, 1/1.022368)*365.25}
-      
-      # 12/11/2021: Gamma distribution replaced by the median value as country-specific input parameter "inf_care_hours_input"
+      # 15/11/2021: Gamma distribution replaced by the median value as country-specific input parameter "inf_care_hours_input"
       if(current_patient$INF.CARE == 1){current_patient$INF.CARE <- inf_care_hours_input*365.25}
-      
       
       # PRODUCTIVITY LOSS -- main assumptions: 
       # 1. Short-term productivity loss costs: only for EMPLOYED patients based on sick days --> Assume fix 14 working days based on data. This could be changed.
@@ -420,8 +424,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         
         # Permanent (one-off) prod. loss costs
         # Calculate first the probability of losing job (Bernoulli distribution).
-        #current_jobless_prob <- annual_p_bernoulli(informal_care_equations$prod_costs_coef, current_patient %>% select(risk_factors_prod))$p
-        current_jobless_prob <- annual_p_bernoulli(informal_care_equations$prod_costs_coef, current_patient[,risk_factors_prod])$p
+        # Update 15/11/2021: prod_costs_coef as input parameter
+        current_jobless_prob <- annual_p_bernoulli(informal_care_equations$prod_costs_coef_input, current_patient[,risk_factors_prod])$p
         current_jobless <- rbinom(1,1,current_jobless_prob) 
         
         # Updated 15/11/2021: If jobless, then apply permanent cost (one-off) cost: friction method as proportion of a maximum of country-specific days.
@@ -465,9 +469,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       current_patient_update$CURR.AGE <- current_patient$CURR.AGE + 1 
       current_patient_update$YEAR <- current_patient$YEAR + 1 # Note YEAR is duration of diabetes
       
-      # Added 29/08/2020: age scaled parameters
-      current_patient_update$CURR.AGE.SCALE.INF  <- (current_patient$CURR.AGE - 73.75225)/9.938705 #hardcoded values from data
-      current_patient_update$CURR.AGE.SCALE.PROD <- (current_patient$CURR.AGE - 70.34077)/9.578899 #hardcoded values from data
+      # Added 29/08/2020: age scaled parameters -->> Updated 15/11/2021
+      current_patient_update$CURR.AGE.SCALE.INF  <- (current_patient$CURR.AGE - inf_care_age_scale_input[1])/inf_care_age_scale_input[2]
+      current_patient_update$CURR.AGE.SCALE.PROD <- (current_patient$CURR.AGE - prod_loss_age_scale_input[1])/prod_loss_age_scale_input[2]
       
       if(current_patient_update$CURR.AGE >= retirement_age_input){
         current_patient_update$EMPLOYED <- 0

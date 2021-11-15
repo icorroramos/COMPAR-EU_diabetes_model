@@ -219,9 +219,15 @@ export_csv <- function(object_input){
 # UPDATE EQUATIONS WITH MOST RECENT VERSION: 10/12/2020
 # Note there is no country specific coefficient now. That's why the last coefficient = 0. 
 # Otherwise the code would not work.
-informal_care_coef <- c(-1.5355, 0.5036, 0.6852, 0.4231, 0.2245, 0.5498, 0) # Assumed primary analysis central countries for UK
-employment_coef    <- c(2.4283, 0.1273, -0.00252, -0.0737, 0) # Assumed primary analysis central countries for UK
-prod_costs_coef    <- c(-1.4747, 0.01047, 0.5112, 0.08407, 0.1881, 1.3026, 0) # Assumed primary analysis central countries for UK
+# Updated 15/11/2021: country-specific equations
+informal_care_coef_UK_NL_DE <- c(-1.5355, 0.5036, 0.6852, 0.4231, 0.2245, 0.5498, 0) 
+informal_care_coef_ES_GR    <- c(-1.5259, 0.5992, 0.9210, 0.3259, 1.1048, 0.2057, 0) 
+
+employment_coef_UK_NL_DE    <- c(2.4283,   0.1273, -0.00252, -0.0737, 0) 
+employment_coef_ES_GR       <- c(-11.0097, 0.1664, 0, 0.2843, 0) 
+
+prod_costs_coef_UK_NL_DE    <- c(-1.4747, 0.01047, 0.5112, 0.08407, 0.1881, 1.3026, 0)
+prod_costs_coef_ES_GR       <- c(-1.5503, 0.1943,  0.4042, 0.1543,  0.3804, 0.4103, 0)  
 
 # Besides the risk factors, there are two other parameters used in the UKPDS equations called "lambda" and "ro". We added them below.
 # Now we have the names of all the parameters (lambda, ro and risk factors) used to predict informal risks in the model.
@@ -230,9 +236,9 @@ parameters_prod       <- c("lambda", risk_factors_prod, country.id)
 parameters_employment <- c("lambda", risk_factors_employment, country.id)
 
 # Below we simply create a table (R data frame) with all the coefficients of the regression equation to predict informal care
-informal_care_equations <- data.frame(informal_care_coef,row.names = parameters_informal)
-prod_cost_equations     <- data.frame(prod_costs_coef, row.names = parameters_prod)
-employment_equations    <- data.frame(employment_coef, row.names = parameters_employment)
+informal_care_equations <- data.frame(informal_care_coef_UK_NL_DE, informal_care_coef_ES_GR,row.names = parameters_informal)
+prod_cost_equations     <- data.frame(prod_costs_coef_UK_NL_DE, prod_costs_coef_ES_GR, row.names = parameters_prod)
+employment_equations    <- data.frame(employment_coef_UK_NL_DE, employment_coef_ES_GR, row.names = parameters_employment)
 
 # Notation: as a general rule, names for function input parameters end with "_input".
 
