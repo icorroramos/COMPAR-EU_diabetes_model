@@ -42,6 +42,11 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                                     cost_disc_rate_input, # discount rates for costs and effects 
                                     qol_disc_rate_input, 
                                     retirement_age_input, # retirement age
+                                    inf_care_hours_input, # 15/11/2021: country-specific median = 1.25318 for UK, NL, DE and median = 2.26803 for ES, GR
+                                    worked_hours_input, # 15//11/21: VECTOR(female, male) = (28, 38) for UK, NL, DE and (30, 37.5) for ES, GR
+                                    working_days_lost_input, # 15/11/21: VECTOR(diabetes, diabetes & CHF/stroke) = (14, 27.5) for UK, NL, DE and (10, 20) for ES, GR
+                                    cost_hour_sick_input, # 15/11/21: UK=25.781 GBP, NL = 36.8 EUR, DE = 36.6 EUR, ES = 22.8 EUR, GR = 16.9 EUR
+                                    friction_period_input, # 15/11/21: UK = 82.18125 days, NL= 85 days, DE = 69 days, ES = 75 days, GR = 98.6175 days
                                     run_PSA_input, # run_PSA_input: 1 == runs the model in probabilistic mode, 0 == deterministic. Not implemented at the moment
                                     seed_input){ # A random seed that it is used to ensure consistency in the model results. 
   
@@ -376,7 +381,6 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       # 12/11/2021: Gamma distribution replaced by the median value as country-specific input parameter "inf_care_hours_input"
       if(current_patient$INF.CARE == 1){current_patient$INF.CARE <- inf_care_hours_input*365.25}
       
-      # Asked Gimon where to use inf_care_hours_input if as parameter of the SMDMII_model_simulation function or as a global constant
       
       # PRODUCTIVITY LOSS -- main assumptions: 
       # 1. Short-term productivity loss costs: only for EMPLOYED patients based on sick days --> Assume fix 14 working days based on data. This could be changed.
@@ -387,8 +391,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       if(current_patient$EMPLOYED == 1){
         # Short-term productivity costs (sick days)
         # Calculate number of worked hours per week: assume mean value, different for male and females. See e-mail 10/12/2020.
-        # This could be updated if we are able to fit a distribution.
-        current_worked_hours_week <- if_else(current_patient$FEMALE == 1, 26.5096273, 33.8016304) 
+        # Updated 15/11/2021.
+        current_worked_hours_week <- if_else(current_patient$FEMALE == 1, worked_hours_input[1], worked_hours_input[2]) 
         current_worked_hours_day <- current_worked_hours_week/5
         
         # Assumption 11/12/2020: working days per year lost due to sickness --> Apply median value for central European countries.
@@ -403,17 +407,16 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         # So it could either be an MI event, or onset of heart failure. I therefore think these sick days should apply to both patients 
         # with congestive heart failure and patients with a myocardial infarction, but I think also to patients with ischemic heart disease. 
         
+        # Updated 15/11/2021
         sick_hours_year <- if_else(current_patient$STROKE.EVENT+current_patient$MI.EVENT+current_patient$CHF.EVENT+current_patient$IHD.EVENT>0, 
-                                   current_worked_hours_day*27.5, 
-                                   current_worked_hours_day*14)   
+                                   current_worked_hours_day*working_days_lost_input[1], 
+                                   current_worked_hours_day*working_days_lost_input[2])   
         
-        # Cost of an hour sick: based the productivity costs per hour on Eurostat: for the UK it is 28.50 Euros per hour (not specified by gender) in 2019.
-        # https://ec.europa.eu/eurostat/databrowser/view/tps00173/default/table?lang=en.
-        # Inflated to 2020 is 28.93 -->> https://www.officialdata.org/europe/inflation/2019?amount=28.50
-        # And converted into GBP is 26.6369 -->> https://www.xe.com/currencyconverter/convert/?Amount=28.93&From=EUR&To=GBP
-        cost_hour_sick <- 26.6369
+        # Cost of an hour sick: updated 15/11/2021
+        # \\campus.eur.nl\shared\groups\IMTA-600-H2020COMPAR-EU\600 Projectuitvoer\Disease models\General cost inputs for all models
+        # Document: Unit costs productivity costs and informal care 2020
         # Multiply number of sick hours by the costs of an hour
-        current_patient$PROD.LOSS <- sick_hours_year*cost_hour_sick
+        current_patient$PROD.LOSS <- sick_hours_year*cost_hour_sick_input
         
         # Permanent (one-off) prod. loss costs
         # Calculate first the probability of losing job (Bernoulli distribution).
@@ -421,13 +424,11 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         current_jobless_prob <- annual_p_bernoulli(informal_care_equations$prod_costs_coef, current_patient[,risk_factors_prod])$p
         current_jobless <- rbinom(1,1,current_jobless_prob) 
         
-        # If jobless, then apply permanent cost (one-off) cost: friction method as proportion of a maximum of 2.7 months (re-calculated as days).
-        # To do: make 2.7 months an input parameter of the model. We can assume a friction period in the UK of 2.7 months based on this publication:
-        #http://pure-oai.bham.ac.uk/ws/files/40800976/Kigozi_et_al_2017_Health_Economics.pdf
+        # Updated 15/11/2021: If jobless, then apply permanent cost (one-off) cost: friction method as proportion of a maximum of country-specific days.
         
         if(current_jobless == 1){ 
           # Add permanent cost (one-off) cost to cost of sick days
-          current_patient$PROD.LOSS <- current_patient$PROD.LOSS + cost_hour_sick*(2.7*365.25/12)*current_worked_hours_day/8
+          current_patient$PROD.LOSS <- current_patient$PROD.LOSS + cost_hour_sick_input*friction_period_input*current_worked_hours_day/8
           # Update employed status
           current_patient$EMPLOYED <- 0
         }
