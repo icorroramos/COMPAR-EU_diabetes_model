@@ -157,7 +157,7 @@ future_medical_cost_inputs    <- read.csv(paste0("input/", country.id, "/Future_
 future_nonmedical_cost_inputs <- read.csv(paste0("input/", country.id, "/Nonmedical_futurecosts_data.csv"), sep=",") # UK costs updated 11/12/2020 - corrected version from Hamraz
 
 # Informal care costs
-inf_care_all_countries <- data.frame(
+inf_care_cost_all_countries <- data.frame(
   UK = 22.79,
   NL = 13.47,
   DE = 13,
@@ -165,7 +165,79 @@ inf_care_all_countries <- data.frame(
   GR = 7.36
 )
 
-inf_care_hour_cost <- as.numeric(inf_care_all_countries[country.id])
+inf_care_hour_cost <- as.numeric(inf_care_cost_all_countries[country.id])
+
+inf_care_hours_all_countires <- data.frame(
+  UK = 1.25318,
+  NL = 1.25318,
+  DE = 1.25318,
+  ES = 2.26803,
+  GR = 2.26803
+)
+
+inf_care_hours_input <- as.numeric(inf_care_hours_all_countires[country.id])
+
+inf_care_age_scale_all_countries <- data.frame(
+  UK = c(72.5474088, 10.4626624), #(mean, sd)
+  NL = c(72.5474088, 10.4626624),
+  DE = c(72.5474088, 10.4626624),
+  ES = c(76.0286769, 9.6290315),
+  GR = c(76.0286769, 9.6290315)
+)
+
+inf_care_age_scale_input <- inf_care_age_scale_all_countries[, country.id]
+
+# Productivity costs
+worked_hours_all_countries <- data.frame(
+  UK = c(28, 38), #(female value, male value)
+  NL = c(28, 38),
+  DE = c(28, 38),
+  ES = c(30, 37.5),
+  GR = c(30, 37.5)
+)
+
+worked_hours_input <- worked_hours_all_countries[, country.id]
+
+working_days_lost_all_countries <- data.frame(
+  UK = c(14, 27.5), #((diabetes value, diabetes & CHF/stroke value)
+  NL = c(14, 27.5),
+  DE = c(14, 27.5),
+  ES = c(10, 20),
+  GR = c(10, 20)
+)
+
+working_days_lost_input <- working_days_lost_all_countries[, country.id]
+
+cost_hour_sick_all_countries <- data.frame(
+  UK = 25.781, #GBP
+  NL = 36.8, #EUR
+  DE = 36.6, #EUR
+  ES = 22.8, #EUR
+  GR = 16.9 #EUR
+)
+
+cost_hour_sick_input <- as.numeric(cost_hour_sick_all_countries[country.id])
+
+friction_period_all_countries <- data.frame(
+  UK = 82.18125,
+  NL = 85,
+  DE = 69,
+  ES = 75,
+  GR = 98.6175
+)
+
+friction_period_input <- as.numeric(friction_period_all_countries[country.id])
+
+prod.loss_age_scale_all_countries <- data.frame(
+  UK = c(60.2737989, 60.2737989), #(mean, sd)
+  NL = c(60.2737989, 60.2737989),
+  DE = c(60.2737989, 60.2737989),
+  ES = c(62.5992071, 6.6265962),
+  GR = c(62.5992071, 6.6265962)
+)
+
+prod_loss_age_scale_input <- prod.loss_age_scale_all_countries[, country.id]
+
 
 # Utilities are UK-based and age/gender dependent
 qol_inputs <- read.csv(paste0("input/", country.id, "/qol_inputs.csv"), sep=",")
@@ -220,6 +292,38 @@ export_csv <- function(object_input){
 # Note there is no country specific coefficient now. That's why the last coefficient = 0. 
 # Otherwise the code would not work.
 # Updated 15/11/2021: country-specific equations
+informal_care_coef_all_countries <- data.frame(
+  UK = c(-1.5355, 0.5036, 0.6852, 0.4231, 0.2245, 0.5498, 0),
+  NL = c(-1.5355, 0.5036, 0.6852, 0.4231, 0.2245, 0.5498, 0),
+  DE = c(-1.5355, 0.5036, 0.6852, 0.4231, 0.2245, 0.5498, 0),
+  ES = c(-1.5259, 0.5992, 0.9210, 0.3259, 1.1048, 0.2057, 0),
+  GR = c(-1.5259, 0.5992, 0.9210, 0.3259, 1.1048, 0.2057, 0)
+)
+
+informal_care_coef_input <- informal_care_coef_all_countries[, country.id]
+
+employment_coef_all_countries <- data.frame(
+  UK = c(2.4283,   0.1273, -0.00252, -0.0737, 0),
+  NL = c(2.4283,   0.1273, -0.00252, -0.0737, 0),
+  DE = c(2.4283,   0.1273, -0.00252, -0.0737, 0),
+  ES = c(-11.0097, 0.1664, 0, 0.2843, 0),
+  GR = c(-11.0097, 0.1664, 0, 0.2843, 0)
+)
+
+employment_coef_input <- employment_coef_all_countries[, country.id]
+
+prod_costs_coef_all_countries <- data.frame(
+  UK = c(-1.4747, 0.01047, 0.5112, 0.08407, 0.1881, 1.3026, 0),
+  NL = c(-1.4747, 0.01047, 0.5112, 0.08407, 0.1881, 1.3026, 0),
+  DE = c(-1.4747, 0.01047, 0.5112, 0.08407, 0.1881, 1.3026, 0),
+  ES = c(-1.5503, 0.1943,  0.4042, 0.1543,  0.3804, 0.4103, 0),
+  GR = c(-1.5503, 0.1943,  0.4042, 0.1543,  0.3804, 0.4103, 0)
+)
+
+prod_costs_coef_input <- prod_costs_coef_all_countries[, country.id]
+
+
+# FIXME: objects below are only used to construct the data frames 16 lines below. Are they needed for model functionality or can they be removed?
 informal_care_coef_UK_NL_DE <- c(-1.5355, 0.5036, 0.6852, 0.4231, 0.2245, 0.5498, 0) 
 informal_care_coef_ES_GR    <- c(-1.5259, 0.5992, 0.9210, 0.3259, 1.1048, 0.2057, 0) 
 
@@ -235,6 +339,7 @@ parameters_informal   <- c("lambda", risk_factors_informal, country.id)
 parameters_prod       <- c("lambda", risk_factors_prod, country.id)
 parameters_employment <- c("lambda", risk_factors_employment, country.id)
 
+#FIXME: are the objects below used at any point in the model? 
 # Below we simply create a table (R data frame) with all the coefficients of the regression equation to predict informal care
 informal_care_equations <- data.frame(informal_care_coef_UK_NL_DE, informal_care_coef_ES_GR,row.names = parameters_informal)
 prod_cost_equations     <- data.frame(prod_costs_coef_UK_NL_DE, prod_costs_coef_ES_GR, row.names = parameters_prod)
