@@ -64,7 +64,7 @@ for (i in 1:n_psa_input){
                                                       prod_costs_coef_input = prod_costs_coef_input, 
                                                       inf_care_age_scale_input = inf_care_age_scale_input, 
                                                       prod_loss_age_scale_input = prod_loss_age_scale_input,
-                                                      psa_input = psa_input,
+                                                      run_PSA_input = psa_input,
                                                       seed_input = psa.seed[i])
 
         sim.results.male <- SMDMII_model_simulation(patient_size_input = npats_input,
@@ -88,7 +88,7 @@ for (i in 1:n_psa_input){
                                                     prod_costs_coef_input = prod_costs_coef_input, 
                                                     inf_care_age_scale_input = inf_care_age_scale_input, 
                                                     prod_loss_age_scale_input = prod_loss_age_scale_input,
-                                                    psa_input = psa_input,
+                                                    run_PSA_input = psa_input,
                                                     seed_input = psa.seed[i])
         
         
