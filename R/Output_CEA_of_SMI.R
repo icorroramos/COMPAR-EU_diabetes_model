@@ -1,19 +1,24 @@
 ### OUTPUT OF ANALYSES OF 13 RANKED INTERVENTIONS ###
 
+# Load stitcher function
+source('R/Stitcher.R')
+
 # Select working directory to choose outputs from
-#setwd('output')
-#setwd('output/Deterministic_1000_pats')
-setwd('output/UK/Lisa_15000')
+# setwd('output')
+# setwd('output/Deterministic_1000_pats')
+# setwd('output/UK/Lisa_15000')
+setwd('output/DE/')
+
+name.loc2 <- '5000_pats_seed-77/' # Name of subfolder with second run results
 
 # INPUT PARAMETERS FOR CALCULATIONS ---------------------------------------
 # Fraction females in target pop
-frac.fem <- 26706/58171
+frac.fem <- 0.472 # UK: 26706/58171 
 
 #Lambda (willingness to pay)
 wtp <- 20000
 
 # FUNCTIONS FOR AUTOMATED OUTPUT CALCULATIONS -----------------------------
-source('../R/Stitcher.R')
 
 calc.deltas <- function(comp.name) {
   f.int.means <- as.data.frame(sim.results.female[-1])
@@ -115,36 +120,36 @@ calc.convergence <- function() {
 
 
 # AUTOMATED PROCESSING OF SIM OUTPUT --------------------------------------
-# load('All_SMI_vs_UC_basecase.RData')
-stitcher('All_SMI_vs_UC_basecase', '', 'Deterministic_5000_pats/')
+load('All_SMI_vs_UC_basecase.RData')
+# stitcher('All_SMI_vs_UC_basecase', '', name.loc2)
 
 output.deltas <- calc.deltas('Any SMI')
 output.incidence <- calc.incidences('Any SMI', 1000)
 
 for (i in 1:13) {
   print(i)
-  # load('Usual_care_outcomes.RData')
-  # load(paste0('Rank', i, '_basecase.RData'))
-  stitcher('Usual_care_outcomes', '', 'Deterministic_5000_pats/')
-  stitcher(paste0('Rank', i, '_basecase'), '', 'Deterministic_5000_pats/')
+  load('Usual_care_outcomes.RData')
+  load(paste0('Rank', i, '_basecase.RData'))
+  # stitcher('Usual_care_outcomes', '', name.loc2)
+  # stitcher(paste0('Rank', i, '_basecase'), '', name.loc2)
   output.rank <- calc.deltas(paste('Rank', i))
   output.deltas <- rbind(output.deltas, output.rank)
   incidence.rank <- calc.incidences(paste('Rank', i), 1000)
   output.incidence <- rbind(output.incidence, incidence.rank)
 }
 
-# Remove all sim results to prevent use of base case comparator in alternate analyses
-rm(sim.results.female, sim.results.male, sim.results.female.comp, sim.results.male.comp)
-
-for (i in c(1, 2)) {
-  print(i)
-  # load(paste0('Rank', i, '_spec_targetpop.RData'))
-  stitcher(paste0('Rank', i, '_spec_targetpop'), '', 'Deterministic_5000_pats/')
-  output.rank <- calc.deltas(paste('Rank', i, 'alt pop'))
-  output.deltas <- rbind(output.deltas, output.rank)
-  incidence.rank <- calc.incidences(paste('Rank', i, 'alt pop'), 1000)
-  output.incidence <- rbind(output.incidence, incidence.rank)
-}
+# # Remove all sim results to prevent use of base case comparator in alternate analyses
+# rm(sim.results.female, sim.results.male, sim.results.female.comp, sim.results.male.comp)
+# 
+# for (i in c(1, 2)) {
+#   print(i)
+#   # load(paste0('Rank', i, '_spec_targetpop.RData'))
+#   stitcher(paste0('Rank', i, '_spec_targetpop'), '', name.loc2)
+#   output.rank <- calc.deltas(paste('Rank', i, 'alt pop'))
+#   output.deltas <- rbind(output.deltas, output.rank)
+#   incidence.rank <- calc.incidences(paste('Rank', i, 'alt pop'), 1000)
+#   output.incidence <- rbind(output.incidence, incidence.rank)
+# }
 
 # # Add short effect rank 6 analysis
 # rm(sim.results.female, sim.results.male, sim.results.female.comp, sim.results.male.comp)
@@ -163,7 +168,7 @@ write.csv(output.incidence, 'Difference_complication_incidence.csv')
 # Convergence Headroom - choose between files or use the stitcher
 
 # load('All_SMI_vs_UC_basecase.RData')
-stitcher('All_SMI_vs_UC_basecase', '', 'Deterministic_5000_pats/')
+stitcher('All_SMI_vs_UC_basecase', '', name.loc2)
 allvuc.converge <- calc.convergence()
 png(filename = 'All_vs_UC_converge.png', height = 15, width = 20, units = 'cm', res = 150)
 plot(x = 1:nrow(allvuc.converge), y = allvuc.converge[ ,4], type = 'l', xlab = '# Patients (M/F weighed)', ylab = 'Incremental Headroom', main = 'Any SMI vs UC')
@@ -173,8 +178,8 @@ for (i in 1:13) {
   print(i)
   # load('Usual_care_outcomes.RData')
   # load(paste0('Rank', i, '_basecase.RData'))
-  stitcher('Usual_care_outcomes', '', 'Deterministic_5000_pats/')
-  stitcher(paste0('Rank', i, '_basecase'), '', 'Deterministic_5000_pats/')
+  stitcher('Usual_care_outcomes', '', name.loc2)
+  stitcher(paste0('Rank', i, '_basecase'), '', name.loc2)
   converge.rank <- calc.convergence()
   png(filename = paste0('Rank_', i, '_convergence.png'), height = 15, width = 20, units = 'cm', res = 150)
   plot(x = 1:nrow(converge.rank), y = converge.rank[ ,4], type = 'l', xlab = '# Patients (M/F weighed)', ylab = 'Incremental Headroom', main = paste('Rank', i))
