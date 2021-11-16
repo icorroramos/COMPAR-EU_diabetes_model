@@ -93,7 +93,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
            #baseline_risk_factors_employment <- simulation_baseline_patients %>% select(risk_factors_employment)
            baseline_risk_factors_employment <- simulation_baseline_patients[,risk_factors_employment]
            # Updated 15/11/2021: employment_coef as input
-           baseline_employed_prob <- apply(baseline_risk_factors_employment, 1, function(x) annual_p_bernoulli(employment_equations$employment_coef_input,x)$p)
+           baseline_employed_prob <- apply(baseline_risk_factors_employment, 1, function(x) annual_p_bernoulli(employment_coef_input,x)$p)
            simulation_baseline_patients$EMPLOYED <- unlist(lapply(baseline_employed_prob, function(x) rbinom(1,1,x))) #EMPLOYED = yes/no
          })
   # We set productivity loss to 0 at BASELINE. This will be updated according to employment status as the simulation advances.
@@ -376,7 +376,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       # INFORMAL CARE
       # Probability of receiving at least weekly informal care for a whole year is calculated using a Bernoulli distribution.
       # Updated 15/11/2021: informal_care_coef as input and country-specific
-      current_inf_care_prob    <- annual_p_bernoulli(informal_care_equations$informal_care_coef_input, current_patient[,risk_factors_informal])$p
+      current_inf_care_prob    <- annual_p_bernoulli(informal_care_coef_input, current_patient[,risk_factors_informal])$p
       current_patient$INF.CARE <- rbinom(1,1,current_inf_care_prob) #INF.CARE = yes/no
       
       # If INF.CARE = yes, then calculate hours per day, and then total per year: Gamma distribution for now but other options are possible.
@@ -425,7 +425,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         # Permanent (one-off) prod. loss costs
         # Calculate first the probability of losing job (Bernoulli distribution).
         # Update 15/11/2021: prod_costs_coef as input parameter
-        current_jobless_prob <- annual_p_bernoulli(informal_care_equations$prod_costs_coef_input, current_patient[,risk_factors_prod])$p
+        current_jobless_prob <- annual_p_bernoulli(prod_costs_coef_input, current_patient[,risk_factors_prod])$p
         current_jobless <- rbinom(1,1,current_jobless_prob) 
         
         # Updated 15/11/2021: If jobless, then apply permanent cost (one-off) cost: friction method as proportion of a maximum of country-specific days.
