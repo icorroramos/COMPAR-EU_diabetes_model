@@ -26,6 +26,7 @@ source("R/aux_functions.R")
 
 
 # ANALYSIS INPUT VARIABLES ------------------------------------------------
+country.id <- 'DE' # Choose from: 'UK', 'NL', 'DE', 'ES', 'GR'
 
 # Discount rates: please indicate the desired discount rates for costs and effects. Default: 0.035
 discount_cost_input <- 0.035
@@ -48,7 +49,7 @@ tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.
 retirement_age_input <- 66
 
 # Set random seed for replication purposes
-#seed_input <- 77 # A random seed that it is used to ensure consistency in the model results.
+seed_input <- 77 # A random seed that it is used to ensure consistency in the model results.
 
 
 init <- Sys.time()
