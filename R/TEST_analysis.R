@@ -19,10 +19,10 @@
 # inst <- lapply(pkgs, library, character.only = TRUE) # load them
 
 # Load model function: 
-source("SMI in type II diabetes - HE model v3.R")
+source("R/SMI in type II diabetes - HE model v3.R")
 
 # Load aux. functions, input parameters (from Excel), global lists, etc. 
-source("aux_functions.R")
+source("R/aux_functions.R")
 
 
 # ANALYSIS INPUT VARIABLES ------------------------------------------------
