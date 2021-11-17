@@ -28,10 +28,6 @@ npats_input   <- 10 # 1000
 #---
 country.id <- 'DE' # Choose from: 'UK', 'NL', 'DE', 'ES', 'GR'
 
-# Discount rates: please indicate the desired discount rates for costs and effects. Default: 0.035
-discount_cost_input <- 0.030
-discount_util_input <- 0.030
-
 # Duration of the effect from SMIs
 treateff_start   <- 1 #1 # Cycle in which treatment effect starts
 treateff_end     <- 8 #3 # Cycle in which treatment effect ends

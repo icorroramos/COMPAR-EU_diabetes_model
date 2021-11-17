@@ -27,9 +27,6 @@ load('R/Psa_seed.Rdata')
 
 # ANALYSIS INPUT VARIABLES ------------------------------------------------
 
-# Discount rates: please indicate the desired discount rates for costs and effects. Default: 0.035
-discount_cost_input <- 0.035
-discount_util_input <- 0.035	
 
 # Please select running mode: 0 = deterministic, 1 = PSA. Default: 0
 psa_input <- 0
