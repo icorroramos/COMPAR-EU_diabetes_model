@@ -19,8 +19,8 @@ pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr", "beepr") 
 inst <- lapply(pkgs, library, character.only = TRUE) # load them
 
 # Load model function: 
-#source("R/SMI in type II diabetes - HE model v3.R")
-source("R/OLD SMI in type II diabetes - HE model v3.R")
+source("R/SMI in type II diabetes - HE model v3.R")
+#source("R/OLD SMI in type II diabetes - HE model v3.R")
 
 # Load aux. functions, input parameters (from Excel), global lists, etc. 
 source("R/aux_functions.R")
@@ -36,7 +36,7 @@ psa_input <- 0
 n_psa_input <- 5
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 1000 # 1000  
+npats_input   <- 10 # 1000  
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "Usual care"
