@@ -742,7 +742,6 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # Annual discounted QALYs
   simulation_patients_history$QALY <- (total_utils*(1-simulation_patients_history$dead) + (total_utils/2)*simulation_patients_history$dead)
   
-  View(qol_matrix)
   
   ########## MAIN PART IV: Calculate aggregated results ##########
   
