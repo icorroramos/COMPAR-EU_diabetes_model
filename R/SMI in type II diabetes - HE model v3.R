@@ -568,7 +568,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   ########## MAIN PART II: Calculate Costs ##########
   
   # All cost inputs were sourced from the MH2020 diabetes challenge. We need NL costs.
-  cost_discount_factor <- (1+cost_disc_rate_input)^(simulation_patients_history$SDURATION)
+  simulation_patients_history$cost_discount_factor <- (1+cost_disc_rate_input)^(simulation_patients_history$SDURATION)
   
   # Complication costs are dependent on age, gender and alive status
   complication_cost_inputs <- data.frame(ifelse(unique(simulation_patients_history$FEMALE) == 0, male_cost_inputs,female_cost_inputs) )
@@ -584,27 +584,27 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                                          complication_cost_inputs, by = 'CURR.AGE')
   
   #Ischemic heart disease/Angina
-  fatal_IHD_cost      <- (complication_cost_matrix$IHD.FATAL*complication_cost_matrix$IHD.EVENT*complication_cost_matrix$dead)/cost_discount_factor 
-  nonfatal_IHD_cost   <- (complication_cost_matrix$IHD.NONFATAL*complication_cost_matrix$IHD.EVENT*(1-complication_cost_matrix$dead))/cost_discount_factor 
-  subsequent_IHD_cost <- (complication_cost_matrix$IHD.SUB*complication_cost_matrix$IHD.HIST*(1-complication_cost_matrix$IHD.EVENT))/cost_discount_factor 
+  fatal_IHD_cost      <- (complication_cost_matrix$IHD.FATAL*complication_cost_matrix$IHD.EVENT*complication_cost_matrix$dead) 
+  nonfatal_IHD_cost   <- (complication_cost_matrix$IHD.NONFATAL*complication_cost_matrix$IHD.EVENT*(1-complication_cost_matrix$dead)) 
+  subsequent_IHD_cost <- (complication_cost_matrix$IHD.SUB*complication_cost_matrix$IHD.HIST*(1-complication_cost_matrix$IHD.EVENT)) 
   simulation_patients_history$IHD.COST <- (fatal_IHD_cost + nonfatal_IHD_cost + subsequent_IHD_cost)
   
   # Myocardial infarction
-  fatal_MI_cost      <- (complication_cost_matrix$MI.FATAL*complication_cost_matrix$MI.EVENT*complication_cost_matrix$dead)/cost_discount_factor
-  nonfatal_MI_cost   <- (complication_cost_matrix$MI.NONFATAL*complication_cost_matrix$MI.EVENT*(1-complication_cost_matrix$dead))/cost_discount_factor
-  subsequent_MI_cost <- (complication_cost_matrix$MI.SUB*complication_cost_matrix$MI.HIST*(1-complication_cost_matrix$MI.EVENT))/cost_discount_factor
+  fatal_MI_cost      <- (complication_cost_matrix$MI.FATAL*complication_cost_matrix$MI.EVENT*complication_cost_matrix$dead)
+  nonfatal_MI_cost   <- (complication_cost_matrix$MI.NONFATAL*complication_cost_matrix$MI.EVENT*(1-complication_cost_matrix$dead))
+  subsequent_MI_cost <- (complication_cost_matrix$MI.SUB*complication_cost_matrix$MI.HIST*(1-complication_cost_matrix$MI.EVENT))
   simulation_patients_history$MI.COST <- (fatal_MI_cost + nonfatal_MI_cost + subsequent_MI_cost)
   
   # Heart failure
-  fatal_CHF_cost      <- (complication_cost_matrix$CHF.FATAL*complication_cost_matrix$CHF.EVENT*complication_cost_matrix$dead)/cost_discount_factor
-  nonfatal_CHF_cost   <- (complication_cost_matrix$CHF.NONFATAL*complication_cost_matrix$CHF.EVENT*(1-complication_cost_matrix$dead))/cost_discount_factor
-  subsequent_CHF_cost <- (complication_cost_matrix$CHF.SUB*complication_cost_matrix$CHF.HIST*(1-complication_cost_matrix$CHF.EVENT))/cost_discount_factor
+  fatal_CHF_cost      <- (complication_cost_matrix$CHF.FATAL*complication_cost_matrix$CHF.EVENT*complication_cost_matrix$dead)
+  nonfatal_CHF_cost   <- (complication_cost_matrix$CHF.NONFATAL*complication_cost_matrix$CHF.EVENT*(1-complication_cost_matrix$dead))
+  subsequent_CHF_cost <- (complication_cost_matrix$CHF.SUB*complication_cost_matrix$CHF.HIST*(1-complication_cost_matrix$CHF.EVENT))
   simulation_patients_history$CHF.COST <- (fatal_CHF_cost + nonfatal_CHF_cost + subsequent_CHF_cost)
   
   #Stroke
-  fatal_STROKE_cost      <- (complication_cost_matrix$STROKE.FATAL*complication_cost_matrix$STROKE.EVENT*complication_cost_matrix$dead)/cost_discount_factor
-  nonfatal_STROKE_cost   <- (complication_cost_matrix$STROKE.NONFATAL*complication_cost_matrix$STROKE.EVENT*(1-complication_cost_matrix$dead))/cost_discount_factor
-  subsequent_STROKE_cost <- (complication_cost_matrix$STROKE.SUB*complication_cost_matrix$STROKE.HIST*(1-complication_cost_matrix$STROKE.EVENT))/cost_discount_factor
+  fatal_STROKE_cost      <- (complication_cost_matrix$STROKE.FATAL*complication_cost_matrix$STROKE.EVENT*complication_cost_matrix$dead)
+  nonfatal_STROKE_cost   <- (complication_cost_matrix$STROKE.NONFATAL*complication_cost_matrix$STROKE.EVENT*(1-complication_cost_matrix$dead))
+  subsequent_STROKE_cost <- (complication_cost_matrix$STROKE.SUB*complication_cost_matrix$STROKE.HIST*(1-complication_cost_matrix$STROKE.EVENT))
   simulation_patients_history$STROKE.COST <- (fatal_STROKE_cost + nonfatal_STROKE_cost + subsequent_STROKE_cost)
   
   # Amputation 	0	15,153	5,328	Alva et al. 2015 [1]
@@ -612,39 +612,39 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # Question: in case of 2nd amp, should we consider the sum of the event + history of first?
   # Not sure whether costs for amputation are calculated ok. It should be consistent with other events when a 2nd event can occur.
   
-  fatal_AMP_cost      <- (complication_cost_matrix$AMP.FATAL*complication_cost_matrix$AMP1.EVENT*complication_cost_matrix$dead + complication_cost_matrix$AMP.FATAL*complication_cost_matrix$AMP2.EVENT*complication_cost_matrix$dead)/cost_discount_factor
-  nonfatal_AMP_cost   <- (complication_cost_matrix$AMP.NONFATAL*complication_cost_matrix$AMP1.EVENT*(1-complication_cost_matrix$dead) + complication_cost_matrix$AMP.NONFATAL*complication_cost_matrix$AMP2.EVENT*(1-complication_cost_matrix$dead))/cost_discount_factor
-  subsequent_AMP_cost <- (complication_cost_matrix$AMP.SUB*complication_cost_matrix$AMP.HIST*(1-complication_cost_matrix$AMP1.EVENT)*(1-complication_cost_matrix$AMP2.EVENT))/cost_discount_factor
+  fatal_AMP_cost      <- (complication_cost_matrix$AMP.FATAL*complication_cost_matrix$AMP1.EVENT*complication_cost_matrix$dead + complication_cost_matrix$AMP.FATAL*complication_cost_matrix$AMP2.EVENT*complication_cost_matrix$dead)
+  nonfatal_AMP_cost   <- (complication_cost_matrix$AMP.NONFATAL*complication_cost_matrix$AMP1.EVENT*(1-complication_cost_matrix$dead) + complication_cost_matrix$AMP.NONFATAL*complication_cost_matrix$AMP2.EVENT*(1-complication_cost_matrix$dead))
+  subsequent_AMP_cost <- (complication_cost_matrix$AMP.SUB*complication_cost_matrix$AMP.HIST*(1-complication_cost_matrix$AMP1.EVENT)*(1-complication_cost_matrix$AMP2.EVENT))
   simulation_patients_history$AMP.COST <- (fatal_AMP_cost + nonfatal_AMP_cost + subsequent_AMP_cost)
 
   #Blindness
-  fatal_BLIND_cost      <- (complication_cost_matrix$BLIND.FATAL*complication_cost_matrix$BLIND.EVENT*complication_cost_matrix$dead)/cost_discount_factor
-  nonfatal_BLIND_cost   <- (complication_cost_matrix$BLIND.NONFATAL*complication_cost_matrix$BLIND.EVENT*(1-complication_cost_matrix$dead))/cost_discount_factor
-  subsequent_BLIND_cost <- (complication_cost_matrix$BLIND.SUB*complication_cost_matrix$BLIND.HIST*(1-complication_cost_matrix$BLIND.EVENT))/cost_discount_factor
+  fatal_BLIND_cost      <- (complication_cost_matrix$BLIND.FATAL*complication_cost_matrix$BLIND.EVENT*complication_cost_matrix$dead)
+  nonfatal_BLIND_cost   <- (complication_cost_matrix$BLIND.NONFATAL*complication_cost_matrix$BLIND.EVENT*(1-complication_cost_matrix$dead))
+  subsequent_BLIND_cost <- (complication_cost_matrix$BLIND.SUB*complication_cost_matrix$BLIND.HIST*(1-complication_cost_matrix$BLIND.EVENT))
   simulation_patients_history$BLIND.COST <- (fatal_BLIND_cost + nonfatal_BLIND_cost + subsequent_BLIND_cost)
   
   # Ulcer
-  fatal_ULCER_cost      <- (complication_cost_matrix$ULCER.FATAL*complication_cost_matrix$ULCER.EVENT*complication_cost_matrix$dead)/cost_discount_factor
-  nonfatal_ULCER_cost   <- (complication_cost_matrix$ULCER.NONFATAL*complication_cost_matrix$ULCER.EVENT*(1-complication_cost_matrix$dead))/cost_discount_factor
-  subsequent_ULCER_cost <- (complication_cost_matrix$ULCER.SUB*complication_cost_matrix$ULCER.HIST*(1-complication_cost_matrix$ULCER.EVENT))/cost_discount_factor
+  fatal_ULCER_cost      <- (complication_cost_matrix$ULCER.FATAL*complication_cost_matrix$ULCER.EVENT*complication_cost_matrix$dead)
+  nonfatal_ULCER_cost   <- (complication_cost_matrix$ULCER.NONFATAL*complication_cost_matrix$ULCER.EVENT*(1-complication_cost_matrix$dead))
+  subsequent_ULCER_cost <- (complication_cost_matrix$ULCER.SUB*complication_cost_matrix$ULCER.HIST*(1-complication_cost_matrix$ULCER.EVENT))
   simulation_patients_history$ULCER.COST <- (fatal_ULCER_cost + nonfatal_ULCER_cost + subsequent_ULCER_cost)
  
   # Cost in the absence of complications 	1,990	Alva et al. 2015 [1]
   simulation_patients_history$NOCOMP.COST <- (complication_cost_matrix$NOCOMP*(1-complication_cost_matrix$IHD.EVENT)*(1-complication_cost_matrix$MI.EVENT)*
                                               (1-complication_cost_matrix$CHF.EVENT)*(1-complication_cost_matrix$STROKE.EVENT)*(1-complication_cost_matrix$AMP1.EVENT)*
-                                                (1-complication_cost_matrix$AMP2.EVENT)*(1-complication_cost_matrix$BLIND.EVENT)*(1-complication_cost_matrix$ULCER.EVENT))/cost_discount_factor
+                                                (1-complication_cost_matrix$AMP2.EVENT)*(1-complication_cost_matrix$BLIND.EVENT)*(1-complication_cost_matrix$ULCER.EVENT))
   
   # Intervention costs: only applied the first year of simulation. Then equal to 0.
-  simulation_patients_history$TX.COST <- if_else(simulation_patients_history$SDURATION == 0, (tx_cost_input)/cost_discount_factor,0)
+  simulation_patients_history$TX.COST <- if_else(simulation_patients_history$SDURATION == 0, tx_cost_input,0)
   
   ### Societal costs: Added 29/08/2020
   
   # Informal care and productivity loss: We calculated above INF.CARE & PROD.LOSS = 0/1 but costs have to be calculated here: 
   
   # Informal care cost per hour currently specified within aux_functions script
-  simulation_patients_history$INF.CARE.COST <- (inf_care_hour_cost*simulation_patients_history$INF.CARE*(1-simulation_patients_history$dead) + inf_care_hour_cost/2*simulation_patients_history$INF.CARE*simulation_patients_history$dead)/cost_discount_factor
+  simulation_patients_history$INF.CARE.COST <- (inf_care_hour_cost*simulation_patients_history$INF.CARE*(1-simulation_patients_history$dead) + inf_care_hour_cost/2*simulation_patients_history$INF.CARE*simulation_patients_history$dead)
   
-  simulation_patients_history$PROD.LOSS.COST <- (simulation_patients_history$PROD.LOSS*(1-simulation_patients_history$dead) + 1/2*simulation_patients_history$PROD.LOSS*simulation_patients_history$dead)/cost_discount_factor
+  simulation_patients_history$PROD.LOSS.COST <- (simulation_patients_history$PROD.LOSS*(1-simulation_patients_history$dead) + 1/2*simulation_patients_history$PROD.LOSS*simulation_patients_history$dead)
   
   # Future costs are dependent on age, gender and alive status: add explanation later
   future_cost_matrix <- inner_join(simulation_patients_history[c("CURR.AGE","FEMALE","dead")],
@@ -654,9 +654,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   simulation_patients_history$FUTURE.COST.MEDICAL <- ((1-future_cost_matrix$FEMALE)*(1-future_cost_matrix$dead)*future_cost_matrix[,6] + 
                                                         (1-future_cost_matrix$FEMALE)*future_cost_matrix$dead*future_cost_matrix[,4] + 
                                                         future_cost_matrix$FEMALE*(1-future_cost_matrix$dead)*future_cost_matrix[,7] + 
-                                                        future_cost_matrix$FEMALE*future_cost_matrix$dead*future_cost_matrix[,5])/cost_discount_factor 
+                                                        future_cost_matrix$FEMALE*future_cost_matrix$dead*future_cost_matrix[,5]) 
   
-  simulation_patients_history$FUTURE.COST.NONMEDICAL <- future_cost_matrix[,8]/cost_discount_factor 
+  simulation_patients_history$FUTURE.COST.NONMEDICAL <- future_cost_matrix[,8] 
   
   # Total annual costs discounted
   simulation_patients_history$TOTAL.COST <- (simulation_patients_history$IHD.COST + 
@@ -673,7 +673,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                                              simulation_patients_history$FUTURE.COST.MEDICAL + 
                                              simulation_patients_history$FUTURE.COST.NONMEDICAL) 
   
-  
+  simulation_patients_history$discounted_TOTAL.COST <- simulation_patients_history$TOTAL.COST / simulation_patients_history$cost_discount_factor
+
   ########## MAIN PART III: Calculate QALYs ##########
   
   # Discounting is applied to total QALYs only at this moment.
@@ -694,14 +695,14 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   chd_qaly_male   <- (1-qol_matrix$FEMALE)*pmin(qol_matrix$CHF.EVENT,qol_matrix$IHD.EVENT,qol_matrix$MI.EVENT)
   chd_qaly_female <- qol_matrix$FEMALE*pmin(qol_matrix$CHF.EVENT,qol_matrix$IHD.EVENT,qol_matrix$MI.EVENT)
-  simulation_patients_history$CHD.QALY <- (chd_qaly_male + chd_qaly_female)/qaly_discount_factor
+  simulation_patients_history$CHD.QALY <- chd_qaly_male + chd_qaly_female
   
   # Cerebrovascular disease: only stroke
   qol_matrix$STROKE.EVENT <- qol_matrix$STROKE.EVENT*qol_events_inputs$STROKE
   
   stroke_qaly_male   <- (1-qol_matrix$FEMALE)*qol_matrix$STROKE.EVENT
   stroke_qaly_female <- qol_matrix$FEMALE*qol_matrix$STROKE.EVENT
-  simulation_patients_history$STROKE.QALY <- (stroke_qaly_male + stroke_qaly_female)/qaly_discount_factor
+  simulation_patients_history$STROKE.QALY <- stroke_qaly_male + stroke_qaly_female
   
   # Neuropathy group: so far we have ULCER.EVENT, AMP1.EVENT and AMP2.EVENT
   qol_matrix$ULCER.EVENT <- qol_matrix$ULCER.EVENT*qol_events_inputs$ULCER
@@ -710,28 +711,28 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   neuro_qaly_male   <- (1-qol_matrix$FEMALE)*pmin(qol_matrix$ULCER.EVENT,qol_matrix$AMP1.EVENT,qol_matrix$AMP2.EVENT)
   neuro_qaly_female <- qol_matrix$FEMALE*pmin(qol_matrix$ULCER.EVENT,qol_matrix$AMP1.EVENT,qol_matrix$AMP2.EVENT)
-  simulation_patients_history$NEUROPATHY.QALY <- (neuro_qaly_male + neuro_qaly_female)/qaly_discount_factor
+  simulation_patients_history$NEUROPATHY.QALY <- neuro_qaly_male + neuro_qaly_female
   
   # Retinopathy: so far we only have BLIND.EVENT 
   qol_matrix$BLIND.EVENT <- qol_matrix$BLIND.EVENT*qol_events_inputs$BLIND
   
   blind_qaly_male   <- (1-qol_matrix$FEMALE)*qol_matrix$BLIND.EVENT
   blind_qaly_female <- qol_matrix$FEMALE*qol_matrix$BLIND.EVENT
-  simulation_patients_history$BLIND.QALY <- (blind_qaly_male + blind_qaly_female)/qaly_discount_factor
+  simulation_patients_history$BLIND.QALY <- blind_qaly_male + blind_qaly_female
   
   # Nephropathy: so far we only have RENAL.EVENT: assumed disutility from haemodialysis but not sure
   qol_matrix$RENAL.EVENT <- qol_matrix$RENAL.EVENT*qol_events_inputs$RENAL
   
   renal_qaly_male   <- (1-qol_matrix$FEMALE)*qol_matrix$RENAL.EVENT
   renal_qaly_female <- qol_matrix$FEMALE*qol_matrix$RENAL.EVENT
-  simulation_patients_history$RENAL.QALY <- (renal_qaly_male + renal_qaly_female)/qaly_discount_factor
+  simulation_patients_history$RENAL.QALY <- renal_qaly_male + renal_qaly_female
   
   # Comorbidity: Excess BMI (each unit above 25 kg/m2):	
   qol_matrix$BMI  <- max(qol_matrix$BMI-25,0)*qol_events_inputs$BMI
   
   bmi_qaly_male   <- (1-qol_matrix$FEMALE)*qol_matrix$BMI
   bmi_qaly_female <- qol_matrix$FEMALE*qol_matrix$BMI
-  simulation_patients_history$BMI.QALY <- (bmi_qaly_male + bmi_qaly_female)/qaly_discount_factor
+  simulation_patients_history$BMI.QALY <- bmi_qaly_male + bmi_qaly_female
   
   # Total annual utilities
   total_utils <- ((1-qol_matrix$FEMALE)*(qol_matrix$BASELINE.MALE) + qol_matrix$FEMALE*qol_matrix$BASELINE.FEMALE +
@@ -739,10 +740,13 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                     simulation_patients_history$NEUROPATHY.QALY + simulation_patients_history$BLIND.QALY + 
                     simulation_patients_history$RENAL.QALY + simulation_patients_history$BMI.QALY)
                     
-  # Annual discounted QALYs
+  # Annual undiscounted QALYs
   simulation_patients_history$QALY <- (total_utils*(1-simulation_patients_history$dead) + (total_utils/2)*simulation_patients_history$dead)
   
+  # Annual discounted QALYs
+  simulation_patients_history$discounted_QALY <- simulation_patients_history$QALY / qaly_discount_factor
   
+
   ########## MAIN PART IV: Calculate aggregated results ##########
   
   # Life expectancy
@@ -778,6 +782,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   total_costs_patient <- aggregate(simulation_patients_history$TOTAL.COST, list(Patient = simulation_patients_history$SIMID), sum)
   mean_total_costs <- sum(total_costs_patient$x)/patient_size_input
   
+  total_discounted_costs_patient <- aggregate(simulation_patients_history$discounted_TOTAL.COST, list(Patient = simulation_patients_history$SIMID), sum)
+  mean_total_discounted_costs <- sum(total_discounted_costs_patient$x)/patient_size_input
+
   # Breakdown costs: 
   tx_costs_patient <- aggregate(simulation_patients_history$TX.COST , list(Patient = simulation_patients_history$SIMID), sum)
   mean_tx_costs <- sum(tx_costs_patient$x)/patient_size_input
@@ -806,7 +813,6 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   mean_complication_costs <- mean_ihd_costs + mean_mi_costs + mean_chf_costs + mean_stroke_costs + mean_amp_costs + mean_blind_costs + mean_ulcer_costs
   
   # No complication costs
-  
   nocomp_costs_patient <- aggregate(simulation_patients_history$NOCOMP.COST  , list(Patient = simulation_patients_history$SIMID), sum)
   mean_nocomp_costs <- sum(nocomp_costs_patient$x)/patient_size_input
   
@@ -827,8 +833,11 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   total_qalys_patient <- aggregate(simulation_patients_history$QALY, list(Patient = simulation_patients_history$SIMID), sum)
   mean_total_qalys <- sum(total_qalys_patient$x)/patient_size_input
   
+  total_discounted_qalys_patient <- aggregate(simulation_patients_history$discounted_QALY, list(Patient = simulation_patients_history$SIMID), sum)
+  mean_total_discounted_qalys <- sum(total_discounted_qalys_patient$x)/patient_size_input  
+  
   # Return model outcomes: 
-  return(list(simulation_patients_history=simulation_patients_history, 
+  return(list(simulation_patients_history = simulation_patients_history, 
               mean_life_expectancy = mean_life_expectancy,
               mean_CHF_rate = mean_CHF_rate, 
               mean_BLIND_rate = mean_BLIND_rate, 
@@ -838,8 +847,10 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
               mean_AMP2_rate = mean_AMP2_rate, 
               mean_MI_rate = mean_MI_rate, 
               mean_RENAL_rate = mean_RENAL_rate,
-              mean_total_costs = mean_total_costs, 
+              mean_total_costs = mean_total_costs,
+              mean_total_discounted_costs = mean_total_discounted_costs,
               mean_total_qalys = mean_total_qalys,
+              mean_total_discounted_qalys = mean_total_discounted_qalys,
               mean_inf_care_costs = mean_inf_care_costs, 
               mean_prod_loss_costs = mean_prod_loss_costs,
               mean_ihd_costs = mean_ihd_costs, 
