@@ -18,15 +18,14 @@ pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr", "beepr") 
 #install.packages(pkgs)
 inst <- lapply(pkgs, library, character.only = TRUE) # load them
 
+# ANALYSIS INPUT VARIABLES ------------------------------------------------
+country.id <- 'UK' # Choose from: 'UK', 'NL', 'DE', 'ES', 'GR'
+
 # Load model function: 
 source("R/SMI in type II diabetes - HE model v3.R")
 
 # Load aux. functions, input parameters (from Excel), global lists, etc. 
 source("R/aux_functions.R")
-
-
-# ANALYSIS INPUT VARIABLES ------------------------------------------------
-country.id <- 'UK' # Choose from: 'UK', 'NL', 'DE', 'ES', 'GR'
 
 # Please select running mode: 0 = deterministic, 1 = PSA. Default: 0
 psa_input <- 0
