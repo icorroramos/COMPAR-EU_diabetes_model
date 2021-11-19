@@ -21,12 +21,6 @@ inst <- lapply(pkgs, library, character.only = TRUE) # load them
 # ANALYSIS INPUT VARIABLES ------------------------------------------------
 country.id <- 'UK' # Choose from: 'UK', 'NL', 'DE', 'ES', 'GR'
 
-# Load model function: 
-source("R/SMI in type II diabetes - HE model v3.R")
-
-# Load aux. functions, input parameters (from Excel), global lists, etc. 
-source("R/aux_functions.R")
-
 # Please select running mode: 0 = deterministic, 1 = PSA. Default: 0
 psa_input <- 0
 
@@ -34,7 +28,7 @@ psa_input <- 0
 n_psa_input <- 5
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 10 # 1000  
+npats_input   <- 500 # 1000  
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "Usual care"
@@ -45,6 +39,16 @@ retirement_age_input <- 66
 
 # Set random seed for replication purposes
 seed_input <- 958 # A random seed that it is used to ensure consistency in the model results.
+
+
+# LOAD MODEL FUNCTION AND AUX FUNCTIONS/ DATA -----------------------------
+
+# Load model function: 
+source("R/SMI in type II diabetes - HE model v3.R")
+# source("R/OLD SMI in type II diabetes - HE model v3.R")
+
+# Load aux. functions, input parameters (from Excel), global lists, etc. 
+source("R/aux_functions.R")
 
 
 init <- Sys.time()
@@ -199,5 +203,5 @@ save(sim.vars,
      sim.results.female.comp,
      sim.results.male,
      sim.results.male.comp,
-     file = 'output/TEST_RUN_old_discounted_QALYs.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
+     file = 'output/TEST_RUN_new_discounted_QALYs.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
 
