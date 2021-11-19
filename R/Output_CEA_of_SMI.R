@@ -4,10 +4,10 @@
 source('R/Stitcher.R')
 
 # Select working directory to choose outputs from
-# setwd('output')
+setwd('output')
 # setwd('output/Deterministic_1000_pats')
 # setwd('output/UK/Lisa_15000')
-setwd('output/DE/')
+# setwd('output/DE/')
 
 name.loc2 <- '5000_pats_seed-77/' # Name of subfolder with second run results
 
@@ -34,9 +34,9 @@ calc.deltas <- function(comp.name) {
   relevant.out <- delta.means %>% 
     transmute(comp = comp.name,
               added_days_life_expecanty = round(mean_life_expectancy * 365.25, 1),
-              incremental_total_costs = round(mean_total_costs),
-              incremental_total_qalys = round(mean_total_qalys, 3),
-              headroom = round(wtp * mean_total_qalys - mean_total_costs))
+              incremental_total_costs = round(mean_total_discounted_costs),
+              incremental_total_qalys = round(mean_total_discounted_qalys, 3),
+              headroom = round(wtp * mean_total_discounted_qalys - mean_total_discounted_costs))
 }
 
 calc.incidences <- function(comp.name, per.popsize) {
@@ -263,6 +263,10 @@ load('All_SMI_vs_UC_seed265979.RData', verbose = TRUE)
 # load('Usual_care_outcomes_2000_pats_altseed.RData', verbose = TRUE)
 # load('Rank3_basecase_2000_pats_altseed.RData', verbose = TRUE)
 
+load('TEST_RUN_old_discounted_QALYs.RData', verbose = TRUE)
+
+load('TEST_RUN_new_discounted_QALYs.RData', verbose = TRUE)
+
 # ANALYSIS OF MEANS -------------------------------------------------------
 
 f.int.means <- as.data.frame(sim.results.female[-1])
@@ -277,13 +281,12 @@ delta.means <- w.int.means - w.uc.means
 
 relevant.out <- delta.means %>%
   transmute(life_expecanty = round(mean_life_expectancy, 3),
-            total_costs = round(mean_total_costs),
-            total_qalys = round(mean_total_qalys, 3),
-            headroom = round(wtp * mean_total_qalys - mean_total_costs, 2))
+            total_costs = round(mean_total_discounted_costs),
+            total_qalys = round(mean_total_discounted_qalys, 3),
+            headroom = round(wtp * mean_total_discounted_qalys - mean_total_discounted_costs, 2))
 
 
 print(relevant.out)
-
 
 
 # ANALYSIS OF INNER LOOP --------------------------------------------------
