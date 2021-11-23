@@ -3,8 +3,10 @@
 *.RData
 *.Ruserdata
 *.sh
+*.png
 SURF*.R
 output/
 
 COMPAR-EU_diabetes_model.Rproj
 Shopping_list.R
+.Rproj.user
