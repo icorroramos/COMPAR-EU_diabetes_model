@@ -58,7 +58,7 @@ print(Sys.time())
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
-treateff_end     <- 3 # Cycle in which treatment effect ends
+treateff_end     <- 5 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
 treateff_hba1c <- -1.8232 # Treatment effect on HbA1c (in absolute %-points HbA1c)
