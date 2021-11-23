@@ -58,14 +58,23 @@ print(Sys.time())
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
-treateff_end     <- 5 # Cycle in which treatment effect ends
+treateff_end     <- 3 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
-treateff_hba1c <- -1.8232 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff_hdl <- 2.5 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
-treateff_ldl <- -5 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
+# treateff_hba1c <- -1.8232 # Treatment effect on HbA1c (in absolute %-points HbA1c)
+# treateff_hdl <- 2.5 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
+# treateff_ldl <- -5 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
+# treateff_bmi <- -1.7 # Treatment effect on BMI (in absolute points)
+# treateff_sbp <- -10.03 / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
+
+
+# Treatment effects
+treateff_hba1c <- -0.8232 # Treatment effect on HbA1c (in absolute %-points HbA1c)
+treateff_hdl <- 0 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
+treateff_ldl <- 0 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
 treateff_bmi <- -1.7 # Treatment effect on BMI (in absolute points)
 treateff_sbp <- -10.03 / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
+
 
 # Tx effects are vectors: the current assumption is that the same start, end and decline is assumed for all effect modifiers
 treatment_effect_HbA1c_input <- c(treateff_hba1c, treateff_start, treateff_end, treateff_decline)
