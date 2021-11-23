@@ -674,7 +674,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                                              simulation_patients_history$FUTURE.COST.MEDICAL + 
                                              simulation_patients_history$FUTURE.COST.NONMEDICAL) 
   
-  simulation_patients_history$discounted_TOTAL.COST <- simulation_patients_history$TOTAL.COST / simulation_patients_history$cost_discount_factor
+  simulation_patients_history$discounted_TOTAL.COST <- simulation_patients_history$TOTAL.COST/simulation_patients_history$cost_discount_factor
 
   ########## MAIN PART III: Calculate QALYs ##########
   
