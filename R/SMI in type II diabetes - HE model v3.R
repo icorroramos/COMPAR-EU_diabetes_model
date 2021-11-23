@@ -747,8 +747,6 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # Annual discounted QALYs
   simulation_patients_history$discounted_QALY <- simulation_patients_history$QALY / qaly_discount_factor
   
-  View(qol_matrix)
-
   ########## MAIN PART IV: Calculate aggregated results ##########
   
   # Life expectancy

@@ -28,7 +28,7 @@ psa_input <- 0
 n_psa_input <- 5
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 5 # 1000  
+npats_input   <- 500 # 1000  
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "Usual care"
@@ -45,7 +45,7 @@ seed_input <- 958 # A random seed that it is used to ensure consistency in the m
 
 # Load model function: 
 source("R/SMI in type II diabetes - HE model v3.R")
-# source("R/OLD SMI in type II diabetes - HE model v3.R")
+#source("R/OLD SMI in type II diabetes - HE model v3.R")
 
 # Load aux. functions, input parameters (from Excel), global lists, etc. 
 source("R/aux_functions.R")
@@ -137,80 +137,80 @@ sim.results.female.comp <- SMDMII_model_simulation(patient_size_input = npats_in
                                                    treatment_effect_LDL_input = rep(0,4),
                                                    treatment_effect_BMI_input = rep(0,4),
                                                    treatment_effect_SBP_input = rep(0,4),
-                                                   cost_disc_rate_input = discount_factors[1], 
+                                                   cost_disc_rate_input = discount_factors[1],
                                                    qol_disc_rate_input = discount_factors[2],
-                                                   retirement_age_input = retirement_age_input, 
-                                                   inf_care_hours_input = inf_care_hours_input, 
+                                                   retirement_age_input = retirement_age_input,
+                                                   inf_care_hours_input = inf_care_hours_input,
                                                    worked_hours_input = worked_hours_input,
                                                    working_days_lost_input = working_days_lost_input,
                                                    cost_hour_sick_input = cost_hour_sick_input,
-                                                   friction_period_input = friction_period_input, 
+                                                   friction_period_input = friction_period_input,
                                                    informal_care_coef_input = informal_care_coef_input,
                                                    employment_coef_input = employment_coef_input,
-                                                   prod_costs_coef_input = prod_costs_coef_input, 
-                                                   inf_care_age_scale_input = inf_care_age_scale_input, 
+                                                   prod_costs_coef_input = prod_costs_coef_input,
+                                                   inf_care_age_scale_input = inf_care_age_scale_input,
                                                    prod_loss_age_scale_input = prod_loss_age_scale_input,
                                                    run_PSA_input = psa_input,
                                                    seed_input = seed_input)
-
-sim.results.male <- SMDMII_model_simulation(patient_size_input = npats_input,
-                                            female_input = 0,
-                                            tx_cost_input = tx_cost_input,
-                                            treatment_effect_HbA1c_input = treatment_effect_HbA1c_input, 
-                                            treatment_effect_HDL_input = treatment_effect_HDL_input,
-                                            treatment_effect_LDL_input = treatment_effect_LDL_input, 
-                                            treatment_effect_BMI_input = treatment_effect_BMI_input,
-                                            treatment_effect_SBP_input = treatment_effect_SBP_input,
-                                            cost_disc_rate_input = discount_factors[1], 
-                                            qol_disc_rate_input = discount_factors[2],
-                                            retirement_age_input = retirement_age_input, 
-                                            inf_care_hours_input = inf_care_hours_input, 
-                                            worked_hours_input = worked_hours_input,
-                                            working_days_lost_input = working_days_lost_input,
-                                            cost_hour_sick_input = cost_hour_sick_input,
-                                            friction_period_input = friction_period_input, 
-                                            informal_care_coef_input = informal_care_coef_input,
-                                            employment_coef_input = employment_coef_input,
-                                            prod_costs_coef_input = prod_costs_coef_input, 
-                                            inf_care_age_scale_input = inf_care_age_scale_input, 
-                                            prod_loss_age_scale_input = prod_loss_age_scale_input,
-                                            run_PSA_input = psa_input,
-                                            seed_input = seed_input)
-
-sim.results.male.comp <- SMDMII_model_simulation(patient_size_input = npats_input,
-                                                 female_input = 0,
-                                                 tx_cost_input = tx_cost_input,
-                                                 treatment_effect_HbA1c_input = rep(0,4),
-                                                 treatment_effect_HDL_input = rep(0,4),
-                                                 treatment_effect_LDL_input = rep(0,4),
-                                                 treatment_effect_BMI_input = rep(0,4),
-                                                 treatment_effect_SBP_input = rep(0,4),
-                                                 cost_disc_rate_input = discount_factors[1], 
-                                                 qol_disc_rate_input = discount_factors[2],
-                                                 retirement_age_input = retirement_age_input, 
-                                                 inf_care_hours_input = inf_care_hours_input, 
-                                                 worked_hours_input = worked_hours_input,
-                                                 working_days_lost_input = working_days_lost_input,
-                                                 cost_hour_sick_input = cost_hour_sick_input,
-                                                 friction_period_input = friction_period_input, 
-                                                 informal_care_coef_input = informal_care_coef_input,
-                                                 employment_coef_input = employment_coef_input,
-                                                 prod_costs_coef_input = prod_costs_coef_input, 
-                                                 inf_care_age_scale_input = inf_care_age_scale_input, 
-                                                 prod_loss_age_scale_input = prod_loss_age_scale_input,
-                                                 run_PSA_input = psa_input,
-                                                 seed_input = seed_input)
-
-# Print simulation duration
-end <- Sys.time()
-print(end - init)
-
-
-# Save simulation results
-save(sim.vars,
-     sim.results.female,
-     sim.results.female.comp,
-     sim.results.male,
-     sim.results.male.comp,
-     file = 'output/TEST_RUN_new_discounted_QALYs.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
-
+ 
+# sim.results.male <- SMDMII_model_simulation(patient_size_input = npats_input,
+#                                             female_input = 0,
+#                                             tx_cost_input = tx_cost_input,
+#                                             treatment_effect_HbA1c_input = treatment_effect_HbA1c_input, 
+#                                             treatment_effect_HDL_input = treatment_effect_HDL_input,
+#                                             treatment_effect_LDL_input = treatment_effect_LDL_input, 
+#                                             treatment_effect_BMI_input = treatment_effect_BMI_input,
+#                                             treatment_effect_SBP_input = treatment_effect_SBP_input,
+#                                             cost_disc_rate_input = discount_factors[1], 
+#                                             qol_disc_rate_input = discount_factors[2],
+#                                             retirement_age_input = retirement_age_input, 
+#                                             inf_care_hours_input = inf_care_hours_input, 
+#                                             worked_hours_input = worked_hours_input,
+#                                             working_days_lost_input = working_days_lost_input,
+#                                             cost_hour_sick_input = cost_hour_sick_input,
+#                                             friction_period_input = friction_period_input, 
+#                                             informal_care_coef_input = informal_care_coef_input,
+#                                             employment_coef_input = employment_coef_input,
+#                                             prod_costs_coef_input = prod_costs_coef_input, 
+#                                             inf_care_age_scale_input = inf_care_age_scale_input, 
+#                                             prod_loss_age_scale_input = prod_loss_age_scale_input,
+#                                             run_PSA_input = psa_input,
+#                                             seed_input = seed_input)
+# 
+# sim.results.male.comp <- SMDMII_model_simulation(patient_size_input = npats_input,
+#                                                  female_input = 0,
+#                                                  tx_cost_input = tx_cost_input,
+#                                                  treatment_effect_HbA1c_input = rep(0,4),
+#                                                  treatment_effect_HDL_input = rep(0,4),
+#                                                  treatment_effect_LDL_input = rep(0,4),
+#                                                  treatment_effect_BMI_input = rep(0,4),
+#                                                  treatment_effect_SBP_input = rep(0,4),
+#                                                  cost_disc_rate_input = discount_factors[1], 
+#                                                  qol_disc_rate_input = discount_factors[2],
+#                                                  retirement_age_input = retirement_age_input, 
+#                                                  inf_care_hours_input = inf_care_hours_input, 
+#                                                  worked_hours_input = worked_hours_input,
+#                                                  working_days_lost_input = working_days_lost_input,
+#                                                  cost_hour_sick_input = cost_hour_sick_input,
+#                                                  friction_period_input = friction_period_input, 
+#                                                  informal_care_coef_input = informal_care_coef_input,
+#                                                  employment_coef_input = employment_coef_input,
+#                                                  prod_costs_coef_input = prod_costs_coef_input, 
+#                                                  inf_care_age_scale_input = inf_care_age_scale_input, 
+#                                                  prod_loss_age_scale_input = prod_loss_age_scale_input,
+#                                                  run_PSA_input = psa_input,
+#                                                  seed_input = seed_input)
+# 
+# # Print simulation duration
+# end <- Sys.time()
+# print(end - init)
+# 
+# 
+# # Save simulation results
+# save(sim.vars,
+#      sim.results.female,
+#      sim.results.female.comp,
+#      sim.results.male,
+#      sim.results.male.comp,
+#      file = 'output/TEST_RUN_new_discounted_QALYs.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
+# 
