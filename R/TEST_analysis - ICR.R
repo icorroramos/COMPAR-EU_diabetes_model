@@ -38,7 +38,7 @@ tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.
 retirement_age_input <- 66
 
 # Set random seed for replication purposes
-seed_input <- 958 # A random seed that it is used to ensure consistency in the model results.
+seed_input <- 77 #958 # A random seed that it is used to ensure consistency in the model results.
 
 
 # LOAD MODEL FUNCTION AND AUX FUNCTIONS/ DATA -----------------------------
