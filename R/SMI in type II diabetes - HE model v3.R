@@ -831,10 +831,10 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   
   # QALYs
   total_qalys_patient <- aggregate(simulation_patients_history$QALY, list(Patient = simulation_patients_history$SIMID), sum)
-  mean_total_qalys <- sum(total_qalys_patient$x)/patient_size_input
+  mean_total_qalys    <- sum(total_qalys_patient$x)/patient_size_input
   
   total_discounted_qalys_patient <- aggregate(simulation_patients_history$discounted_QALY, list(Patient = simulation_patients_history$SIMID), sum)
-  mean_total_discounted_qalys <- sum(total_discounted_qalys_patient$x)/patient_size_input  
+  mean_total_discounted_qalys    <- sum(total_discounted_qalys_patient$x)/patient_size_input  
   
   # Return model outcomes: 
   return(list(simulation_patients_history = simulation_patients_history, 
@@ -864,7 +864,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
               mean_nocomp_costs = mean_nocomp_costs, 
               mean_tx_costs = mean_tx_costs,
               mean_future_medical_costs = mean_future_medical_costs, 
-              mean_future_nonmedical_costs = mean_future_nonmedical_costs)
+              mean_future_nonmedical_costs = mean_future_nonmedical_costs,
+              discounted_qalys_patient = total_discounted_qalys_patient$x,
+              discounted_costs_patient = total_discounted_costs_patient$x)
          ) # end return parameters
   
 } #end SMDMII_model_simulation function
