@@ -66,7 +66,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # if(run_PSA_input == 1){} # end if regression coef. PSA
   
   # IMPORTANT: Set a random seed to be able to replicate the results.
-  set.seed(seed_input) 
+  set.seed(seed_input) # I think this is not needed here 
   
   # Select the sample used in the simulation: sample with replacement from the data set.
   # At this moment "baseline_characteristics" consists of only two patients with exactly the same characteristics, except for gender.
@@ -369,7 +369,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       # Background mortality included
       current_background_DEATH_prob <- background_DEATH_prob[background_DEATH_prob$Age==current_patient$CURR.AGE,if_else(female_input == 1,"Females", "Males")]
-      current_DEATH_event <- rbinom(1,1,max(current_DEATH_prob, current_background_DEATH_prob))
+      current_DEATH_event  <- rbinom(1,1,max(current_DEATH_prob, current_background_DEATH_prob))
       current_patient$dead <- current_DEATH_event
       
       ### INFORMAL CARE AND PRODUCTIVITY COSTS: Added 29/08/2020

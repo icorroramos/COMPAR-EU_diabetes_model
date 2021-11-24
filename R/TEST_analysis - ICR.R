@@ -28,7 +28,7 @@ psa_input <- 0
 n_psa_input <- 5
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 500  
+npats_input   <- 500
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "Usual care"
@@ -58,7 +58,7 @@ print(Sys.time())
 
 # Treatment effect inputs
 treateff_start   <- 1 # Cycle in which treatment effect starts
-treateff_end     <- 3 # Cycle in which treatment effect ends
+treateff_end     <- 5 # Cycle in which treatment effect ends
 treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
 # treateff_hba1c <- -1.8232 # Treatment effect on HbA1c (in absolute %-points HbA1c)
