@@ -38,7 +38,7 @@ tx_cost_input <- 0 # Total treatment cost --> Not sure if here or in Excel.
 retirement_age_input <- 66
 
 # Set random seed for replication purposes
-seed_input <- 6*958 # A random seed that it is used to ensure consistency in the model results.
+seed_input <- 11*958 # A random seed that it is used to ensure consistency in the model results.
 
 
 # LOAD MODEL FUNCTION AND AUX FUNCTIONS/ DATA -----------------------------
@@ -205,5 +205,5 @@ save(sim.vars,
      #sim.results.female.comp,
      sim.results.male,
      sim.results.male.comp,
-     file = 'output/TEST_RUN_new_discounted_QALYs_male_6.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
+     file = 'output/TEST_RUN_new_discounted_QALYs_male_11.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
 
