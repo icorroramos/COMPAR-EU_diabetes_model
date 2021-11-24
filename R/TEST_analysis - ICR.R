@@ -28,7 +28,7 @@ psa_input <- 0
 n_psa_input <- 5
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 15000 # 1000  
+npats_input   <- 500 # 1000  
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "Usual care"
@@ -70,10 +70,10 @@ treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linea
 
 # Treatment effects
 treateff_hba1c <- -0.8232 # Treatment effect on HbA1c (in absolute %-points HbA1c)
-treateff_hdl <- 0 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
-treateff_ldl <- 0 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
-treateff_bmi <- -1.7 # Treatment effect on BMI (in absolute points)
-treateff_sbp <- -10.03 / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
+treateff_hdl   <- 0 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
+treateff_ldl   <- 0 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
+treateff_bmi   <- -1.7 # Treatment effect on BMI (in absolute points)
+treateff_sbp   <- -10.03 / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
 
 
 # Tx effects are vectors: the current assumption is that the same start, end and decline is assumed for all effect modifiers
@@ -83,23 +83,9 @@ treatment_effect_LDL_input   <- c(treateff_ldl, treateff_start, treateff_end, tr
 treatment_effect_BMI_input   <- c(treateff_bmi, treateff_start, treateff_end, treateff_decline)
 treatment_effect_SBP_input   <- c(treateff_sbp, treateff_start, treateff_end, treateff_decline)
 
-
-# NOTE: Input parameters (probabilities, costs and utilities) can be changed in the corresponding 
-# csv files included in the folder "input". These can be changed to run for example scenario analyses
-# without modifying the R code.
-
-# # Directories to save results and plots (TEST folder created for users)
-# results_dir <- ("output/TEST/")
-# dir.create(results_dir)
-# 
-# graphics_dir <- ("graphics/TEST/") # not used at this moment
-# dir.create(graphics_dir)
-
 # The sim.vars object collects all parameters that define the simulation into one object
 # Then, it is saved with the output of the simulation. This way, if we  have multiple output files, we always have the information 
 # on the relevant input parameters that were used to produce the output.
-
-
 
 sim.vars <- list(seed_input, npats_input, tx_cost_input, mget(apropos('treateff.')))
 
@@ -212,5 +198,4 @@ save(sim.vars,
      sim.results.female.comp,
      sim.results.male,
      sim.results.male.comp,
-     file = 'output/TEST_RUN_new_discounted_QALYs.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
-
+     file = 'output/TEST_RUN_new_discounted_QALYs_500p.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
