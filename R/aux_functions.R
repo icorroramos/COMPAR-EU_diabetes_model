@@ -146,21 +146,21 @@ background_DEATH_prob <- read.csv(paste0("input/", country.id, "/background_mort
 ######################################################
 
 # Discount factors
-discount_factors_all_countries <- data.frame(
-  UK = c(0.035, 0.035), #(discount factor costs , discount factor effects)
-  NL = c(0.04, 0.015),
-  DE = c(0.03, 0.03),
-  ES = c(0.03, 0.03),
-  GR = c(0.03, 0.03)
-)
-
 # discount_factors_all_countries <- data.frame(
-#   UK = c(0.0, 0.0), #(discount factor costs , discount factor effects)
-#   NL = c(0.0, 0.0),
-#   DE = c(0.0, 0.0),
-#   ES = c(0.0, 0.0),
-#   GR = c(0.0, 0.0)
+#   UK = c(0.035, 0.035), #(discount factor costs , discount factor effects)
+#   NL = c(0.04, 0.015),
+#   DE = c(0.03, 0.03),
+#   ES = c(0.03, 0.03),
+#   GR = c(0.03, 0.03)
 # )
+
+discount_factors_all_countries <- data.frame(
+  UK = c(0.0, 0.0), #(discount factor costs , discount factor effects)
+  NL = c(0.0, 0.0),
+  DE = c(0.0, 0.0),
+  ES = c(0.0, 0.0),
+  GR = c(0.0, 0.0)
+)
 
 discount_factors <- discount_factors_all_countries[, country.id]
 

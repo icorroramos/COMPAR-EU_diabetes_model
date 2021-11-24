@@ -198,4 +198,4 @@ save(sim.vars,
      sim.results.female.comp,
      sim.results.male,
      sim.results.male.comp,
-     file = 'output/TEST_RUN_new_discounted_QALYs_500p.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
+     file = 'output/TEST_RUN_new_undiscounted_QALYs_500p.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
