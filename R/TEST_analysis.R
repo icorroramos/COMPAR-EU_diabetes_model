@@ -195,4 +195,4 @@ save(sim.vars,
      sim.results.female.comp,
      sim.results.male,
      sim.results.male.comp,
-     file = 'output/techver/TEST_RUN_Ref_scenario.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
+     file = 'output/techver/TEST_RUN_Test1.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
