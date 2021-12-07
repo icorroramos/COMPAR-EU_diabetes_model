@@ -111,5 +111,4 @@ print(end - init)
 save(sim.var.data,
      psa.results.female,
      psa.results.male,
-     #file = 'output/PSA_Rank1.RData')
-     file = 'output/techver/TEST_RUN_Test10.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
+     file = 'output/PSA_Rank1.RData')
