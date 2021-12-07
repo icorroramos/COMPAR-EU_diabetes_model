@@ -4,6 +4,22 @@ gc()
 #Sys.sleep(90)
 memory.size (max = F)
 
+# Check and install the latest R version
+# installr::updateR()
+# update.packages() 
+
+# Setting option for decimals
+options(scipen = 3)
+
+# Install and load required packages
+# Sys.getenv() # check this for the Home path where packages are saved
+.libPaths(Sys.getenv()[["R_LIBS_USER"]])
+
+pkgs <- c("lattice", "MASS", "plyr", "survival", "tidyverse", "dplyr", "beepr", "mc2d") # package names
+#install.packages(pkgs)
+inst <- lapply(pkgs, library, character.only = TRUE) # load them
+
+
 # ANALYSIS INPUT VARIABLES ------------------------------------------------
 country.id <- 'UK' # Choose from: 'UK', 'NL', 'DE', 'ES', 'GR'
 
@@ -44,7 +60,7 @@ print(Sys.time())
 # Variable defined to keep track of simulation time (delete afterwards)
 init <- Sys.time()
 
-# Get treatment effec draws
+# Get treatment effect draws
 draws.hba1c <- rpert(n_psa_input, min = -1.4638, mode = -0.8232, max = -0.1825)
 draws.bmi <- rpert(n_psa_input, min = -3.0261, mode = -1.7, max = -0.3739)
 draws.sbp <- rpert(n_psa_input, min = -18.7532, mode = -10.03, max = -1.3068)
@@ -147,4 +163,4 @@ print(end - init)
 save(sim.var.data,
      psa.results.female,
      psa.results.male,
-     file = 'output/PSA_Rank1.RData')
+     file = 'output/techver/PSA_Rank1.RData')
