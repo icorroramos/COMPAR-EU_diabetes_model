@@ -21,13 +21,13 @@ inst <- lapply(pkgs, library, character.only = TRUE) # load them
 country.id <- 'UK' # Choose from: 'UK', 'NL', 'DE', 'ES', 'GR'
 
 # Please select running mode: 0 = deterministic, 1 = PSA. Default: 0
-psa_input <- 1
+psa_input <- 0
 
 # Please select number of PSA runs (only works if psa_input <- 1, otherwise will be ignored ). Default: 500 --> NOTE: not completely implemented
-n_psa_input <- 500
+n_psa_input <- 5
 
 # Please select the number of patients in simulation (default 1000 in deterministic run)
-npats_input   <- 100  
+npats_input   <- 1000  
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "Usual care"
