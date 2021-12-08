@@ -61,9 +61,13 @@ print(Sys.time())
 init <- Sys.time()
 
 # Get treatment effect draws
-draws.hba1c <- rpert(n_psa_input, min = -1.4638, mode = -0.8232, max = -0.1825)
-draws.bmi <- rpert(n_psa_input, min = -3.0261, mode = -1.7, max = -0.3739)
-draws.sbp <- rpert(n_psa_input, min = -18.7532, mode = -10.03, max = -1.3068)
+# draws.hba1c <- rpert(n_psa_input, min = -1.4638,  mode = -0.8232, max = -0.1825)
+# draws.bmi   <- rpert(n_psa_input, min = -3.0261,  mode = -1.7,    max = -0.3739)
+# draws.sbp   <- rpert(n_psa_input, min = -18.7532, mode = -10.03,  max = -1.3068)
+
+draws.hba1c <- rpert(n_psa_input, min = 0, mode = 0, max = 0)
+draws.bmi   <- rpert(n_psa_input, min = 0, mode = 0, max = 0)
+draws.sbp   <- rpert(n_psa_input, min = 0, mode = 0, max = 0)
 
 
 # Create empty objects to store PSA data in
@@ -82,16 +86,16 @@ for (i in 1:n_psa_input){
   treateff_hba1c <- draws.hba1c[i] # Treatment effect on HbA1c (in absolute %-points HbA1c)
   treateff_hdl   <- 0 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT # Treatment effect on HDL-cholesterol (absolute effect in mmol/l)
   treateff_ldl   <- 0 * 0.02586 * 10 # TRANSFORMATION *10 FOR MODEL INPUT# Treatment effect on LDL-cholesterol (absolute effect in mmol/l)
-  treateff_bmi <- draws.bmi[i] # Treatment effect on BMI (in absolute points)
-  treateff_sbp <- draws.sbp[i] / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
+  treateff_bmi   <- draws.bmi[i] # Treatment effect on BMI (in absolute points)
+  treateff_sbp   <- draws.sbp[i] / 10 # TRANSFORMATION /10 FOR MODEL INPUT# Treatment effect on SBP (in absolute mmHg)
   
   
   # Tx effects are vectors: the current assumption is that the same start, end and decline is assumed for all effect modifiers
   treatment_effect_HbA1c_input <- c(treateff_hba1c, treateff_start, treateff_end, treateff_decline)
-  treatment_effect_HDL_input <- c(treateff_hdl, treateff_start, treateff_end, treateff_decline)
-  treatment_effect_LDL_input <- c(treateff_ldl, treateff_start, treateff_end, treateff_decline)
-  treatment_effect_BMI_input <- c(treateff_bmi, treateff_start, treateff_end, treateff_decline)
-  treatment_effect_SBP_input <- c(treateff_sbp, treateff_start, treateff_end, treateff_decline)
+  treatment_effect_HDL_input   <- c(treateff_hdl, treateff_start, treateff_end, treateff_decline)
+  treatment_effect_LDL_input   <- c(treateff_ldl, treateff_start, treateff_end, treateff_decline)
+  treatment_effect_BMI_input   <- c(treateff_bmi, treateff_start, treateff_end, treateff_decline)
+  treatment_effect_SBP_input   <- c(treateff_sbp, treateff_start, treateff_end, treateff_decline)
   
   
   # RESULT OUTPUT FOR OUTPUT SCRIPT -----------------------------------------
@@ -163,4 +167,4 @@ print(end - init)
 save(sim.var.data,
      psa.results.female,
      psa.results.male,
-     file = 'output/techver/PSA_Rank1.RData')
+     file = 'output/techver/PSA_Comp.RData')
