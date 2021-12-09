@@ -742,6 +742,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                     simulation_patients_history$RENAL.QALY + simulation_patients_history$BMI.QALY)
                     
   # Annual undiscounted QALYs
+  # Note 09/12/2021: the first row in the simulation is baseline so time = 0. This should not be counted
   simulation_patients_history$QALY <- (total_utils*(1-simulation_patients_history$dead) + (total_utils/2)*simulation_patients_history$dead)
   
   # Annual discounted QALYs
@@ -830,10 +831,11 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   mean_future_nonmedical_costs <- sum(future_nonmedical_costs_patient$x)/patient_size_input
   
   # QALYs
-  total_qalys_patient <- aggregate(simulation_patients_history$QALY, list(Patient = simulation_patients_history$SIMID), sum)
+  # Note 09/12/2021: code corrected -->> the first row in the simulation is baseline so time = 0. This should not be counted
+  total_qalys_patient <- aggregate(simulation_patients_history$QALY[which(simulation_patients_history$SDURATION >0)], list(Patient = simulation_patients_history$SIMID[which(simulation_patients_history$SDURATION >0)]), sum)
   mean_total_qalys    <- sum(total_qalys_patient$x)/patient_size_input
-  
-  total_discounted_qalys_patient <- aggregate(simulation_patients_history$discounted_QALY, list(Patient = simulation_patients_history$SIMID), sum)
+  # Note 09/12/2021: code corrected -->> the first row in the simulation is baseline so time = 0. This should not be counted
+  total_discounted_qalys_patient <- aggregate(simulation_patients_history$discounted_QALY[which(simulation_patients_history$SDURATION >0)], list(Patient = simulation_patients_history$SIMID[which(simulation_patients_history$SDURATION >0)]), sum)
   mean_total_discounted_qalys    <- sum(total_discounted_qalys_patient$x)/patient_size_input  
   
   # Return model outcomes: 
