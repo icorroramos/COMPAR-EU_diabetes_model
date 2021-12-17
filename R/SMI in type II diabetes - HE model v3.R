@@ -833,7 +833,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   renal_costs_patient <- aggregate(simulation_patients_history$RENAL.COST , list(Patient = simulation_patients_history$SIMID), sum)
   mean_renal_costs    <- sum(renal_costs_patient$x)/patient_size_input
   
-  print(renal_costs_patient)
+  #print(renal_costs_patient)
   
   mean_complication_costs <- mean_ihd_costs + mean_mi_costs + mean_chf_costs + mean_stroke_costs + mean_amp_costs + mean_blind_costs + mean_ulcer_costs + mean_renal_costs
   
