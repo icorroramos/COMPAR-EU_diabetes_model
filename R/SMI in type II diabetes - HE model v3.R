@@ -642,7 +642,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # print(fatal_RENAL_cost)
   # print(nonfatal_RENAL_cost)
   # print(subsequent_RENAL_cost)
-  View(simulation_patients_history)
+  # View(simulation_patients_history)
   
   
   # Cost in the absence of complications 	1,990	Alva et al. 2015 [1]
@@ -682,13 +682,16 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                                              simulation_patients_history$STROKE.COST + 
                                              simulation_patients_history$AMP.COST + 
                                              simulation_patients_history$BLIND.COST + 
-                                             simulation_patients_history$ULCER.COST + 
+                                             simulation_patients_history$ULCER.COST +
+                                             simulation_patients_history$RENAL.COST + 
                                              simulation_patients_history$NOCOMP.COST + 
                                              simulation_patients_history$TX.COST + 
                                              simulation_patients_history$INF.CARE.COST + 
                                              simulation_patients_history$PROD.LOSS.COST + 
                                              simulation_patients_history$FUTURE.COST.MEDICAL + 
                                              simulation_patients_history$FUTURE.COST.NONMEDICAL) 
+  
+  #print(mean(simulation_patients_history$TOTAL.COST))
   
   simulation_patients_history$discounted_TOTAL.COST <- simulation_patients_history$TOTAL.COST/simulation_patients_history$cost_discount_factor
 
@@ -777,7 +780,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   cum_BLIND <- aggregate(simulation_patients_history$BLIND.EVENT, list(Patient = simulation_patients_history$SIMID), sum)
   mean_BLIND_rate <- sum(cum_BLIND$x)/patient_size_input
   
-  cum_ULCER <- aggregate(simulation_patients_history$ULCER.EVENT, list(Patient = simulation_patients_history$SIMID), sum)
+  cum_ULCER       <- aggregate(simulation_patients_history$ULCER.EVENT, list(Patient = simulation_patients_history$SIMID), sum)
   mean_ULCER_rate <- sum(cum_ULCER$x)/patient_size_input
   
   cum_AMP1 <- aggregate(simulation_patients_history$AMP1.EVENT, list(Patient = simulation_patients_history$SIMID), sum)
@@ -792,7 +795,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   cum_STROKE <- aggregate(simulation_patients_history$STROKE.EVENT, list(Patient = simulation_patients_history$SIMID), sum)
   mean_STROKE_rate <- sum(cum_STROKE$x)/patient_size_input
   
-  cum_RENAL <- aggregate(simulation_patients_history$RENAL.EVENT, list(Patient = simulation_patients_history$SIMID), sum)
+  cum_RENAL       <- aggregate(simulation_patients_history$RENAL.EVENT, list(Patient = simulation_patients_history$SIMID), sum)
   mean_RENAL_rate <- sum(cum_RENAL$x)/patient_size_input #mean(cum_RENAL$x)/mean_life_expectancy # note this could be per patient or per time
   
   # Total costs per patient during lifetime and average per patient 
@@ -825,9 +828,14 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   mean_blind_costs <- sum(blind_costs_patient$x)/patient_size_input
   
   ulcer_costs_patient <- aggregate(simulation_patients_history$ULCER.COST , list(Patient = simulation_patients_history$SIMID), sum)
-  mean_ulcer_costs <- sum(ulcer_costs_patient$x)/patient_size_input
+  mean_ulcer_costs    <- sum(ulcer_costs_patient$x)/patient_size_input
   
-  mean_complication_costs <- mean_ihd_costs + mean_mi_costs + mean_chf_costs + mean_stroke_costs + mean_amp_costs + mean_blind_costs + mean_ulcer_costs
+  renal_costs_patient <- aggregate(simulation_patients_history$RENAL.COST , list(Patient = simulation_patients_history$SIMID), sum)
+  mean_renal_costs    <- sum(renal_costs_patient$x)/patient_size_input
+  
+  print(renal_costs_patient)
+  
+  mean_complication_costs <- mean_ihd_costs + mean_mi_costs + mean_chf_costs + mean_stroke_costs + mean_amp_costs + mean_blind_costs + mean_ulcer_costs + mean_renal_costs
   
   # No complication costs
   nocomp_costs_patient <- aggregate(simulation_patients_history$NOCOMP.COST  , list(Patient = simulation_patients_history$SIMID), sum)
@@ -877,7 +885,8 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
               mean_stroke_costs = mean_stroke_costs, 
               mean_amp_costs = mean_amp_costs, 
               mean_blind_costs = mean_blind_costs,
-              mean_ulcer_costs = mean_ulcer_costs, 
+              mean_ulcer_costs = mean_ulcer_costs,
+              mean_renal_costs = mean_renal_costs, 
               mean_complication_costs = mean_complication_costs,
               mean_nocomp_costs = mean_nocomp_costs, 
               mean_tx_costs = mean_tx_costs,
