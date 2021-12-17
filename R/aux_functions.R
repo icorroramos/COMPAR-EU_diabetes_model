@@ -229,7 +229,7 @@ working_days_lost_all_countries <- data.frame(
 working_days_lost_input <- working_days_lost_all_countries[, country.id]
 
 cost_hour_sick_all_countries <- data.frame(
-  UK = 25.781, #GBP
+  UK = 29, #EUR --> 25.781, #GBP
   NL = 36.8, #EUR
   DE = 36.6, #EUR
   ES = 22.8, #EUR
