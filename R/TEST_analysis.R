@@ -189,10 +189,10 @@ sim.results.male.comp <- SMDMII_model_simulation(patient_size_input = npats_inpu
 end <- Sys.time()
 print(end - init)
 
-# Save simulation results
-save(sim.vars,
-     sim.results.female,
-     sim.results.female.comp,
-     sim.results.male,
-     sim.results.male.comp,
-     file = 'output/techver/TEST_RUN_Test10.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
+# # Save simulation results
+# save(sim.vars,
+#      sim.results.female,
+#      sim.results.female.comp,
+#      sim.results.male,
+#      sim.results.male.comp,
+#      file = 'output/techver/TEST_RUN_Test10.RData') #file = paste0('output/', comp, '_seed_', seed_input, '.RData')
