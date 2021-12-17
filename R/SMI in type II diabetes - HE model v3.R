@@ -584,7 +584,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
                                                                        "RENAL.EVENT", "RENAL.HIST")], 
                                          complication_cost_inputs, by = 'CURR.AGE')
   
-  View(complication_cost_matrix)
+  #View(complication_cost_matrix)
   
   #Ischemic heart disease/Angina
   fatal_IHD_cost      <- (complication_cost_matrix$IHD.FATAL*complication_cost_matrix$IHD.EVENT*complication_cost_matrix$dead) 
@@ -634,17 +634,22 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
  
   
   # Renal failure
-  # fatal_RENAL_cost                       <- (complication_cost_matrix$ULCER.FATAL*complication_cost_matrix$ULCER.EVENT*complication_cost_matrix$dead)
-  # nonfatal_RENAL_cost                    <- (complication_cost_matrix$ULCER.NONFATAL*complication_cost_matrix$ULCER.EVENT*(1-complication_cost_matrix$dead))
-  # subsequent_RENAL_cost                  <- (complication_cost_matrix$ULCER.SUB*complication_cost_matrix$ULCER.HIST*(1-complication_cost_matrix$ULCER.EVENT))
-  # simulation_patients_history$RENAL.COST <- (fatal_ULCER_cost + nonfatal_ULCER_cost + subsequent_ULCER_cost)
+  fatal_RENAL_cost                       <- (complication_cost_matrix$RENAL.FATAL*complication_cost_matrix$RENAL.EVENT*complication_cost_matrix$dead)
+  nonfatal_RENAL_cost                    <- (complication_cost_matrix$RENAL.NONFATAL*complication_cost_matrix$RENAL.EVENT*(1-complication_cost_matrix$dead))
+  subsequent_RENAL_cost                  <- (complication_cost_matrix$RENAL.SUB*complication_cost_matrix$RENAL.HIST*(1-complication_cost_matrix$RENAL.EVENT))
+  simulation_patients_history$RENAL.COST <- (fatal_RENAL_cost + nonfatal_RENAL_cost + subsequent_RENAL_cost)
   
+  # print(fatal_RENAL_cost)
+  # print(nonfatal_RENAL_cost)
+  # print(subsequent_RENAL_cost)
+  View(simulation_patients_history)
   
   
   # Cost in the absence of complications 	1,990	Alva et al. 2015 [1]
   simulation_patients_history$NOCOMP.COST <- (complication_cost_matrix$NOCOMP*(1-complication_cost_matrix$IHD.EVENT)*(1-complication_cost_matrix$MI.EVENT)*
                                               (1-complication_cost_matrix$CHF.EVENT)*(1-complication_cost_matrix$STROKE.EVENT)*(1-complication_cost_matrix$AMP1.EVENT)*
-                                                (1-complication_cost_matrix$AMP2.EVENT)*(1-complication_cost_matrix$BLIND.EVENT)*(1-complication_cost_matrix$ULCER.EVENT))
+                                              (1-complication_cost_matrix$AMP2.EVENT)*(1-complication_cost_matrix$BLIND.EVENT)*(1-complication_cost_matrix$ULCER.EVENT)*
+                                              (1-complication_cost_matrix$RENAL.EVENT))
   
   # Intervention costs: only applied the first year of simulation. Then equal to 0.
   simulation_patients_history$TX.COST <- if_else(simulation_patients_history$SDURATION == 0, tx_cost_input,0)
