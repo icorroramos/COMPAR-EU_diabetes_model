@@ -630,6 +630,15 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   subsequent_ULCER_cost <- (complication_cost_matrix$ULCER.SUB*complication_cost_matrix$ULCER.HIST*(1-complication_cost_matrix$ULCER.EVENT))
   simulation_patients_history$ULCER.COST <- (fatal_ULCER_cost + nonfatal_ULCER_cost + subsequent_ULCER_cost)
  
+  
+  # Renal failure
+  # fatal_RENAL_cost                       <- (complication_cost_matrix$ULCER.FATAL*complication_cost_matrix$ULCER.EVENT*complication_cost_matrix$dead)
+  # nonfatal_RENAL_cost                    <- (complication_cost_matrix$ULCER.NONFATAL*complication_cost_matrix$ULCER.EVENT*(1-complication_cost_matrix$dead))
+  # subsequent_RENAL_cost                  <- (complication_cost_matrix$ULCER.SUB*complication_cost_matrix$ULCER.HIST*(1-complication_cost_matrix$ULCER.EVENT))
+  # simulation_patients_history$RENAL.COST <- (fatal_ULCER_cost + nonfatal_ULCER_cost + subsequent_ULCER_cost)
+  
+  
+  
   # Cost in the absence of complications 	1,990	Alva et al. 2015 [1]
   simulation_patients_history$NOCOMP.COST <- (complication_cost_matrix$NOCOMP*(1-complication_cost_matrix$IHD.EVENT)*(1-complication_cost_matrix$MI.EVENT)*
                                               (1-complication_cost_matrix$CHF.EVENT)*(1-complication_cost_matrix$STROKE.EVENT)*(1-complication_cost_matrix$AMP1.EVENT)*
