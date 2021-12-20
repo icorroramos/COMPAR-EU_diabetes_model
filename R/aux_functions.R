@@ -155,15 +155,19 @@ discount_factors_all_countries <- data.frame(
   GR = c(0.03, 0.03)
 )
 
-# discount_factors_all_countries <- data.frame(
-#   UK = c(0.0, 0.0), #(discount factor costs , discount factor effects)
-#   NL = c(0.0, 0.0),
-#   DE = c(0.0, 0.0),
-#   ES = c(0.0, 0.0),
-#   GR = c(0.0, 0.0)
-# )
-
 discount_factors <- discount_factors_all_countries[, country.id]
+
+# Retirement ages
+
+retirement_ages_all_countries <- data.frame(
+  UK = 65,
+  NL = 66,
+  DE = 66,
+  ES = 65,
+  GR = 62
+)
+
+retirement_age_input <- as.numeric(retirement_ages_all_countries[country.id])
 
 # Patient characteristics. 
 baseline_characteristics <- read.csv(paste0("input/", country.id, "/baseline_characteristics.csv"), sep=",")
