@@ -7,3 +7,6 @@
 # Where to find all input parameters of the model:
 
 # Patient (baseline) characteristics: baseline_characteristics.csv
+# Discount rates: aux_functions.R
+# Treatment effects: in R scripts to launch simulation (i.e., in the main function call)
+# Duration of the treatment effect: in R scripts to launch simulation (i.e., in the main function call)
