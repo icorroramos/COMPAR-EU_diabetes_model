@@ -3,3 +3,7 @@
 
 # Original work Copyright (C) 2019-2021 Isaac Corro Ramos & Gimon de Graaf 
 # Institute for Medical Technology Assessment (iMTA) of the Erasmus University Rotterdam.
+
+# Where to find all input parameters of the model:
+
+# Patient (baseline) characteristics: baseline_characteristics.csv
