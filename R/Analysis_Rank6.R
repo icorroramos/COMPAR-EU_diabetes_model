@@ -90,5 +90,5 @@ print(end-init)
 save(sim.vars,
      sim.results.female,
      sim.results.male,
-     file = paste0('output/', country.id, '/Rank6_basecase_', npats_input, '-pats_seed-', seed_input, '.RData'))
+     file = paste0('output/', country.id, '/Rank6_basecase_run_', run_id, '.RData'))
 

@@ -76,5 +76,5 @@ print(end-init)
 save(sim.vars.uc,
      sim.results.female.comp,
      sim.results.male.comp,
-     file = paste0('output/', country.id, '/Usual_care_outcomes_', npats_input, '-pats_seed-', seed_input, '.RData'))
+     file = paste0('output/', country.id, '/Usual_care_outcomes_run_', run_id, '.RData'))
 
