@@ -39,7 +39,7 @@ sewing_machine <- function(n.run, filename) {
   n.sims <- length(sim.names)
   
   all.means <- lapply(1:n.sims, matrix, data = NA, nrow = 27, ncol = n.run)
-  all.patients <- list() 
+  all.patients <- rep(list(data.frame()), n.sims)
   
   for (i in 1:n.run) {
     load(paste0(filename, i, '.RData'))
@@ -50,7 +50,8 @@ sewing_machine <- function(n.run, filename) {
     for (j in 1:n.sims) {
       curr.sim <- get(sim.names[j])
       all.means[[j]][, i] <- unlist(curr.sim[2:28])
-      all.patients[[j]] <- rbind.fill(curr.sim[1])
+      curr.sim[[1]]$SIMID <- curr.sim[[1]]$SIMID + sum(n.pats.run[1:i-1]) # Increase SIMIDs with total pats in previous runs so that SIMIDS remain unique
+      all.patients[[j]] <- rbind.fill(all.patients[[j]], curr.sim[[1]])
     }
   }
   
