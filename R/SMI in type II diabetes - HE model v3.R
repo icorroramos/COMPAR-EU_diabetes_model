@@ -891,9 +891,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
               mean_nocomp_costs = mean_nocomp_costs, 
               mean_tx_costs = mean_tx_costs,
               mean_future_medical_costs = mean_future_medical_costs, 
-              mean_future_nonmedical_costs = mean_future_nonmedical_costs,
-              discounted_qalys_patient = total_discounted_qalys_patient$x,
-              discounted_costs_patient = total_discounted_costs_patient$x)
+              mean_future_nonmedical_costs = mean_future_nonmedical_costs)
          ) # end return parameters
   
 } #end SMDMII_model_simulation function
