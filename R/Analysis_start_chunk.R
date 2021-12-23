@@ -22,17 +22,17 @@
 #--------
 
 
-# Duration of the effect from SMIs
-treateff_start   <- 1 # Cycle in which treatment effect starts
-treateff_end     <- 3 # Cycle in which treatment effect ends
-treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
+# # Duration of the effect from SMIs
+# treateff_start   <- 1 # Cycle in which treatment effect starts
+# treateff_end     <- 3 # Cycle in which treatment effect ends
+# treateff_decline <- 2 # Cycle in which treatment effect starts to decline (linearly)
 
 
 # Please select running mode: 0 = deterministic, 1 = PSA. Default: 0
 psa_input <- 0
 
 # Please select number of PSA runs (only works if psa_input <- 1, otherwise will be ignored ). Default: 500 --> NOTE: not completely implemented
-n_psa_input <- 5
+n_psa_input <- 500
 
 # Please indicate the name of the treatment to be identified
 tx_label <- "Usual care"
