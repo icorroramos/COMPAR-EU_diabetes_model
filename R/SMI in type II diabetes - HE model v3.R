@@ -208,8 +208,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
           current_FMIMALE_prob     <- annual_p_weibull(macrovascular_risk_equations$FMIMALE,current_patient_macrovascular,current_patient$YEAR)$p
           current_patient$MI.EVENT <- rbinom(1,1,current_FMIMALE_prob) # Update current_patient$MI.HIST after the year simulation is finished
           } # end if/else for gender
-      }
-      else{
+      } else{
         # Second MI is Exponential, regardless the gender. MI.HIST will remain == 1. If a patient has a second MI, it is not  possible to have a 3rd. 
         # The variable "current_SMI_event" keeps track of this. 
         if(current_SMI_event == 0){
@@ -226,8 +225,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         # If no history of STROKE, then it is first and Weibull. 
         current_FSTROKE_prob <- annual_p_weibull(macrovascular_risk_equations$FSTROKE,current_patient_macrovascular,current_patient$YEAR)$p
         current_patient$STROKE.EVENT <- rbinom(1,1,current_FSTROKE_prob) #Update current_patient$STROKE.HIST after the year
-      }
-      else{ 
+      } else{ 
         #Second STROKE is Weibull. Here current_patient$STROKE.HIST == 1 and remains like that.
         #If a patient has a second STROKE, it is not  possible to have a 3rd. "current_SSTROKE_event" keeps track of this. Not sure whether it has to be initialised. Seems to be 0, which is ok.
         if(current_SSTROKE_event == 0){
@@ -261,14 +259,12 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
           # If no prior ULCER then it is Weibull
           current_FAMPNOULCER_prob  <- annual_p_weibull(microvascular_risk_equations$FAMPNOULCER,current_patient_microvascular,current_patient$YEAR)$p       
           current_patient$AMP1.EVENT <- rbinom(1,1,current_FAMPNOULCER_prob) #AMP.HIST to be updated at the end of the year and does not distinguishes between 1st and 2nd
-        }
-        else{
+        } else {
           # If prior ULCER then it is Exponential
           current_FAMPULCER_prob <- annual_p_weibull(microvascular_risk_equations$FAMPULCER,current_patient_microvascular,current_patient$YEAR)$p       
           current_patient$AMP1.EVENT <- rbinom(1,1,current_FAMPULCER_prob) #AMP.HIST to be updated at the end of the year
         }
-      }
-      else{ # if there is amputation history it can only be second and a 3rd one is not possible. 
+      } else { # if there is amputation history it can only be second and a 3rd one is not possible. 
         # Second amputation is exponential: AMP.HIST no need to be updated. But also a patient cannot have more than 2 amputations.
         if(current_AMP2_event == 0){
           current_SAMP_prob <- annual_p_weibull(microvascular_risk_equations$SAMP,current_patient_microvascular,current_patient$YEAR)$p       
@@ -351,7 +347,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
           current_DEATH_prob <- annual_p_logistic(mortality_risk_equations$DEATH1YEVENT, current_patient_mortality)$p       
           #print(paste("P[first event and no history] = ", current_DEATH_prob))
           }
-        }else{ #if current_hist >0
+        } else { #if current_hist >0
           #3. Years with history of previous events but no events in the current year, then gompertz distribution
           if(current_year_event_no_blind_no_ulcer == 0){
             current_DEATH_prob <- annual_p_gompertz(mortality_risk_equations$DEATHHISTNOEVENT, current_patient_mortality,current_patient$AGE.DIAG + current_patient$YEAR)$p       
@@ -428,6 +424,9 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         # Update 15/11/2021: prod_costs_coef as input parameter
         current_jobless_prob <- annual_p_bernoulli(prod_costs_coef_input, current_patient[,risk_factors_prod])$p
         current_jobless <- rbinom(1,1,current_jobless_prob) 
+        
+        # FIXME: TEMP TEST - set job loss if patient dies in this cycle
+        current_jobless <- ifelse(current_DEATH_event == 1, 1, current_jobless)
         
         # Updated 15/11/2021: If jobless, then apply permanent cost (one-off) cost: friction method as proportion of a maximum of country-specific days.
         
