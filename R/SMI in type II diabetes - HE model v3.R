@@ -393,7 +393,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         # Calculate number of worked hours per week: assume mean value, different for male and females. See e-mail 10/12/2020.
         # Updated 15/11/2021.
         current_worked_hours_week <- if_else(current_patient$FEMALE == 1, worked_hours_input[1], worked_hours_input[2]) 
-        current_worked_hours_day <- current_worked_hours_week/5
+        current_worked_hours_day  <- current_worked_hours_week/5
         
         # Assumption 11/12/2020: working days per year lost due to sickness --> Apply median value for central European countries.
         # The median was chosen as opposed to the mean due to the skewness of the distribution (mean seems to be very large).
@@ -422,7 +422,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         # Calculate first the probability of losing job (Bernoulli distribution).
         # Update 15/11/2021: prod_costs_coef as input parameter
         current_jobless_prob <- annual_p_bernoulli(prod_costs_coef_input, current_patient[,risk_factors_prod])$p
-        current_jobless <- rbinom(1,1,current_jobless_prob) 
+        current_jobless      <- rbinom(1,1,current_jobless_prob) 
         
         # Update 30/06/2022 Set job loss if patient dies in this cycle
         current_jobless <- ifelse(current_DEATH_event == 1, 1, current_jobless)

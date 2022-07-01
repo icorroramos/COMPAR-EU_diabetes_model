@@ -283,8 +283,8 @@ event_list <- c("CHF", "MI", "IHD", "STROKE", "BLIND", "ULCER", "AMP", "RENAL")
 # and an indicator variable for dead. risk_factors_simulation is defined above.
 
 # Thus, the vector below contains the names of all factors used to predict informal care in the model.
-risk_factors_informal   <- c("FEMALE", "CURR.AGE.SCALE.INF", "CHF.HIST", "STROKE.HIST", "RENAL.HIST")
-risk_factors_prod       <- c("FEMALE", "CURR.AGE.SCALE.PROD", "CHF.HIST", "STROKE.HIST", "RENAL.HIST")
+risk_factors_informal   <- c("FEMALE",   "CURR.AGE.SCALE.INF", "CHF.HIST", "STROKE.HIST", "RENAL.HIST")
+risk_factors_prod       <- c("FEMALE",   "CURR.AGE.SCALE.PROD", "CHF.HIST", "STROKE.HIST", "RENAL.HIST")
 risk_factors_employment <- c("CURR.AGE", "CURR.AGE.2", "FEMALE")
 
 history_characteristics <- c("SIMID", 
