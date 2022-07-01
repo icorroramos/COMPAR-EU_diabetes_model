@@ -144,7 +144,6 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
     
     # Print the patient index to know how advanced is the simulation. Delete later if not needed
     #if(run_PSA_input == 0){print(paste("patient ",patient_index))}
-    # FIXME: printing switched off temporarily
     #print(patient_index)
     
     # Pick the current patient from those selected at baseline and set simulation ID ("SIMID"). This is needed to produce aggregated results.
@@ -408,10 +407,10 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         # So it could either be an MI event, or onset of heart failure. I therefore think these sick days should apply to both patients 
         # with congestive heart failure and patients with a myocardial infarction, but I think also to patients with ischemic heart disease. 
         
-        # Updated 15/11/2021
+        # Updated 15/11/2021 - Updated 30/06/2022: switched around then/ else arguments 
         sick_hours_year <- if_else(current_patient$STROKE.EVENT+current_patient$MI.EVENT+current_patient$CHF.EVENT+current_patient$IHD.EVENT>0, 
-                                   current_worked_hours_day*working_days_lost_input[1], 
-                                   current_worked_hours_day*working_days_lost_input[2])   
+                                   current_worked_hours_day*working_days_lost_input[2], 
+                                   current_worked_hours_day*working_days_lost_input[1])   
         
         # Cost of an hour sick: updated 15/11/2021
         # \\campus.eur.nl\shared\groups\IMTA-600-H2020COMPAR-EU\600 Projectuitvoer\Disease models\General cost inputs for all models
@@ -425,7 +424,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
         current_jobless_prob <- annual_p_bernoulli(prod_costs_coef_input, current_patient[,risk_factors_prod])$p
         current_jobless <- rbinom(1,1,current_jobless_prob) 
         
-        # FIXME: TEMP TEST - set job loss if patient dies in this cycle
+        # Update 30/06/2022 Set job loss if patient dies in this cycle
         current_jobless <- ifelse(current_DEATH_event == 1, 1, current_jobless)
         
         # Updated 15/11/2021: If jobless, then apply permanent cost (one-off) cost: friction method as proportion of a maximum of country-specific days.
