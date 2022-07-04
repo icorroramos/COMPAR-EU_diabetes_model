@@ -48,18 +48,33 @@ female_com$INF.CARE.COST.TTD <- p_week_female_com*h_week_female_com*22.79*52
 male_int$INF.CARE.COST.TTD <- p_week_male_int*h_week_male_int*22.79*52
 male_com$INF.CARE.COST.TTD <- p_week_male_com*h_week_male_com*22.79*52
 
+# discount
+
+discount_factor_fem_int <- sim.results.female$simulation_patients_history[which(sim.results.female$simulation_patients_history$SDURATION>0),]$cost_discount_factor
+discount_factor_mal_int <- sim.results.male$simulation_patients_history[which(sim.results.male$simulation_patients_history$SDURATION>0),]$cost_discount_factor
+
+discount_factor_fem_com <- sim.results.female.comp$simulation_patients_history[which(sim.results.female.comp$simulation_patients_history$SDURATION>0),]$cost_discount_factor
+discount_factor_mal_com <- sim.results.male.comp$simulation_patients_history[which(sim.results.male.comp$simulation_patients_history$SDURATION>0),]$cost_discount_factor
+
+
 # aggregate per patient and averaged
-mean(aggregate(female_int$INF.CARE.COST, list(id = female_int$SIMID), sum)$x) #previous approach: sim.results.female$mean_inf_care_costs
-mean(aggregate(female_int$INF.CARE.COST.TTD, list(id = female_int$SIMID), sum)$x)
+#mean(aggregate(female_int$INF.CARE.COST/discount_factor_fem, list(id = female_int$SIMID), sum)$x) #previous approach: sim.results.female$mean_inf_care_costs
+female_int_infcare <- mean(aggregate(female_int$INF.CARE.COST.TTD/discount_factor_fem_int, list(id = female_int$SIMID), sum)$x)
 
-mean(aggregate(female_com$INF.CARE.COST, list(id = female_com$SIMID), sum)$x) #previous approach
-mean(aggregate(female_com$INF.CARE.COST.TTD, list(id = female_com$SIMID), sum)$x)
+#mean(aggregate(female_com$INF.CARE.COST, list(id = female_com$SIMID), sum)$x) #previous approach
+female_com_infcare <- mean(aggregate(female_com$INF.CARE.COST.TTD/discount_factor_fem_com, list(id = female_com$SIMID), sum)$x)
 
-mean(aggregate(male_int$INF.CARE.COST, list(id = male_int$SIMID), sum)$x) #previous approach: sim.results.male$mean_inf_care_costs
-mean(aggregate(male_int$INF.CARE.COST.TTD, list(id = male_int$SIMID), sum)$x)
+#mean(aggregate(male_int$INF.CARE.COST, list(id = male_int$SIMID), sum)$x) #previous approach: sim.results.male$mean_inf_care_costs
+male_int_infcare <- mean(aggregate(male_int$INF.CARE.COST.TTD/discount_factor_mal_int, list(id = male_int$SIMID), sum)$x)
 
-mean(aggregate(male_com$INF.CARE.COST, list(id = male_com$SIMID), sum)$x) #previous approach
-mean(aggregate(male_com$INF.CARE.COST.TTD, list(id = male_com$SIMID), sum)$x)
+#mean(aggregate(male_com$INF.CARE.COST, list(id = male_com$SIMID), sum)$x) #previous approach
+male_com_infcare <- mean(aggregate(male_com$INF.CARE.COST.TTD/discount_factor_mal_com, list(id = male_com$SIMID), sum)$x)
+
 
 # Weighted mean based on proportion of males and females (UK case study values)
+frac.fem <- 26706/58171 # Fraction of females in UK DM2 population
 
+
+weighted_int_infcare <- frac.fem * female_int_infcare + (1 - frac.fem) * male_int_infcare
+weighted_com_infcare <- frac.fem * female_com_infcare + (1 - frac.fem) * male_com_infcare
+delta_infcare <- weighted_int_infcare - weighted_com_infcare
