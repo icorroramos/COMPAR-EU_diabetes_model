@@ -144,7 +144,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
     
     # Print the patient index to know how advanced is the simulation. Delete later if not needed
     #if(run_PSA_input == 0){print(paste("patient ",patient_index))}
-    #print(patient_index)
+    # print(patient_index)
     
     # Pick the current patient from those selected at baseline and set simulation ID ("SIMID"). This is needed to produce aggregated results.
     current_patient <- simulation_baseline_patients[patient_index,]
@@ -369,18 +369,21 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
       
       ### INFORMAL CARE AND PRODUCTIVITY COSTS: Added 29/08/2020
       
-      # INFORMAL CARE
-      # Probability of receiving at least weekly informal care for a whole year is calculated using a Bernoulli distribution.
-      # Updated 15/11/2021: informal_care_coef as input and country-specific
-      current_inf_care_prob    <- annual_p_bernoulli(informal_care_coef_input, current_patient[,risk_factors_informal])$p
-      current_patient$INF.CARE <- rbinom(1,1,current_inf_care_prob) #INF.CARE = yes/no
+      # FIXME: Old informal care calculation before TTD version was implemented. Remove if no longer needed
+      # # INFORMAL CARE
+      # # Probability of receiving at least weekly informal care for a whole year is calculated using a Bernoulli distribution.
+      # # Updated 15/11/2021: informal_care_coef as input and country-specific
+      # current_inf_care_prob    <- annual_p_bernoulli(informal_care_coef_input, current_patient[,risk_factors_informal])$p
+      # current_patient$INF.CARE <- rbinom(1,1,current_inf_care_prob) #INF.CARE = yes/no
+      # 
+      # # If INF.CARE = yes, then calculate hours per day, and then total per year: Gamma distribution for now but other options are possible.
+      # # Make parameters of the gamma distribution input parameters of the function
+      # # Gamma distribution updated 10/12/2020: primary analysis central countries
+      # # if(current_patient$INF.CARE == 1){current_patient$INF.CARE <- rgamma(1, 1.753152, 1/1.022368)*365.25}
+      # # 15/11/2021: Gamma distribution replaced by the median value as country-specific input parameter "inf_care_hours_input"
+      # if(current_patient$INF.CARE == 1){current_patient$INF.CARE <- inf_care_hours_input*365.25}
       
-      # If INF.CARE = yes, then calculate hours per day, and then total per year: Gamma distribution for now but other options are possible.
-      # Make parameters of the gamma distribution input parameters of the function
-      # Gamma distribution updated 10/12/2020: primary analysis central countries
-      # if(current_patient$INF.CARE == 1){current_patient$INF.CARE <- rgamma(1, 1.753152, 1/1.022368)*365.25}
-      # 15/11/2021: Gamma distribution replaced by the median value as country-specific input parameter "inf_care_hours_input"
-      if(current_patient$INF.CARE == 1){current_patient$INF.CARE <- inf_care_hours_input*365.25}
+      
       
       # PRODUCTIVITY LOSS -- main assumptions: 
       # 1. Short-term productivity loss costs: only for EMPLOYED patients based on sick days --> Assume fix 14 working days based on data. This could be changed.
@@ -562,7 +565,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
     sim_rows <- sim_rows + 1
   } #end for loop in number of patients
   
-  #View(simulation_patients_history)
+  # View(simulation_patients_history)
   
   ########## MAIN PART II: Calculate Costs ##########
   
@@ -572,7 +575,7 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # Complication costs are dependent on age, gender and alive status
   complication_cost_inputs <- data.frame(ifelse(unique(simulation_patients_history$FEMALE) == 0, male_cost_inputs,female_cost_inputs) )
   
-  if(unique(simulation_patients_history$FEMALE) == 0){complication_cost_inputs <- male_cost_inputs}else{complication_cost_inputs <- female_cost_inputs}
+  if(unique(simulation_patients_history$FEMALE) == 0){complication_cost_inputs <- male_cost_inputs} else {complication_cost_inputs <- female_cost_inputs}
   
   complication_cost_matrix <- inner_join(simulation_patients_history[c("CURR.AGE","FEMALE","dead", 
                                                                        "IHD.EVENT", "IHD.HIST", "MI.EVENT", "MI.HIST", 
@@ -652,13 +655,35 @@ SMDMII_model_simulation <- function(patient_size_input, # numeric value > 0, pat
   # Intervention costs: only applied the first year of simulation. Then equal to 0.
   simulation_patients_history$TX.COST <- if_else(simulation_patients_history$SDURATION == 0, tx_cost_input,0)
   
+  
+  
+  
   ### Societal costs: Added 29/08/2020
   
-  # Informal care and productivity loss: We calculated above INF.CARE & PROD.LOSS = 0/1 but costs have to be calculated here: 
+      ## Informal care changed to time-to death approach 02/08/2022
+  # Add time to death to patient history
+  simulation_patients_history$TTD <- simulation_patients_history %>% 
+    group_by(SIMID) %>% 
+    transmute(TTD = rev(SDURATION)) %>% 
+    pull(TTD)
   
-  # Informal care cost per hour currently specified within aux_functions script
-  simulation_patients_history$INF.CARE.COST <- (inf_care_hour_cost*simulation_patients_history$INF.CARE*(1-simulation_patients_history$dead) + inf_care_hour_cost/2*simulation_patients_history$INF.CARE*simulation_patients_history$dead)
+  # Calculate weekly probability of receiving informal care
+  baseline_coefs_inf_care <- 0.054 * (simulation_patients_history$CURR.AGE - 70) + 0.0003 * (simulation_patients_history$CURR.AGE - 70)^2 - 0.061 * simulation_patients_history$TTD
+  prob_inf_care_female <- exp(-1.451 + 0.368 + baseline_coefs_inf_care) / (1+exp(-1.451 + 0.368 + baseline_coefs_inf_care))
+  prob_inf_care_male <- exp(-1.451 + baseline_coefs_inf_care) / (1+exp(-1.451 + baseline_coefs_inf_care))
   
+  # Calculate weekly hours of informal care use
+  hours_inf_care_female <- 7 * exp(0.497 + 0.112 + (simulation_patients_history$CURR.AGE-70) * 0.019 - 0.034 * simulation_patients_history$TTD)
+  hours_inf_care_male <- 7 * exp(0.497 + 0 + (simulation_patients_history$CURR.AGE-70) * 0.019 - 0.034 * simulation_patients_history$TTD)
+  
+  # Add informal care use to patient history (these are now the expected informal care hours used based on patient characteristics, not stochastic)
+  simulation_patients_history$INF.CARE <- ifelse(simulation_patients_history$FEMALE ==1, prob_inf_care_female * hours_inf_care_female * 52.1775, prob_inf_care_male * hours_inf_care_male * 52.1775)
+  
+  # Add informal care cost to patient history (assign half costs in cycle where patient dies)
+  simulation_patients_history$INF.CARE.COST <- (inf_care_hour_cost * simulation_patients_history$INF.CARE * (1-simulation_patients_history$dead) + inf_care_hour_cost/2*simulation_patients_history$INF.CARE*simulation_patients_history$dead)
+  
+
+  # Productivity costs
   simulation_patients_history$PROD.LOSS.COST <- (simulation_patients_history$PROD.LOSS*(1-simulation_patients_history$dead) + 1/2*simulation_patients_history$PROD.LOSS*simulation_patients_history$dead)
   
   # Future costs are dependent on age, gender and alive status: add explanation later
